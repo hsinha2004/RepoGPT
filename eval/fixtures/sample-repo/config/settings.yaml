@@ -1,0 +1,13 @@
+app:
+  name: TaskFlow
+  version: 1.0.0
+  environment: development
+
+tasks:
+  default_priority: medium
+  max_title_length: 200
+  reminder_interval_minutes: 15
+
+notifications:
+  enable_email: true
+  sender: no-reply@taskflow.dev

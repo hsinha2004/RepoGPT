@@ -234,10 +234,214 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/repos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List accessible repositories
+         * @description Lists all repositories owned by or shared with the authenticated user.
+         */
+        get: operations["list_repositories_api_v1_repos_get"];
+        put?: never;
+        /**
+         * Add repository from GitHub
+         * @description Validates GitHub URL and initiates asynchronous repository ingestion job.
+         */
+        post: operations["create_from_github_api_v1_repos_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Upload ZIP repository
+         * @description Uploads a ZIP archive, validates magic bytes, and begins background ingestion.
+         */
+        post: operations["upload_repository_archive_api_v1_repos_upload_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get repository details
+         * @description Fetches details for a specific repository.
+         */
+        get: operations["get_repository_api_v1_repos__repo_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete repository
+         * @description Permanently deletes repository, member records, file indexes, and snapshots on disk.
+         */
+        delete: operations["delete_repository_api_v1_repos__repo_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update repository settings
+         * @description Updates settings for a repository (requires owner or editor role).
+         */
+        patch: operations["update_repository_settings_api_v1_repos__repo_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List repository files
+         * @description Lists indexed files within the repository.
+         */
+        get: operations["list_repo_files_api_v1_repos__repo_id__files_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List repository members
+         * @description Lists all members of the repository.
+         */
+        get: operations["list_repo_members_api_v1_repos__repo_id__members_get"];
+        put?: never;
+        /**
+         * Add repository member
+         * @description Adds a member to the repository by email.
+         */
+        post: operations["add_repo_member_api_v1_repos__repo_id__members_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/members/{target_user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove repository member
+         * @description Removes a member from the repository.
+         */
+        delete: operations["remove_repo_member_api_v1_repos__repo_id__members__target_user_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jobs/{job_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get job status
+         * @description Fetches current state, stage, and counters of a background job.
+         */
+        get: operations["get_job_api_v1_jobs__job_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jobs/{job_id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel job
+         * @description Requests cooperative cancellation of a running background job.
+         */
+        post: operations["cancel_job_api_v1_jobs__job_id__cancel_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jobs/{job_id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Stream job progress events via SSE
+         * @description Server-Sent Events endpoint streaming real-time progress events for a job.
+         *     Subscribes to Redis pub/sub channel 'job:{job_id}' and yields formatted SSE chunks.
+         */
+        get: operations["stream_job_events_api_v1_jobs__job_id__events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** Body_upload_repository_archive_api_v1_repos_upload_post */
+        Body_upload_repository_archive_api_v1_repos_upload_post: {
+            /** File */
+            file: string;
+            /** Display Name */
+            display_name?: string | null;
+        };
         /** ChangePasswordRequest */
         ChangePasswordRequest: {
             /** Current Password */
@@ -284,6 +488,50 @@ export interface components {
                 [key: string]: components["schemas"]["HealthComponentStatus"];
             };
         };
+        /** JobError */
+        JobError: {
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+        };
+        /** JobResponse */
+        JobResponse: {
+            /** Id */
+            id: string;
+            /** Type */
+            type: string;
+            /** Repo Id */
+            repo_id: string;
+            /** User Id */
+            user_id: string;
+            /** Status */
+            status: string;
+            /** Stage */
+            stage: string;
+            /** Progress */
+            progress: number;
+            /** Message */
+            message: string;
+            /** Counters */
+            counters?: {
+                [key: string]: unknown;
+            };
+            /** Warnings */
+            warnings?: string[];
+            error?: components["schemas"]["JobError"] | null;
+            /**
+             * Cancel Requested
+             * @default false
+             */
+            cancel_requested: boolean;
+            /** Created At */
+            created_at: string;
+            /** Started At */
+            started_at?: string | null;
+            /** Finished At */
+            finished_at?: string | null;
+        };
         /** LoginRequest */
         LoginRequest: {
             /**
@@ -312,6 +560,164 @@ export interface components {
             name: string;
             /** Password */
             password: string;
+        };
+        /** RepoCreateGitHubRequest */
+        RepoCreateGitHubRequest: {
+            /**
+             * Url
+             * @description GitHub URL or shorthand 'owner/repo'
+             * @example https://github.com/fastapi/fastapi
+             * @example pallets/flask
+             */
+            url: string;
+            /**
+             * Ref
+             * @description Optional branch, tag, or commit SHA
+             */
+            ref?: string | null;
+        };
+        /** RepoListResponse */
+        RepoListResponse: {
+            /** Items */
+            items: components["schemas"]["RepoResponse"][];
+            /** Total */
+            total: number;
+        };
+        /** RepoMemberAddRequest */
+        RepoMemberAddRequest: {
+            /** Email */
+            email: string;
+            /**
+             * Role
+             * @description 'viewer' | 'editor' | 'owner'
+             * @default viewer
+             */
+            role: string;
+        };
+        /** RepoMemberResponse */
+        RepoMemberResponse: {
+            /** Repo Id */
+            repo_id: string;
+            /** User Id */
+            user_id: string;
+            /** Email */
+            email?: string | null;
+            /** Role */
+            role: string;
+            /** Added By */
+            added_by: string;
+            /** Created At */
+            created_at: string;
+        };
+        /** RepoResponse */
+        RepoResponse: {
+            /** Id */
+            id: string;
+            /** Owner Id */
+            owner_id: string;
+            source: components["schemas"]["RepoSource"];
+            /** Display Name */
+            display_name: string;
+            /** Description */
+            description: string;
+            /** Commit Sha */
+            commit_sha?: string | null;
+            /** Status */
+            status: string;
+            /** Status Message */
+            status_message: string;
+            stats: components["schemas"]["RepoStats"];
+            settings: components["schemas"]["RepoSettings"];
+            /** Last Indexed At */
+            last_indexed_at?: string | null;
+            /** Created At */
+            created_at: string;
+            /** Updated At */
+            updated_at: string;
+        };
+        /** RepoSettings */
+        RepoSettings: {
+            /**
+             * Auto Review
+             * @default false
+             */
+            auto_review: boolean;
+            /** Extra Ignore Patterns */
+            extra_ignore_patterns?: string[];
+        };
+        /** RepoSource */
+        RepoSource: {
+            /**
+             * Type
+             * @description 'github' or 'upload'
+             */
+            type: string;
+            /** Url */
+            url?: string | null;
+            /** Owner */
+            owner?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Ref */
+            ref?: string | null;
+            /** Default Branch */
+            default_branch?: string | null;
+            /**
+             * Is Private
+             * @default false
+             */
+            is_private: boolean;
+            /** Upload Filename */
+            upload_filename?: string | null;
+        };
+        /** RepoStats */
+        RepoStats: {
+            /**
+             * Files Total
+             * @default 0
+             */
+            files_total: number;
+            /**
+             * Files Indexed
+             * @default 0
+             */
+            files_indexed: number;
+            /**
+             * Files Skipped
+             * @default 0
+             */
+            files_skipped: number;
+            /**
+             * Loc
+             * @default 0
+             */
+            loc: number;
+            /**
+             * Symbols
+             * @default 0
+             */
+            symbols: number;
+            /**
+             * Chunks
+             * @default 0
+             */
+            chunks: number;
+            /** Languages */
+            languages?: {
+                [key: string]: number;
+            };
+            /**
+             * Redactions
+             * @default 0
+             */
+            redactions: number;
+        };
+        /** RepoUpdateSettingsRequest */
+        RepoUpdateSettingsRequest: {
+            /** Auto Review */
+            auto_review?: boolean | null;
+            /** Extra Ignore Patterns */
+            extra_ignore_patterns?: string[] | null;
         };
         /** SetPatRequest */
         SetPatRequest: {
@@ -819,6 +1225,430 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserUsageResponse"];
+                };
+            };
+        };
+    };
+    list_repositories_api_v1_repos_get: {
+        parameters: {
+            query?: {
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepoListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_from_github_api_v1_repos_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RepoCreateGitHubRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upload_repository_archive_api_v1_repos_upload_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_repository_archive_api_v1_repos_upload_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_repository_api_v1_repos__repo_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepoResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_repository_api_v1_repos__repo_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_repository_settings_api_v1_repos__repo_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RepoUpdateSettingsRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepoResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_repo_files_api_v1_repos__repo_id__files_get: {
+        parameters: {
+            query?: {
+                /** @description Filter by kind: 'code' | 'doc' | 'config' | 'test' */
+                kind?: string | null;
+                /** @description Filter by language */
+                language?: string | null;
+            };
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    }[];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_repo_members_api_v1_repos__repo_id__members_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepoMemberResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_repo_member_api_v1_repos__repo_id__members_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RepoMemberAddRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepoMemberResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_repo_member_api_v1_repos__repo_id__members__target_user_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+                target_user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_job_api_v1_jobs__job_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancel_job_api_v1_jobs__job_id__cancel_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    stream_job_events_api_v1_jobs__job_id__events_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

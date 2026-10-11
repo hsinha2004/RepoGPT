@@ -20,6 +20,18 @@ def generate_object_id() -> str:
     return str(ObjectId())
 
 
+def to_object_id(val: str | ObjectId) -> ObjectId:
+    """Converts a 24-char hex string to BSON ObjectId."""
+    if isinstance(val, ObjectId):
+        return val
+    str_val = str(val)
+    if not is_valid_object_id(str_val):
+        from app.core.errors import ValidationFailedError
+
+        raise ValidationFailedError(f"Invalid ObjectId hex format: '{val}'")
+    return ObjectId(str_val)
+
+
 def generate_chunk_id(
     repo_id: str, path: str, start_line: int, end_line: int, content_hash: str
 ) -> str:

@@ -17,8 +17,8 @@ class AppError(Exception):
 
     def __init__(
         self,
-        code: str,
-        message: str,
+        message: str = "An application error occurred",
+        code: str = "APP_ERROR",
         status_code: int = status.HTTP_400_BAD_REQUEST,
         details: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,

@@ -44,6 +44,9 @@ def get_redis() -> aioredis.Redis:
     return _redis_client
 
 
+get_redis_client = get_redis
+
+
 async def ping_redis() -> bool:
     """Ping Redis to test connectivity."""
     try:

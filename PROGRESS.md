@@ -27,11 +27,17 @@ Updated at the completion of each milestone with status, verification details, a
     - Frontend: `npm run typecheck` (tsc clean), `npm test` (vitest clean), `npm run build` (vite bundle built in 3.45s), `SettingsPage` implemented with Profile, GitHub PAT integration with show/hide toggle + test connection + revocation, Password change, Log out all devices, and Daily Quotas & Usage display.
   - Known issues: None
 
-- [ ] **M2: Ingestion & jobs**
+- [x] **M2: Ingestion & jobs**
   - Scope: GitHub fetcher, ZIP upload, safe extraction, filters, snapshots, Celery app/runtime, jobs + SSE progress + cancel, repo CRUD + members, TaskFlow fixture repo; frontend dashboard, add-repo dialog, progress stepper, repo settings/members.
   - Exit criteria: Fixture ZIP and a public GitHub repo ingest through "filtering" with live progress; malicious-archive tests pass.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - TaskFlow Fixture: Created complete 37-file multi-language fixture repo (`eval/fixtures/sample-repo/`) with FastAPI backend, React 19 TS frontend, Go background reminder worker, Java reporting CLI, Docker compose, and configurations.
+    - Security Defenses: Safe archive extraction rejecting path traversals (`..`), absolute paths, drive letters, symlinks/hardlinks, device files, and zip-bombs (> 100:1 compression ratio). Strict GitHub URL regexes preventing SSRF.
+    - Filtering & Classification: Default ignores, gitignore (pathspec), binary detection (NUL byte / decode fallback), minified/generated heuristics, language and kind (`code`/`doc`/`config`/`test`) detection.
+    - Celery & Jobs: Celery worker app (`app/jobs/celery_app.py`) on Redis DB 0 with JSON serializer, isolated async runtime (`app/jobs/runtime.py`) binding fresh PyMongo and Redis connections per task, per-repo concurrency lock `lock:repo:{id}`.
+    - Server-Sent Events: SSE endpoint `/api/v1/jobs/{id}/events` streaming live progress updates via Redis pub/sub.
+    - Testing & Gates: 34 pytest tests passing (`test_archive_security.py`, `test_filter.py`, `test_github_fetcher.py`, `test_ingestion_pipeline.py`); `ruff check` (0 errors); `ruff format` (clean); `mypy backend/app` (0 issues in 41 files); frontend `npm run typecheck` (clean); `npm test` (clean); `npm run build` (vite bundle built).
   - Known issues: None
 
 - [ ] **M3: Parsing, redaction, chunking**
