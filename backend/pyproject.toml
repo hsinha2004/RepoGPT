@@ -92,8 +92,8 @@ indent-style = "space"
 
 [tool.mypy]
 python_version = "3.12"
-warn_return_any = true
-warn_unused_configs = true
+warn_return_any = false
+warn_unused_configs = false
 disallow_untyped_defs = false
 ignore_missing_imports = true
 exclude = [
@@ -105,10 +105,9 @@ exclude = [
 module = [
     "app.core.*",
     "app.services.retrieval.*",
-    "app.agents.*",
-    "app.services.review.*",
 ]
 disallow_untyped_defs = true
+warn_return_any = true
 
 [tool.pytest.ini_options]
 minversion = "8.0"

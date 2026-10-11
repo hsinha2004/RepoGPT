@@ -38,4 +38,5 @@ class FastEmbedProvider(EmbeddingProvider):
             generator = self._model.query_embed(text)
         else:
             generator = self._model.embed([text])
-        return next(iter(generator)).tolist()
+        arr = next(iter(generator)).tolist()
+        return [float(x) for x in arr]

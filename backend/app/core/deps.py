@@ -48,7 +48,7 @@ async def get_current_user(
     if not user.get("is_active", True):
         raise UnauthorizedError("User account is inactive or disabled")
 
-    return user
+    return dict(user)
 
 
 async def get_optional_current_user(
@@ -101,7 +101,7 @@ def require_repo_access(min_role: str = "viewer") -> Callable[..., Any]:
 
         # Admins have all permissions
         if user_role == "admin":
-            return repo
+            return dict(repo)
 
         # Repo direct owner
         if str(repo.get("owner_id")) == user_id:
@@ -114,7 +114,7 @@ def require_repo_access(min_role: str = "viewer") -> Callable[..., Any]:
             if not member:
                 # Security §7.5: return 404, do not reveal existence
                 raise NotFoundError("Repository not found", code="REPO_NOT_FOUND")
-            effective_role = member.get("role", "viewer")
+            effective_role = str(member.get("role", "viewer"))
 
         min_level = ROLE_HIERARCHY.get(min_role, 1)
         user_level = ROLE_HIERARCHY.get(effective_role, 1)
@@ -123,6 +123,6 @@ def require_repo_access(min_role: str = "viewer") -> Callable[..., Any]:
             # Security §7.5: 404 on insufficient permission to not reveal repo existence
             raise NotFoundError("Repository not found", code="REPO_NOT_FOUND")
 
-        return repo
+        return dict(repo)
 
     return repo_access_dependency

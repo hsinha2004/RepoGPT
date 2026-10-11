@@ -33,6 +33,10 @@ class BM25Index:
         self.retriever = retriever
         self.chunk_ids = chunk_ids
 
+    @property
+    def doc_count(self) -> int:
+        return len(self.chunk_ids)
+
     @classmethod
     def build(cls, chunks: list[dict[str, Any]], index_dir: Path | str) -> "BM25Index":
         """
@@ -201,3 +205,6 @@ def get_bm25_manager() -> BM25IndexManager:
             if _bm25_manager is None:
                 _bm25_manager = BM25IndexManager(maxsize=get_settings().BM25_LRU_CACHE_SIZE)
     return _bm25_manager
+
+
+get_bm25_index_manager = get_bm25_manager

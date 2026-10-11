@@ -450,6 +450,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/repos/{repo_id}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Search repository code and documentation (§9)
+         * @description Executes multi-index retrieval pipeline according to selected or routed strategy.
+         */
+        post: operations["search_repository_api_v1_repos__repo_id__search_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/jobs/{job_id}": {
         parameters: {
             query?: never;
@@ -662,6 +682,17 @@ export interface components {
             /** Last4 */
             last4?: string | null;
         };
+        /** RankScores */
+        RankScores: {
+            /** Bm25 */
+            bm25?: number | null;
+            /** Vector */
+            vector?: number | null;
+            /** Symbol */
+            symbol?: number | null;
+            /** Graph */
+            graph?: number | null;
+        };
         /** RegisterRequest */
         RegisterRequest: {
             /**
@@ -868,6 +899,143 @@ export interface components {
             auto_review?: boolean | null;
             /** Extra Ignore Patterns */
             extra_ignore_patterns?: string[] | null;
+        };
+        /** RetrievedChunk */
+        RetrievedChunk: {
+            /** Chunk Id */
+            chunk_id: string;
+            /** Repo Id */
+            repo_id: string;
+            /** Commit Sha */
+            commit_sha: string;
+            /** Path */
+            path: string;
+            /** Language */
+            language: string;
+            /** Chunk Type */
+            chunk_type: string;
+            /** Symbol Name */
+            symbol_name?: string | null;
+            /** Symbol Kind */
+            symbol_kind?: string | null;
+            /** Parent Symbol */
+            parent_symbol?: string | null;
+            /** Start Line */
+            start_line: number;
+            /** End Line */
+            end_line: number;
+            /**
+             * Part
+             * @default 1
+             */
+            part: number;
+            /**
+             * Parts
+             * @default 1
+             */
+            parts: number;
+            /** Text */
+            text: string;
+            /** Embed Text */
+            embed_text: string;
+            /** Token Count */
+            token_count: number;
+            /**
+             * Score
+             * @default 0
+             */
+            score: number;
+            ranks?: components["schemas"]["RankScores"];
+            /** Rerank Score */
+            rerank_score?: number | null;
+        };
+        /** RouteResult */
+        RouteResult: {
+            /**
+             * Intent
+             * @enum {string}
+             */
+            intent: "locate" | "explain" | "flow" | "architecture" | "dependency" | "config" | "general" | "out_of_scope";
+            /**
+             * Strategy
+             * @enum {string}
+             */
+            strategy: "auto" | "keyword" | "vector" | "hybrid" | "hybrid_rerank";
+            weights?: components["schemas"]["RouterWeights"];
+            enrich?: components["schemas"]["RouterEnrich"];
+            /** Identifiers */
+            identifiers?: string[];
+            /** Search Queries */
+            search_queries?: string[];
+            /** Reason */
+            reason: string;
+        };
+        /** RouterEnrich */
+        RouterEnrich: {
+            /**
+             * Symbol Lookup
+             * @default true
+             */
+            symbol_lookup: boolean;
+            /**
+             * Graph Expand
+             * @default false
+             */
+            graph_expand: boolean;
+            /**
+             * Summary Scope
+             * @default false
+             */
+            summary_scope: boolean;
+        };
+        /** RouterWeights */
+        RouterWeights: {
+            /**
+             * Bm25
+             * @default 0.5
+             */
+            bm25: number;
+            /**
+             * Vector
+             * @default 0.5
+             */
+            vector: number;
+        };
+        /** SearchRequest */
+        SearchRequest: {
+            /** Query */
+            query: string;
+            /**
+             * Strategy
+             * @default auto
+             * @enum {string}
+             */
+            strategy: "auto" | "keyword" | "vector" | "hybrid" | "hybrid_rerank";
+            /**
+             * Top K
+             * @default 8
+             */
+            top_k: number;
+            /** File Pattern */
+            file_pattern?: string | null;
+            /** Language */
+            language?: string | null;
+        };
+        /** SearchResponse */
+        SearchResponse: {
+            /** Query */
+            query: string;
+            route: components["schemas"]["RouteResult"];
+            /** Results */
+            results: components["schemas"]["RetrievedChunk"][];
+            /** Context */
+            context: string;
+            /** Total Candidates */
+            total_candidates: number;
+            /** Latency Ms */
+            latency_ms?: {
+                [key: string]: number;
+            };
         };
         /** SetPatRequest */
         SetPatRequest: {
@@ -1870,6 +2038,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RepoSyncResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_repository_api_v1_repos__repo_id__search_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResponse"];
                 };
             };
             /** @description Validation Error */

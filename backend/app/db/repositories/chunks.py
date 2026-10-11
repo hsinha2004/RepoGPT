@@ -52,6 +52,13 @@ class ChunkRepository:
         """Retrieves a single chunk by its ID."""
         return await self._col.find_one({"_id": str(chunk_id)})
 
+    async def get_by_ids(self, chunk_ids: list[str]) -> list[dict[str, Any]]:
+        """Retrieves multiple chunks by their IDs."""
+        if not chunk_ids:
+            return []
+        cursor = self._col.find({"_id": {"$in": [str(cid) for cid in chunk_ids]}})
+        return await cursor.to_list(length=len(chunk_ids))
+
     async def list_for_file(
         self,
         repo_id: str | ObjectId,

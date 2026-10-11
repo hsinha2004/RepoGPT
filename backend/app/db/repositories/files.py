@@ -100,3 +100,14 @@ class FileRepository:
     async def count_files(self, repo_id: str | ObjectId) -> int:
         """Counts total indexed files for a repository."""
         return await self._files.count_documents({"repo_id": str(repo_id)})
+
+    async def list_top_pagerank_files(
+        self,
+        repo_id: str | ObjectId,
+        limit: int = 15,
+    ) -> list[dict[str, Any]]:
+        """Retrieves top files by PageRank metric."""
+        cursor = (
+            self._files.find({"repo_id": str(repo_id)}).sort("metrics.pagerank", -1).limit(limit)
+        )
+        return await cursor.to_list(length=limit)

@@ -65,6 +65,48 @@ class SymbolRepository:
         )
         return await cursor.to_list(length=limit)
 
+    async def find_by_qualified_names(
+        self,
+        repo_id: str | ObjectId,
+        qnames: list[str],
+    ) -> list[dict[str, Any]]:
+        """Finds symbols matching any of the qualified names."""
+        if not qnames:
+            return []
+        cursor = self._col.find({"repo_id": str(repo_id), "qualified_name": {"$in": qnames}})
+        return await cursor.to_list(length=100)
+
+    async def find_by_name_lowers(
+        self,
+        repo_id: str | ObjectId,
+        names: list[str],
+    ) -> list[dict[str, Any]]:
+        """Finds symbols matching any of the lowercase names."""
+        if not names:
+            return []
+        lowers = [n.lower() for n in names]
+        cursor = self._col.find({"repo_id": str(repo_id), "name_lower": {"$in": lowers}})
+        return await cursor.to_list(length=100)
+
+    async def search_by_prefix(
+        self,
+        repo_id: str | ObjectId,
+        prefix: str,
+        limit: int = 20,
+    ) -> list[dict[str, Any]]:
+        """Searches symbols whose lowercase name starts with prefix."""
+        if not prefix:
+            return []
+        import re
+
+        regex = f"^{re.escape(prefix.lower())}"
+        cursor = (
+            self._col.find({"repo_id": str(repo_id), "name_lower": {"$regex": regex}})
+            .sort("qualified_name", 1)
+            .limit(limit)
+        )
+        return await cursor.to_list(length=limit)
+
     async def delete_by_files(self, repo_id: str | ObjectId, paths: list[str]) -> int:
         """Deletes symbols belonging to a specific list of file paths."""
         if not paths:

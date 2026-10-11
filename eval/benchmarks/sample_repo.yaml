@@ -1,0 +1,382 @@
+name: taskflow-sample
+description: Ground-truth questions for the TaskFlow fixture repository
+repo:
+  type: fixture
+  path: eval/fixtures/sample-repo
+questions:
+  - id: q01
+    question: Where is the JWT access token created?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/auth/security.py
+    expected_symbols:
+      - create_access_token
+    must_mention:
+      - create_access_token
+      - expire
+    reference_answer: JWT access tokens are created in backend/app/auth/security.py using the create_access_token function with a configurable expiration time.
+
+  - id: q02
+    question: Where is the password verification function implemented?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/auth/security.py
+    expected_symbols:
+      - verify_password
+    must_mention:
+      - verify_password
+    reference_answer: Password verification is implemented in backend/app/auth/security.py using verify_password.
+
+  - id: q03
+    question: Where are the user registration and login routes defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/auth/routes.py
+    expected_symbols:
+      - login
+      - register
+    must_mention:
+      - login
+      - register
+    reference_answer: User registration and login routes are defined in backend/app/auth/routes.py.
+
+  - id: q04
+    question: Where is the current user authentication dependency defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/auth/dependencies.py
+    expected_symbols:
+      - get_current_user
+    must_mention:
+      - get_current_user
+    reference_answer: The get_current_user FastAPI dependency is defined in backend/app/auth/dependencies.py.
+
+  - id: q05
+    question: Where is the TaskRepository class defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/tasks/repository.py
+    expected_symbols:
+      - TaskRepository
+    must_mention:
+      - TaskRepository
+    reference_answer: The TaskRepository class is defined in backend/app/tasks/repository.py for database operations.
+
+  - id: q06
+    question: Where is the task search method implemented?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/tasks/repository.py
+    expected_symbols:
+      - search
+    must_mention:
+      - search
+    reference_answer: The search method is implemented in TaskRepository in backend/app/tasks/repository.py.
+
+  - id: q07
+    question: What does TaskService.list_overdue do?
+    category: explain
+    expected_intent: explain
+    expected_files:
+      - backend/app/tasks/service.py
+    expected_symbols:
+      - TaskService.list_overdue
+    must_mention:
+      - list_overdue
+      - due_date
+    reference_answer: TaskService.list_overdue queries tasks where status is not completed and due_date has elapsed.
+
+  - id: q08
+    question: Where is task completion handled in the service layer?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/tasks/service.py
+    expected_symbols:
+      - TaskService.complete_task
+    must_mention:
+      - complete_task
+    reference_answer: Task completion is handled by complete_task in backend/app/tasks/service.py.
+
+  - id: q09
+    question: Where are the task API route endpoints registered?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/tasks/routes.py
+    expected_symbols:
+      - create_task_endpoint
+    must_mention:
+      - router
+    reference_answer: Task endpoints are registered in backend/app/tasks/routes.py.
+
+  - id: q10
+    question: Where is the email notification reminder function implemented?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/notifications/email.py
+    expected_symbols:
+      - send_reminder
+    must_mention:
+      - send_reminder
+    reference_answer: Email notifications are sent via send_reminder in backend/app/notifications/email.py.
+
+  - id: q11
+    question: Where is the database engine and session initialized?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/db.py
+    expected_symbols:
+      - get_db
+    must_mention:
+      - get_db
+    reference_answer: Database engine and sessionmaker are initialized in backend/app/db.py.
+
+  - id: q12
+    question: Where are the SQLAlchemy database models User and Task defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/models.py
+    expected_symbols:
+      - User
+      - Task
+    must_mention:
+      - User
+      - Task
+    reference_answer: SQLAlchemy models User and Task are defined in backend/app/models.py.
+
+  - id: q13
+    question: Where is the FastAPI application instance created?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/app/main.py
+    expected_symbols:
+      - create_app
+    must_mention:
+      - create_app
+    reference_answer: The FastAPI application instance is created by create_app in backend/app/main.py.
+
+  - id: q14
+    question: Where is backend application settings loaded from environment?
+    category: config
+    expected_intent: config
+    expected_files:
+      - backend/app/config.py
+    expected_symbols:
+      - Settings
+    must_mention:
+      - Settings
+    reference_answer: Configuration is managed by the Settings class in backend/app/config.py.
+
+  - id: q15
+    question: Where are authentication unit tests implemented?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/tests/test_auth.py
+    expected_symbols:
+      - test_create_access_token
+    must_mention:
+      - test_create_access_token
+    reference_answer: Authentication unit tests are located in backend/tests/test_auth.py.
+
+  - id: q16
+    question: Where are the task unit tests located?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - backend/tests/test_tasks.py
+    expected_symbols:
+      - test_create_task
+    must_mention:
+      - test_create_task
+    reference_answer: Task unit tests are located in backend/tests/test_tasks.py.
+
+  - id: q17
+    question: Where is the frontend API client wrapper defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - frontend/src/api/client.ts
+    expected_symbols:
+      - apiClient
+    must_mention:
+      - apiClient
+    reference_answer: The frontend API client wrapper is in frontend/src/api/client.ts.
+
+  - id: q18
+    question: Where are frontend task API functions defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - frontend/src/api/tasks.ts
+    expected_symbols:
+      - fetchTasks
+    must_mention:
+      - fetchTasks
+    reference_answer: Frontend task API calls are in frontend/src/api/tasks.ts.
+
+  - id: q19
+    question: Where is the useAuth authentication hook implemented?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - frontend/src/auth/useAuth.ts
+    expected_symbols:
+      - useAuth
+    must_mention:
+      - useAuth
+    reference_answer: The useAuth React hook is in frontend/src/auth/useAuth.ts.
+
+  - id: q20
+    question: Where is the React LoginPage component implemented?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - frontend/src/pages/LoginPage.tsx
+    expected_symbols:
+      - LoginPage
+    must_mention:
+      - LoginPage
+    reference_answer: The login page component is in frontend/src/pages/LoginPage.tsx.
+
+  - id: q21
+    question: Where is the React TasksPage component implemented?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - frontend/src/pages/TasksPage.tsx
+    expected_symbols:
+      - TasksPage
+    must_mention:
+      - TasksPage
+    reference_answer: The tasks dashboard component is in frontend/src/pages/TasksPage.tsx.
+
+  - id: q22
+    question: Where is the TaskItem UI component defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - frontend/src/components/TaskItem.tsx
+    expected_symbols:
+      - TaskItem
+    must_mention:
+      - TaskItem
+    reference_answer: The TaskItem UI component is in frontend/src/components/TaskItem.tsx.
+
+  - id: q23
+    question: Where is the Go background reminder worker entrypoint?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - services/reminder-worker/main.go
+    expected_symbols:
+      - main
+    must_mention:
+      - main
+    reference_answer: The Go reminder worker entry point is in services/reminder-worker/main.go.
+
+  - id: q24
+    question: Where is the background scheduler implemented in Go?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - services/reminder-worker/scheduler.go
+    expected_symbols:
+      - StartScheduler
+    must_mention:
+      - StartScheduler
+    reference_answer: The scheduler is implemented in services/reminder-worker/scheduler.go.
+
+  - id: q25
+    question: Where is the ReportGenerator class defined in Java?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - tools/report/ReportGenerator.java
+    expected_symbols:
+      - ReportGenerator
+    must_mention:
+      - ReportGenerator
+    reference_answer: The ReportGenerator class is in tools/report/ReportGenerator.java.
+
+  - id: q26
+    question: Where is the CSV exporter implemented in Java?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - tools/report/CsvExporter.java
+    expected_symbols:
+      - CsvExporter
+    must_mention:
+      - CsvExporter
+    reference_answer: The CsvExporter class is in tools/report/CsvExporter.java.
+
+  - id: q27
+    question: How does a request to create a task flow from React to the database?
+    category: flow
+    expected_intent: flow
+    expected_files:
+      - frontend/src/pages/TasksPage.tsx
+      - backend/app/tasks/routes.py
+      - backend/app/tasks/service.py
+      - backend/app/tasks/repository.py
+    expected_symbols:
+      - TasksPage
+      - create_task
+    must_mention:
+      - TasksPage
+      - TaskService
+      - TaskRepository
+    reference_answer: TasksPage sends an HTTP POST request to /tasks, handled by backend/app/tasks/routes.py, which calls TaskService.create_task and TaskRepository.create.
+
+  - id: q28
+    question: What is the overall architecture and high-level design of TaskFlow?
+    category: architecture
+    expected_intent: architecture
+    expected_files:
+      - docs/architecture.md
+      - README.md
+    expected_symbols: []
+    must_mention:
+      - architecture
+      - backend
+      - frontend
+    reference_answer: TaskFlow is structured into a FastAPI backend, React frontend, Go reminder worker, and Java CLI report tool, documented in docs/architecture.md.
+
+  - id: q29
+    question: How do I run the project and services with Docker Compose?
+    category: config
+    expected_intent: config
+    expected_files:
+      - docker-compose.yml
+      - README.md
+    expected_symbols: []
+    must_mention:
+      - docker-compose
+      - services
+    reference_answer: Services are orchestrated with docker-compose.yml and documented in README.md.
+
+  - id: q30
+    question: How are environment variables and configuration settings structured?
+    category: config
+    expected_intent: config
+    expected_files:
+      - config/settings.yaml
+      - .env.example
+      - backend/app/config.py
+    expected_symbols:
+      - Settings
+    must_mention:
+      - settings
+    reference_answer: Configuration is defined in config/settings.yaml, .env.example, and backend/app/config.py.

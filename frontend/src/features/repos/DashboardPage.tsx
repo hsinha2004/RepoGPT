@@ -272,6 +272,13 @@ export const DashboardPage: React.FC = () => {
                       <FileCode className="w-4 h-4" />
                     </Link>
                     <Link
+                      to={`/app/repos/${repo.id}/search`}
+                      className="p-1.5 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                      title="Search Playground"
+                    >
+                      <Search className="w-4 h-4" />
+                    </Link>
+                    <Link
                       to={`/app/repos/${repo.id}/graph`}
                       className="p-1.5 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
                       title="Dependency Graph"

@@ -1411,6 +1411,64 @@
         }
       }
     },
+    "/api/v1/repos/{repo_id}/search": {
+      "post": {
+        "tags": [
+          "repos"
+        ],
+        "summary": "Search repository code and documentation (\u00a79)",
+        "description": "Executes multi-index retrieval pipeline according to selected or routed strategy.",
+        "operationId": "search_repository_api_v1_repos__repo_id__search_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Repo Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/jobs/{job_id}": {
       "get": {
         "tags": [
@@ -1916,6 +1974,56 @@
         ],
         "title": "PatStatusResponse"
       },
+      "RankScores": {
+        "properties": {
+          "bm25": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bm25"
+          },
+          "vector": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vector"
+          },
+          "symbol": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol"
+          },
+          "graph": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graph"
+          }
+        },
+        "type": "object",
+        "title": "RankScores"
+      },
       "RegisterRequest": {
         "properties": {
           "email": {
@@ -2410,6 +2518,331 @@
         },
         "type": "object",
         "title": "RepoUpdateSettingsRequest"
+      },
+      "RetrievedChunk": {
+        "properties": {
+          "chunk_id": {
+            "type": "string",
+            "title": "Chunk Id"
+          },
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "commit_sha": {
+            "type": "string",
+            "title": "Commit Sha"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          },
+          "chunk_type": {
+            "type": "string",
+            "title": "Chunk Type"
+          },
+          "symbol_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol Name"
+          },
+          "symbol_kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol Kind"
+          },
+          "parent_symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Symbol"
+          },
+          "start_line": {
+            "type": "integer",
+            "title": "Start Line"
+          },
+          "end_line": {
+            "type": "integer",
+            "title": "End Line"
+          },
+          "part": {
+            "type": "integer",
+            "title": "Part",
+            "default": 1
+          },
+          "parts": {
+            "type": "integer",
+            "title": "Parts",
+            "default": 1
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "embed_text": {
+            "type": "string",
+            "title": "Embed Text"
+          },
+          "token_count": {
+            "type": "integer",
+            "title": "Token Count"
+          },
+          "score": {
+            "type": "number",
+            "title": "Score",
+            "default": 0.0
+          },
+          "ranks": {
+            "$ref": "#/components/schemas/RankScores"
+          },
+          "rerank_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rerank Score"
+          }
+        },
+        "type": "object",
+        "required": [
+          "chunk_id",
+          "repo_id",
+          "commit_sha",
+          "path",
+          "language",
+          "chunk_type",
+          "start_line",
+          "end_line",
+          "text",
+          "embed_text",
+          "token_count"
+        ],
+        "title": "RetrievedChunk"
+      },
+      "RouteResult": {
+        "properties": {
+          "intent": {
+            "type": "string",
+            "enum": [
+              "locate",
+              "explain",
+              "flow",
+              "architecture",
+              "dependency",
+              "config",
+              "general",
+              "out_of_scope"
+            ],
+            "title": "Intent"
+          },
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "keyword",
+              "vector",
+              "hybrid",
+              "hybrid_rerank"
+            ],
+            "title": "Strategy"
+          },
+          "weights": {
+            "$ref": "#/components/schemas/RouterWeights"
+          },
+          "enrich": {
+            "$ref": "#/components/schemas/RouterEnrich"
+          },
+          "identifiers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Identifiers"
+          },
+          "search_queries": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Search Queries"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 250,
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "intent",
+          "strategy",
+          "reason"
+        ],
+        "title": "RouteResult"
+      },
+      "RouterEnrich": {
+        "properties": {
+          "symbol_lookup": {
+            "type": "boolean",
+            "title": "Symbol Lookup",
+            "default": true
+          },
+          "graph_expand": {
+            "type": "boolean",
+            "title": "Graph Expand",
+            "default": false
+          },
+          "summary_scope": {
+            "type": "boolean",
+            "title": "Summary Scope",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "RouterEnrich"
+      },
+      "RouterWeights": {
+        "properties": {
+          "bm25": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Bm25",
+            "default": 0.5
+          },
+          "vector": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Vector",
+            "default": 0.5
+          }
+        },
+        "type": "object",
+        "title": "RouterWeights"
+      },
+      "SearchRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Query"
+          },
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "keyword",
+              "vector",
+              "hybrid",
+              "hybrid_rerank"
+            ],
+            "title": "Strategy",
+            "default": "auto"
+          },
+          "top_k": {
+            "type": "integer",
+            "maximum": 50.0,
+            "minimum": 1.0,
+            "title": "Top K",
+            "default": 8
+          },
+          "file_pattern": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Pattern"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "SearchRequest"
+      },
+      "SearchResponse": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "route": {
+            "$ref": "#/components/schemas/RouteResult"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/RetrievedChunk"
+            },
+            "type": "array",
+            "title": "Results"
+          },
+          "context": {
+            "type": "string",
+            "title": "Context"
+          },
+          "total_candidates": {
+            "type": "integer",
+            "title": "Total Candidates"
+          },
+          "latency_ms": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Latency Ms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query",
+          "route",
+          "results",
+          "context",
+          "total_candidates"
+        ],
+        "title": "SearchResponse"
       },
       "SetPatRequest": {
         "properties": {

@@ -78,7 +78,9 @@ class EmbeddingCache:
             key = f"embed:query:{model}:{q_hash}"
             val = await redis.get(key)
             if val:
-                return json.loads(val)
+                data = json.loads(val)
+                if isinstance(data, list):
+                    return [float(x) for x in data]
         except Exception:
             pass
         return None

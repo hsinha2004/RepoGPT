@@ -66,12 +66,13 @@ Updated at the completion of each milestone with status, verification details, a
     - Quality Gates: All 77 pytest tests passed (`test_embeddings.py`, `test_vector_stores.py`, `test_bm25_tokenizer.py`, `test_sync_and_deletion.py`, `test_ingestion_pipeline.py`); `ruff check` (0 errors); `ruff format` (clean); `mypy backend/app` (0 issues in 78 source files); frontend `npm run typecheck` (clean); `npm test` (clean); `npm run build` (vite production bundle clean).
   - Known issues: None
 
-- [ ] **M5: Retrieval & router**
+- [x] **M5: Retrieval & router**
   - Scope: Keyword, vector, hybrid RRF, reranker, symbol lookup, graph expansion hook, summary scope, context builder, heuristic + LLM router; `/search` endpoint; frontend Search playground.
   - Exit criteria: Integration: expected file in top-5 for >= 80% of TaskFlow questions (hybrid); router table tests pass.
-  - Status: Pending
-  - Verification:
+  - Status: Complete
+  - Verification: 56/56 heuristic router test cases passed; 3/3 reranker tests passed; 3/3 RRF fusion tests passed; 5/5 context builder tests passed; 4/4 search endpoint tests passed; TaskFlow benchmark Hit@5 achieved 90.0% (27/30) exceeding the >= 80% exit criterion; frontend Search playground implemented and verified; `mypy app` (97 files clean), `ruff check/format` clean, `tsc -b && vite build` succeeded.
   - Known issues: None
+
 
 - [ ] **M6: Agentic QA & chat**
   - Scope: LLM provider layer (Anthropic, OpenAI-compatible presets, fake), limiter, pricing, prompts, LangGraph QA graph, SSE streaming, citations, grounding, confidence, conversations, cache, feedback, export; frontend Chat with evidence panel, trace, confidence, stop/regenerate.

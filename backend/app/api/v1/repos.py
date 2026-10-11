@@ -34,10 +34,12 @@ from app.schemas.repos import (
     SkippedFileResponse,
     SymbolResponse,
 )
+from app.schemas.retrieval import SearchRequest, SearchResponse
 from app.services.indexing.sync import IncrementalSyncService, RepoDeletionService
 from app.services.ingestion.archive import is_valid_zip_magic
 from app.services.ingestion.github_fetcher import parse_github_url
 from app.services.redaction.redactor import SecretRedactor
+from app.services.retrieval.service import RetrievalService
 
 logger = structlog.get_logger(__name__)
 
@@ -66,6 +68,13 @@ def get_symbol_repository() -> SymbolRepository:
 
 def get_user_repository() -> UserRepository:
     return UserRepository()
+
+
+def get_retrieval_service(
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+) -> RetrievalService:
+    settings = get_settings()
+    return RetrievalService(settings=settings, repo_repository=repo_repo)
 
 
 def _format_repo_response(doc: dict[str, Any]) -> RepoResponse:
@@ -683,3 +692,30 @@ async def sync_repository(
         removed_files=res.get("removed_files", 0),
         total_files=res.get("total_files", 0),
     )
+
+
+@router.post(
+    "/{repo_id}/search",
+    response_model=SearchResponse,
+    summary="Search repository code and documentation (§9)",
+)
+async def search_repository(
+    repo_id: str,
+    payload: SearchRequest,
+    user: dict[str, Any] = Depends(get_current_user),
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+    member_repo: RepoMemberRepository = Depends(get_member_repository),
+    retrieval_service: RetrievalService = Depends(get_retrieval_service),
+) -> SearchResponse:
+    """Executes multi-index retrieval pipeline according to selected or routed strategy."""
+    user_id = str(user["_id"])
+    repo_doc = await repo_repo.get_by_id(repo_id)
+    if not repo_doc:
+        raise NotFoundError(f"Repository {repo_id} not found.")
+
+    is_owner = repo_doc["owner_id"] == user_id
+    member = await member_repo.get_member(repo_id, user_id)
+    if not is_owner and not member and user.get("role") != "admin":
+        raise ForbiddenError("Access forbidden to this repository.")
+
+    return await retrieval_service.search(repo_id=repo_id, request=payload)
