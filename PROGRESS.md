@@ -17,11 +17,14 @@ Updated at the completion of each milestone with status, verification details, a
     - Scripts: `python scripts/generate_secrets.py` and `python scripts/export_openapi.py` verified; OpenAPI contract exported to `frontend/src/api/openapi.json` and types generated via `openapi-typescript`.
   - Known issues: None
 
-- [ ] **M1: Auth & security baseline**
+- [x] **M1: Auth & security baseline**
   - Scope: Users, sessions, Argon2, JWT, refresh rotation + reuse detection, CSRF, lockout, rate limiter, quotas scaffolding, admin seeding, PAT storage, GitHub OAuth, audit log, security headers middleware; frontend landing, login/register, app shell, theme, command-palette shell, auth refresh logic, settings (profile/password/PAT/sessions).
   - Exit criteria: Auth unit + integration tests pass; manual flow works in browser; tokens never in localStorage.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - Backend: `pytest backend/tests` (19 passed, 0 warnings); `ruff check` (0 errors); `ruff format` (clean); `mypy backend/app` (0 issues in 26 files).
+    - Auth & Security: Argon2id password hashing, constant-time compare, opaque token generation with SHA-256 storage, Fernet AES-128 PAT encryption/decryption, token family theft/reuse detection revokes entire family, 10 consecutive failed attempts triggers 15-minute lockout.
+    - Frontend: `npm run typecheck` (tsc clean), `npm test` (vitest clean), `npm run build` (vite bundle built in 3.45s), `SettingsPage` implemented with Profile, GitHub PAT integration with show/hide toggle + test connection + revocation, Password change, Log out all devices, and Daily Quotas & Usage display.
   - Known issues: None
 
 - [ ] **M2: Ingestion & jobs**
