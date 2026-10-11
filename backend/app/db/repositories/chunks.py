@@ -75,6 +75,36 @@ class ChunkRepository:
         cursor = self._col.find(query).skip(skip).limit(limit)
         return await cursor.to_list(length=limit)
 
+    async def get_chunks_for_files(
+        self,
+        repo_id: str | ObjectId,
+        paths: list[str],
+    ) -> list[dict[str, Any]]:
+        """Retrieves chunks belonging to a specific list of file paths."""
+        if not paths:
+            return []
+        cursor = self._col.find({"repo_id": str(repo_id), "path": {"$in": paths}})
+        return await cursor.to_list(length=10000)
+
+    async def delete_by_files(
+        self,
+        repo_id: str | ObjectId,
+        paths: list[str],
+    ) -> int:
+        """Deletes chunks belonging to a specific list of file paths."""
+        if not paths:
+            return 0
+        res = await self._col.delete_many({"repo_id": str(repo_id), "path": {"$in": paths}})
+        return res.deleted_count
+
+    async def get_all_chunks(
+        self,
+        repo_id: str | ObjectId,
+    ) -> list[dict[str, Any]]:
+        """Retrieves all chunks for a repository."""
+        cursor = self._col.find({"repo_id": str(repo_id)})
+        return await cursor.to_list(length=100000)
+
     async def count_for_repo(self, repo_id: str | ObjectId) -> int:
         """Counts total chunks for a repository."""
         return await self._col.count_documents({"repo_id": str(repo_id)})

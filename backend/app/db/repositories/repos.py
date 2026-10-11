@@ -102,8 +102,9 @@ class RepositoryRepository:
         status: str,
         status_message: str | None = None,
         commit_sha: str | None = None,
+        indexed_model: str | None = None,
     ) -> bool:
-        """Update repository ingestion status and optional commit_sha."""
+        """Update repository ingestion status, commit_sha, and indexed_model."""
         oid = to_object_id(repo_id)
         update_data: dict[str, Any] = {
             "status": status,
@@ -113,6 +114,8 @@ class RepositoryRepository:
             update_data["status_message"] = status_message
         if commit_sha is not None:
             update_data["commit_sha"] = commit_sha
+        if indexed_model is not None:
+            update_data["indexed_model"] = indexed_model
         if status == "ready":
             update_data["last_indexed_at"] = datetime.now(UTC)
 

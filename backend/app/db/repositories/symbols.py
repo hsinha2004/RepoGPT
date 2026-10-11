@@ -65,6 +65,13 @@ class SymbolRepository:
         )
         return await cursor.to_list(length=limit)
 
+    async def delete_by_files(self, repo_id: str | ObjectId, paths: list[str]) -> int:
+        """Deletes symbols belonging to a specific list of file paths."""
+        if not paths:
+            return 0
+        res = await self._col.delete_many({"repo_id": str(repo_id), "path": {"$in": paths}})
+        return res.deleted_count
+
     async def delete_for_repo(self, repo_id: str | ObjectId) -> int:
         """Deletes all symbols for a repository."""
         res = await self._col.delete_many({"repo_id": str(repo_id)})

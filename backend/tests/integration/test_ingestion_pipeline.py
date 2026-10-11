@@ -195,6 +195,7 @@ async def test_taskflow_fixture_ingestion_pipeline():
             owner_id="user_test_1",
             source={"type": "upload", "upload_filename": "taskflow.zip"},
             display_name="TaskFlow Sample",
+            embedding_config={"provider": "fake", "model": "fake-256", "dim": 256},
         )
         repo_id = str(repo_doc["_id"])
 
@@ -240,6 +241,18 @@ async def test_taskflow_fixture_ingestion_pipeline():
         # Verify job finished as succeeded
         updated_job = await job_repo.get_by_id(job_id)
         assert updated_job["status"] == "succeeded"
+
+        # Verify BM25 index creation and search
+        from app.services.keyword.bm25_index import get_bm25_manager
+
+        bm25_mgr = get_bm25_manager()
+        bm25_idx = bm25_mgr.get_index(repo_id, result["commit_sha"])
+        assert bm25_idx is not None
+        assert len(bm25_idx.chunk_ids) > 20
+        # Verify BM25 keyword search works on indexed chunks
+        bm25_hits = bm25_idx.search("FastAPI", k=5)
+        assert len(bm25_hits) > 0
+        assert bm25_hits[0].score > 0.0
 
     finally:
         if os.path.exists(temp_dir):

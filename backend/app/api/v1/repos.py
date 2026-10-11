@@ -4,7 +4,6 @@ Supports creating repos from GitHub URL, ZIP upload, listing, details, settings,
 """
 
 import os
-import shutil
 import uuid
 from typing import Any
 
@@ -29,10 +28,13 @@ from app.schemas.repos import (
     RepoMemberAddRequest,
     RepoMemberResponse,
     RepoResponse,
+    RepoSyncRequest,
+    RepoSyncResponse,
     RepoUpdateSettingsRequest,
     SkippedFileResponse,
     SymbolResponse,
 )
+from app.services.indexing.sync import IncrementalSyncService, RepoDeletionService
 from app.services.ingestion.archive import is_valid_zip_magic
 from app.services.ingestion.github_fetcher import parse_github_url
 from app.services.redaction.redactor import SecretRedactor
@@ -314,15 +316,18 @@ async def update_repository_settings(
     return _format_repo_response(updated or repo_doc)
 
 
-@router.delete("/{repo_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete repository")
+@router.delete(
+    "/{repo_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete repository and all indexed artifacts (§11.16)",
+)
 async def delete_repository(
     repo_id: str,
     user: dict[str, Any] = Depends(get_current_user),
     repo_repo: RepositoryRepository = Depends(get_repo_repository),
     member_repo: RepoMemberRepository = Depends(get_member_repository),
-    file_repo: FileRepository = Depends(get_file_repository),
 ) -> None:
-    """Permanently deletes repository, member records, file indexes, and snapshots on disk."""
+    """Permanently deletes repository, member records, Mongo docs, vector collections, BM25 indices, and snapshots."""
     user_id = str(user["_id"])
     repo_doc = await repo_repo.get_by_id(repo_id)
     if not repo_doc:
@@ -331,21 +336,9 @@ async def delete_repository(
     if repo_doc["owner_id"] != user_id and user.get("role") != "admin":
         raise ForbiddenError("Only repository owner or admin can delete this repository.")
 
-    settings = get_settings()
-
-    # 1. Delete Mongo records
-    await repo_repo.delete_repository(repo_id)
+    deletion_service = RepoDeletionService(repo_repo=repo_repo)
+    await deletion_service.delete_repository_data(repo_id)
     await member_repo.delete_all_for_repo(repo_id)
-    await file_repo.delete_for_repo(repo_id)
-
-    # 2. Delete snapshot files on disk
-    snapshot_path = os.path.join(settings.DATA_DIR, "snapshots", repo_id)
-    if os.path.exists(snapshot_path):
-        try:
-            shutil.rmtree(snapshot_path)
-        except Exception as e:
-            logger.warning("cleanup_snapshot_failed", path=snapshot_path, error=str(e))
-
     return None
 
 
@@ -652,3 +645,41 @@ async def remove_repo_member(
 
     await member_repo.remove_member(repo_id, target_user_id)
     return None
+
+
+@router.post(
+    "/{repo_id}/sync",
+    response_model=RepoSyncResponse,
+    summary="Incrementally sync repository to latest commit (§8.10)",
+)
+async def sync_repository(
+    repo_id: str,
+    payload: RepoSyncRequest | None = None,
+    user: dict[str, Any] = Depends(get_current_user),
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+    member_repo: RepoMemberRepository = Depends(get_member_repository),
+) -> RepoSyncResponse:
+    """Incrementally syncs repository changes against the latest commit or ref."""
+    user_id = str(user["_id"])
+    repo_doc = await repo_repo.get_by_id(repo_id)
+    if not repo_doc:
+        raise NotFoundError(f"Repository {repo_id} not found.")
+
+    is_owner = repo_doc["owner_id"] == user_id
+    member = await member_repo.get_member(repo_id, user_id)
+    role = member.get("role") if member else None
+    if not is_owner and role not in ["editor", "owner"] and user.get("role") != "admin":
+        raise ForbiddenError("Insufficient permissions to trigger sync.")
+
+    sync_service = IncrementalSyncService(repo_repo=repo_repo)
+    new_ref = payload.ref if payload else None
+    res = await sync_service.sync_repository(repo_id, new_ref=new_ref)
+    return RepoSyncResponse(
+        status=res.get("status", "synced"),
+        commit_sha=res.get("commit_sha", ""),
+        message=res.get("message", "Sync completed"),
+        added_files=res.get("added_files", 0),
+        changed_files=res.get("changed_files", 0),
+        removed_files=res.get("removed_files", 0),
+        total_files=res.get("total_files", 0),
+    )

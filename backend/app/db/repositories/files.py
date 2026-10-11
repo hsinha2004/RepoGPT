@@ -90,6 +90,13 @@ class FileRepository:
         del_skipped = await self._skipped.delete_many({"repo_id": rid})
         return del_files.deleted_count, del_skipped.deleted_count
 
+    async def delete_by_paths(self, repo_id: str | ObjectId, paths: list[str]) -> int:
+        """Deletes file records by list of paths for a repository."""
+        if not paths:
+            return 0
+        res = await self._files.delete_many({"repo_id": str(repo_id), "path": {"$in": paths}})
+        return res.deleted_count
+
     async def count_files(self, repo_id: str | ObjectId) -> int:
         """Counts total indexed files for a repository."""
         return await self._files.count_documents({"repo_id": str(repo_id)})

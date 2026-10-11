@@ -53,11 +53,17 @@ Updated at the completion of each milestone with status, verification details, a
     - Quality Gates: All 64 pytest tests passed; `mypy backend/app` clean (0 issues in 60 source files); `ruff check` and `ruff format` passed; frontend `npm run typecheck` passed (clean); `npm test` passed; `npm run build` passed (vite bundle built in 3.80s).
   - Known issues: None
 
-- [ ] **M4: Indexing**
+- [x] **M4: Indexing**
   - Scope: Embedding providers (fastembed, API, fake), embedding cache, Chroma + FAISS stores, BM25 index, incremental sync, deletion cleanup.
   - Exit criteria: TaskFlow fully indexed (`ready`); sync re-embeds only changed files (test); deletion test passes.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - Embedding Subsystem: `EmbeddingProvider` abstract base with `FastEmbedProvider` (BAAI/bge-small-en-v1.5, 384 dimensions), `APIEmbeddingProvider` (OpenAI / voyage / Ollama compatible), and `FakeEmbeddingProvider` (deterministic unit-normalized hashing). In-memory + optional Redis `EmbeddingCache` keyed by model and text SHA-256 with 7-day TTL.
+    - Vector Stores: `VectorStore` interface supporting cosine similarity search, metadata filtering, chunk deduplication, and persistence. Implemented `ChromaVectorStore` (persistent SQLite/WAL collection) and `FAISSVectorStore` (IndexFlatIP with L2 normalized vectors and index/pickle persistence). Factory dynamically loads configured store.
+    - Keyword Search (BM25): Code-aware tokenizer with camelCase/PascalCase/snake_case/kebab-case splitting, digits separation, common stop words filtering, and 2x path boosting for file path tokens in chunk headers. High-performance `BM25Index` wrapping `bm25s` with persistence and thread-safe LRU cache (`BM25IndexManager`).
+    - Incremental Sync: `IncrementalSyncService` diffs file content hashes against previous snapshot, deletes stale chunks/symbols from MongoDB and vector/BM25 indices, parses/redacts/chunks only added/modified files, leverages embedding cache to avoid re-computing existing chunk embeddings, updates indices, and atomically transitions repo state to `ready`.
+    - Repo Deletion: `RepoDeletionService` purges MongoDB repository, files, symbols, chunks, jobs, snapshots, vector store collections, and BM25 index directory on disk.
+    - Quality Gates: All 77 pytest tests passed (`test_embeddings.py`, `test_vector_stores.py`, `test_bm25_tokenizer.py`, `test_sync_and_deletion.py`, `test_ingestion_pipeline.py`); `ruff check` (0 errors); `ruff format` (clean); `mypy backend/app` (0 issues in 78 source files); frontend `npm run typecheck` (clean); `npm test` (clean); `npm run build` (vite production bundle clean).
   - Known issues: None
 
 - [ ] **M5: Retrieval & router**

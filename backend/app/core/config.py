@@ -115,6 +115,7 @@ class Settings(BaseSettings):
     ENABLE_LLM_SUMMARIES: bool = Field(default=False)
     LLM_SUMMARY_MAX_FILES: int = Field(default=40)
     ANSWER_CACHE_TTL_SECONDS: int = Field(default=86400)
+    BM25_LRU_CACHE_SIZE: int = Field(default=10)
 
     # ---------- Quotas & rate limits ----------
     DEFAULT_QUOTA_QUESTIONS_PER_DAY: int = Field(default=200)

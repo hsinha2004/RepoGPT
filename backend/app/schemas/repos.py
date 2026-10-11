@@ -111,3 +111,17 @@ class SkippedFileResponse(BaseModel):
     path: str
     reason: str
     size_bytes: int = 0
+
+
+class RepoSyncRequest(BaseModel):
+    ref: str | None = Field(default=None, description="Optional new ref to sync to")
+
+
+class RepoSyncResponse(BaseModel):
+    status: str
+    commit_sha: str
+    message: str
+    added_files: int = 0
+    changed_files: int = 0
+    removed_files: int = 0
+    total_files: int = 0

@@ -20,9 +20,13 @@ from app.db.repositories.jobs import JobRepository
 from app.db.repositories.repos import RepositoryRepository
 from app.db.repositories.symbols import SymbolRepository
 from app.services.chunking.chunker import CodeChunker
+from app.services.indexing.embeddings.cache import EmbeddingCache
+from app.services.indexing.embeddings.factory import get_embedding_provider
+from app.services.indexing.vector.factory import get_vector_store
 from app.services.ingestion.archive import SafeArchiveExtractor
 from app.services.ingestion.filter import IngestionFilter
 from app.services.ingestion.github_fetcher import GitHubFetcher, parse_github_url
+from app.services.keyword.bm25_index import BM25Index, get_bm25_manager
 from app.services.parsing.models import ParsedFile
 from app.services.parsing.registry import ParserRegistry
 from app.services.redaction.redactor import SecretRedactor
@@ -40,9 +44,11 @@ class IngestionPipeline:
         file_repo: FileRepository | None = None,
         symbol_repo: SymbolRepository | None = None,
         chunk_repo: ChunkRepository | None = None,
+        cache: EmbeddingCache | None = None,
     ) -> None:
         self.job_id = job_id
         self.repo_id = repo_id
+        self.cache = cache
         db = None
         if (
             repo_repo is None
@@ -390,6 +396,127 @@ class IngestionPipeline:
                 ),
                 counters=counters,
                 warnings=warnings,
+            )
+
+            await self.check_cancellation()
+
+            # ================= STAGE 7: EMBEDDING (45 -> 80%) =================
+            await self.emit_progress(
+                stage="embedding",
+                progress=45,
+                message=f"Computing code embeddings for {len(all_chunks_to_upsert)} chunks...",
+                counters={
+                    "chunks_total": len(all_chunks_to_upsert),
+                    "chunks_embedded": 0,
+                },
+            )
+            embed_cfg = repo_doc.get("embedding", {})
+            provider_name = embed_cfg.get("provider", self.settings.EMBEDDING_PROVIDER)
+            model_name = embed_cfg.get("model", self.settings.EMBEDDING_MODEL)
+            provider = get_embedding_provider(provider_name, model=model_name)
+            cache = self.cache or EmbeddingCache()
+
+            # Check cache for existing embeddings
+            content_hashes = [c["content_hash"] for c in all_chunks_to_upsert]
+            cached_vectors = await cache.get_cached_embeddings(provider.model, content_hashes)
+
+            chunk_vectors: list[list[float]] = []
+            chunk_vector_ids: list[str] = []
+            chunk_metas: list[dict[str, Any]] = []
+
+            missing_chunks: list[dict[str, Any]] = []
+
+            for chunk in all_chunks_to_upsert:
+                c_id = str(chunk.get("_id") or chunk.get("chunk_id"))
+                ch = chunk["content_hash"]
+                meta = {
+                    "path": chunk.get("path", ""),
+                    "chunk_type": chunk.get("chunk_type", ""),
+                    "start_line": chunk.get("start_line", 1),
+                    "end_line": chunk.get("end_line", 1),
+                }
+                if ch in cached_vectors:
+                    chunk_vector_ids.append(c_id)
+                    chunk_vectors.append(cached_vectors[ch])
+                    chunk_metas.append(meta)
+                else:
+                    missing_chunks.append(chunk)
+
+            # Embed missing in batches
+            batch_size = provider.batch_size or 32
+            embedded_so_far = len(chunk_vectors)
+            total_chunks = len(all_chunks_to_upsert)
+
+            for b_start in range(0, len(missing_chunks), batch_size):
+                await self.check_cancellation()
+                b_end = min(b_start + batch_size, len(missing_chunks))
+                batch = missing_chunks[b_start:b_end]
+                batch_texts = [c.get("embed_text") or c.get("text", "") for c in batch]
+
+                vectors = provider.embed_documents(batch_texts)
+
+                to_cache: list[tuple[str, list[float]]] = []
+                for chunk, vec in zip(batch, vectors, strict=False):
+                    c_id = str(chunk.get("_id") or chunk.get("chunk_id"))
+                    ch = chunk["content_hash"]
+                    meta = {
+                        "path": chunk.get("path", ""),
+                        "chunk_type": chunk.get("chunk_type", ""),
+                        "start_line": chunk.get("start_line", 1),
+                        "end_line": chunk.get("end_line", 1),
+                    }
+                    chunk_vector_ids.append(c_id)
+                    chunk_vectors.append(vec)
+                    chunk_metas.append(meta)
+                    to_cache.append((ch, vec))
+
+                await cache.save_embeddings(provider.model, to_cache)
+                embedded_so_far += len(batch)
+
+                progress_val = 45 + int(35 * (embedded_so_far / max(1, total_chunks)))
+                await self.emit_progress(
+                    stage="embedding",
+                    progress=progress_val,
+                    message=f"Embedded {embedded_so_far}/{total_chunks} chunks...",
+                    counters={
+                        "chunks_total": total_chunks,
+                        "chunks_embedded": embedded_so_far,
+                    },
+                )
+
+            await self.check_cancellation()
+
+            # ================= STAGE 8: INDEXING (80 -> 90%) =================
+            await self.emit_progress(
+                stage="indexing",
+                progress=80,
+                message="Building vector index and code-aware BM25 keyword index...",
+            )
+
+            # 1. Vector Store upsert
+            vector_store = get_vector_store(
+                store_type=self.settings.VECTOR_STORE,
+                repo_id=self.repo_id,
+                model_slug=provider.model,
+            )
+            if chunk_vector_ids:
+                vector_store.upsert(
+                    ids=chunk_vector_ids,
+                    vectors=chunk_vectors,
+                    metadatas=chunk_metas,
+                )
+
+            # 2. BM25 keyword index
+            bm25_manager = get_bm25_manager()
+            bm25_dir = bm25_manager.get_index_dir(self.repo_id, commit_sha)
+            bm25_index = BM25Index.build(all_chunks_to_upsert, bm25_dir)
+            bm25_manager.put_index(self.repo_id, commit_sha, bm25_index)
+
+            await self.check_cancellation()
+            await self.emit_progress(
+                stage="indexing",
+                progress=90,
+                message=f"Indexes built successfully: {len(chunk_vector_ids)} vectors, {len(all_chunks_to_upsert)} BM25 docs.",
                 status="succeeded",
             )
 
@@ -399,9 +526,10 @@ class IngestionPipeline:
                 status="ready",
                 status_message=(
                     f"Repository ready ({len(valid_files)} files, "
-                    f"{len(all_symbols_to_upsert)} symbols, {len(all_chunks_to_upsert)} chunks)"
+                    f"{len(all_symbols_to_upsert)} symbols, {len(all_chunks_to_upsert)} chunks indexed)"
                 ),
                 commit_sha=commit_sha,
+                indexed_model=provider.model,
             )
 
             # Cleanup temp archive if created

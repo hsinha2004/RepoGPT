@@ -854,8 +854,8 @@
         "tags": [
           "repos"
         ],
-        "summary": "Delete repository",
-        "description": "Permanently deletes repository, member records, file indexes, and snapshots on disk.",
+        "summary": "Delete repository and all indexed artifacts (\u00a711.16)",
+        "description": "Permanently deletes repository, member records, Mongo docs, vector collections, BM25 indices, and snapshots.",
         "operationId": "delete_repository_api_v1_repos__repo_id__delete",
         "security": [
           {
@@ -1332,6 +1332,71 @@
         "responses": {
           "204": {
             "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/repos/{repo_id}/sync": {
+      "post": {
+        "tags": [
+          "repos"
+        ],
+        "summary": "Incrementally sync repository to latest commit (\u00a78.10)",
+        "description": "Incrementally syncs repository changes against the latest commit or ref.",
+        "operationId": "sync_repository_api_v1_repos__repo_id__sync_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Repo Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/RepoSyncRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoSyncResponse"
+                }
+              }
+            }
           },
           "422": {
             "description": "Validation Error",
@@ -2253,6 +2318,67 @@
         },
         "type": "object",
         "title": "RepoStats"
+      },
+      "RepoSyncRequest": {
+        "properties": {
+          "ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ref",
+            "description": "Optional new ref to sync to"
+          }
+        },
+        "type": "object",
+        "title": "RepoSyncRequest"
+      },
+      "RepoSyncResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "commit_sha": {
+            "type": "string",
+            "title": "Commit Sha"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "added_files": {
+            "type": "integer",
+            "title": "Added Files",
+            "default": 0
+          },
+          "changed_files": {
+            "type": "integer",
+            "title": "Changed Files",
+            "default": 0
+          },
+          "removed_files": {
+            "type": "integer",
+            "title": "Removed Files",
+            "default": 0
+          },
+          "total_files": {
+            "type": "integer",
+            "title": "Total Files",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "commit_sha",
+          "message"
+        ],
+        "title": "RepoSyncResponse"
       },
       "RepoUpdateSettingsRequest": {
         "properties": {

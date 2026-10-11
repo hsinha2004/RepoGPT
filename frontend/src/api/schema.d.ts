@@ -293,8 +293,8 @@ export interface paths {
         put?: never;
         post?: never;
         /**
-         * Delete repository
-         * @description Permanently deletes repository, member records, file indexes, and snapshots on disk.
+         * Delete repository and all indexed artifacts (§11.16)
+         * @description Permanently deletes repository, member records, Mongo docs, vector collections, BM25 indices, and snapshots.
          */
         delete: operations["delete_repository_api_v1_repos__repo_id__delete"];
         options?: never;
@@ -425,6 +425,26 @@ export interface paths {
          * @description Removes a member from the repository.
          */
         delete: operations["remove_repo_member_api_v1_repos__repo_id__members__target_user_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Incrementally sync repository to latest commit (§8.10)
+         * @description Incrementally syncs repository changes against the latest commit or ref.
+         */
+        post: operations["sync_repository_api_v1_repos__repo_id__sync_post"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -804,6 +824,43 @@ export interface components {
              * @default 0
              */
             redactions: number;
+        };
+        /** RepoSyncRequest */
+        RepoSyncRequest: {
+            /**
+             * Ref
+             * @description Optional new ref to sync to
+             */
+            ref?: string | null;
+        };
+        /** RepoSyncResponse */
+        RepoSyncResponse: {
+            /** Status */
+            status: string;
+            /** Commit Sha */
+            commit_sha: string;
+            /** Message */
+            message: string;
+            /**
+             * Added Files
+             * @default 0
+             */
+            added_files: number;
+            /**
+             * Changed Files
+             * @default 0
+             */
+            changed_files: number;
+            /**
+             * Removed Files
+             * @default 0
+             */
+            removed_files: number;
+            /**
+             * Total Files
+             * @default 0
+             */
+            total_files: number;
         };
         /** RepoUpdateSettingsRequest */
         RepoUpdateSettingsRequest: {
@@ -1779,6 +1836,41 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sync_repository_api_v1_repos__repo_id__sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RepoSyncRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepoSyncResponse"];
+                };
             };
             /** @description Validation Error */
             422: {
