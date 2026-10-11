@@ -1,0 +1,51 @@
+{$DOMAIN::80} {
+    encode zstd gzip
+
+    # Request body size cap for repository uploads (§16.3)
+    request_body {
+        max_size 110MB
+    }
+
+    # Strict Security Headers (§11.11)
+    header {
+        Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://avatars.githubusercontent.com; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://github.com; object-src 'none';"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    }
+
+    # API Proxy with SSE streaming support (flush_interval -1)
+    handle /api/* {
+        reverse_proxy api:8000 {
+            flush_interval -1
+            transport http {
+                read_timeout 300s
+                write_timeout 300s
+            }
+        }
+    }
+
+    # Protect internal Prometheus metrics
+    handle /metrics {
+        respond "Forbidden" 403
+    }
+
+    # Frontend Single Page Application
+    handle {
+        root * /usr/share/caddy
+        try_files {path} /index.html
+        file_server
+
+        @static {
+            path /assets/*
+        }
+        header @static Cache-Control "public, max-age=31536000, immutable"
+
+        @html {
+            path /index.html
+        }
+        header @html Cache-Control "no-cache, no-store, must-revalidate"
+    }
+}

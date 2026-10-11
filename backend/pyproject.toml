@@ -1,0 +1,125 @@
+[project]
+name = "repogpt-backend"
+version = "0.1.0"
+description = "RepoGPT Backend - Agentic AI system for codebase understanding and intelligent code review"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.31.0",
+    "pydantic>=2.9.2",
+    "pydantic-settings>=2.5.2",
+    "orjson>=3.10.7",
+    "langgraph>=0.2.35",
+    "anthropic>=0.36.0",
+    "openai>=1.51.0",
+    "fastembed>=0.4.1",
+    "bm25s>=0.2.5",
+    "tree-sitter>=0.23.0",
+    "tree-sitter-language-pack>=0.6.0",
+    "networkx>=3.3",
+    "pymongo>=4.9.1",
+    "redis>=5.1.1",
+    "celery>=5.4.0",
+    "httpx>=0.27.2",
+    "tenacity>=9.0.0",
+    "sse-starlette>=2.1.3",
+    "structlog>=24.4.0",
+    "argon2-cffi>=23.1.0",
+    "pyjwt>=2.9.0",
+    "cryptography>=43.0.1",
+    "pathspec>=0.12.1",
+    "charset-normalizer>=3.4.0",
+    "tiktoken>=0.8.0",
+    "unidiff>=0.7.5",
+    "pyyaml>=6.0.2",
+    "prometheus-fastapi-instrumentator>=7.0.0",
+    "chromadb>=0.5.15",
+    "faiss-cpu>=1.8.0.post1",
+    "python-multipart>=0.0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.6.9",
+    "mypy>=1.11.2",
+    "respx>=0.21.1",
+    "types-pyyaml>=6.0.12.20240917",
+    "types-redis>=4.6.0.20241004",
+    "types-requests>=2.32.0.20240914",
+    "types-croniter>=2.0.0.20240423",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [
+    "../eval/fixtures/**",
+    "eval/fixtures/**",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B008",  # do not perform function calls in argument defaults (FastAPI Depends)
+    "UP046", # Generic class uses Generic subclass instead of type parameters (Pydantic compatibility)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+exclude = [
+    "eval/fixtures/.*",
+    "tests/.*",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "app.core.*",
+    "app.services.retrieval.*",
+    "app.agents.*",
+    "app.services.review.*",
+]
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "slow: slow running test (evals, model downloading)",
+    "integration: requires external dependencies like mongo or redis",
+    "network: requires external network connectivity",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]

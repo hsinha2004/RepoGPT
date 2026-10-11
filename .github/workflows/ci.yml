@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend Lint, Typecheck, and Test
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:8
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: testpassword
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv and dependencies
+        run: |
+          pip install uv
+          uv venv .venv
+          uv pip install --python .venv -e "./backend[dev]"
+
+      - name: Ruff Lint
+        run: .venv/bin/ruff check backend/app backend/tests
+
+      - name: Ruff Format Check
+        run: .venv/bin/ruff format --check backend/app backend/tests
+
+      - name: Mypy Typecheck
+        run: .venv/bin/mypy backend/app
+
+      - name: Run Pytest
+        env:
+          ENVIRONMENT: test
+          JWT_SECRET: test-secret-key-that-has-at-least-64-bytes-for-hmac-sha256-signing-repogpt
+          ENCRYPTION_KEY: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=
+          LLM_PROVIDER: fake
+          EMBEDDING_PROVIDER: fake
+          RERANKER_PROVIDER: fake
+        run: |
+          .venv/bin/pytest backend/tests -v --cov=app --cov-report=term-missing
+
+      - name: Verify Generated OpenAPI Schema
+        run: |
+          .venv/bin/python scripts/export_openapi.py
+          git diff --exit-code frontend/src/api/openapi.json
+
+  frontend:
+    name: Frontend Lint, Typecheck, Test, and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm ci
+
+      - name: ESLint
+        run: cd frontend && npm run lint
+
+      - name: TypeScript Typecheck
+        run: cd frontend && npm run typecheck
+
+      - name: Run Vitest
+        run: cd frontend && npm test
+
+      - name: Vite Build
+        run: cd frontend && npm run build

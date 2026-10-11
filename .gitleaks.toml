@@ -1,0 +1,12 @@
+title = "RepoGPT Gitleaks Configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Global allowlist for fixture directories and tests"
+paths = [
+  '''eval/fixtures/''',
+  '''tests/unit/test_redaction.py''',
+  '''\.env\.example$'''
+]

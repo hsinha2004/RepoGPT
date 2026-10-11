@@ -1,0 +1,124 @@
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: repogpt-api:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MONGO_HOST=mongo
+      - REDIS_HOST=redis
+      - CHROMA_HOST=chroma
+      - DATA_DIR=/data
+      - MODEL_CACHE_DIR=/models
+    volumes:
+      - repo_data:/data
+      - model_cache:/models
+    networks:
+      - edge
+      - data
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      chroma:
+        condition: service_started
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: repogpt-worker:latest
+    restart: unless-stopped
+    command: ["celery", "-A", "app.jobs.celery_app", "worker", "-B", "-Q", "ingest,eval,review", "--concurrency", "2"]
+    env_file:
+      - .env
+    environment:
+      - MONGO_HOST=mongo
+      - REDIS_HOST=redis
+      - CHROMA_HOST=chroma
+      - DATA_DIR=/data
+      - MODEL_CACHE_DIR=/models
+    volumes:
+      - repo_data:/data
+      - model_cache:/models
+    networks:
+      - data
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      chroma:
+        condition: service_started
+
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-rootpassword}
+      MONGODB_DB: ${MONGODB_DB:-repogpt}
+      MONGO_APP_USER: ${MONGO_APP_USER:-repogpt}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:-apppassword}
+    volumes:
+      - mongo_data:/data/db
+      - ./docker/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - data
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: >
+      sh -c 'if [ -n "$$REDIS_PASSWORD" ]; then
+        redis-server --requirepass "$$REDIS_PASSWORD" --appendonly yes --maxmemory 256mb --maxmemory-policy volatile-lru;
+      else
+        redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy volatile-lru;
+      fi'
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    volumes:
+      - redis_data:/data
+    networks:
+      - data
+    healthcheck:
+      test: >
+        sh -c 'if [ -n "$$REDIS_PASSWORD" ]; then
+          redis-cli -a "$$REDIS_PASSWORD" ping | grep -q PONG;
+        else
+          redis-cli ping | grep -q PONG;
+        fi'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  chroma:
+    image: chromadb/chroma:0.5.15
+    restart: unless-stopped
+    volumes:
+      - chroma_data:/chroma/chroma
+    networks:
+      - data
+
+volumes:
+  mongo_data:
+  redis_data:
+  chroma_data:
+  repo_data:
+  model_cache:
+
+networks:
+  edge:
+  data:
+    internal: true
