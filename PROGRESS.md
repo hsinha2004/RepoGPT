@@ -40,11 +40,17 @@ Updated at the completion of each milestone with status, verification details, a
     - Testing & Gates: 34 pytest tests passing (`test_archive_security.py`, `test_filter.py`, `test_github_fetcher.py`, `test_ingestion_pipeline.py`); `ruff check` (0 errors); `ruff format` (clean); `mypy backend/app` (0 issues in 41 files); frontend `npm run typecheck` (clean); `npm test` (clean); `npm run build` (vite bundle built).
   - Known issues: None
 
-- [ ] **M3: Parsing, redaction, chunking**
+- [x] **M3: Parsing, redaction, chunking**
   - Scope: ParserRegistry, five tier-1 extractors, tier-2 + docs + config, redaction, chunker with headers, symbols, file cards, dir summaries; frontend Explorer (tree, viewer, outline, deep links, file info).
   - Exit criteria: Extractor/redaction/chunker tests pass; Explorer browses TaskFlow with symbols and highlighted line deep links.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - Secret Redaction: Table-driven detectors (AWS, GitHub, GitLab, Slack, Google API, Stripe, OpenAI/Anthropic, SendGrid, Twilio, JWTs, PEM blocks, connection strings, and generic high-entropy assignments >= 3.5). 17/17 tests passing with line count preservation and dynamically generated fake secrets.
+    - AST Extractors: `ParserRegistry` with tree-sitter tier-1 extractors for Python, JavaScript, TypeScript/TSX, Java, Go, Docs (Markdown), Config (Dockerfile, Makefile, JSON, YAML) and line-window fallback. 8/8 tests passing.
+    - Code Chunking: `CodeChunker` using tiktoken `cl100k_base` producing symbol chunks, large symbol splitting (>800 tokens to <=512 token parts with 3-line overlap), class skeletons, module headers, deterministic file cards, directory summaries, contextual headers prepended to `embed_text`, and delimiter escaping (`</source>`). 5/5 tests passing.
+    - Ingestion Pipeline: Integrated stages 4 (parsing 15%), 5 (redacting 5%), and 6 (chunking 5%). End-to-end integration test on 37-file TaskFlow fixture repo extracted > 200 LOC, symbols, and chunks into MongoDB `symbols` and `chunks` collections.
+    - Frontend Explorer: Responsive 3-pane Explorer implemented (`FileTree`, `FileInfoHeader`, `CodeViewer`, `SymbolOutline`) with virtualized tree, language badges, skipped file tooltips, line numbers, `#L10-L40` deep links, permalink copying, symbol jump-to-line, and "Ask about file / selection" chat actions.
+    - Quality Gates: All 64 pytest tests passed; `mypy backend/app` clean (0 issues in 60 source files); `ruff check` and `ruff format` passed; frontend `npm run typecheck` passed (clean); `npm test` passed; `npm run build` passed (vite bundle built in 3.80s).
   - Known issues: None
 
 - [ ] **M4: Indexing**

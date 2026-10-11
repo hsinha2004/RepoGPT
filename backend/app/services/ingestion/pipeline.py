@@ -14,12 +14,18 @@ from app.core.config import get_settings
 from app.core.errors import AppError
 from app.db.mongo import get_database
 from app.db.redis import get_redis_client
+from app.db.repositories.chunks import ChunkRepository
 from app.db.repositories.files import FileRepository
 from app.db.repositories.jobs import JobRepository
 from app.db.repositories.repos import RepositoryRepository
+from app.db.repositories.symbols import SymbolRepository
+from app.services.chunking.chunker import CodeChunker
 from app.services.ingestion.archive import SafeArchiveExtractor
 from app.services.ingestion.filter import IngestionFilter
 from app.services.ingestion.github_fetcher import GitHubFetcher, parse_github_url
+from app.services.parsing.models import ParsedFile
+from app.services.parsing.registry import ParserRegistry
+from app.services.redaction.redactor import SecretRedactor
 
 logger = structlog.get_logger(__name__)
 
@@ -32,18 +38,25 @@ class IngestionPipeline:
         repo_repo: RepositoryRepository | None = None,
         job_repo: JobRepository | None = None,
         file_repo: FileRepository | None = None,
+        symbol_repo: SymbolRepository | None = None,
+        chunk_repo: ChunkRepository | None = None,
     ) -> None:
         self.job_id = job_id
         self.repo_id = repo_id
-        if repo_repo is not None and job_repo is not None and file_repo is not None:
-            self.repo_repo = repo_repo
-            self.job_repo = job_repo
-            self.file_repo = file_repo
-        else:
+        db = None
+        if (
+            repo_repo is None
+            or job_repo is None
+            or file_repo is None
+            or symbol_repo is None
+            or chunk_repo is None
+        ):
             db = get_database()
-            self.repo_repo = repo_repo or RepositoryRepository(db.repositories)
-            self.job_repo = job_repo or JobRepository(db.jobs)
-            self.file_repo = file_repo or FileRepository(db.files, db.skipped_files)
+        self.repo_repo = repo_repo or RepositoryRepository(db.repositories)  # type: ignore[union-attr]
+        self.job_repo = job_repo or JobRepository(db.jobs)  # type: ignore[union-attr]
+        self.file_repo = file_repo or FileRepository(db.files, db.skipped_files)  # type: ignore[union-attr]
+        self.symbol_repo = symbol_repo or SymbolRepository(db.symbols)  # type: ignore[union-attr]
+        self.chunk_repo = chunk_repo or ChunkRepository(db.chunks)  # type: ignore[union-attr]
         self.settings = get_settings()
 
     async def emit_progress(
@@ -236,26 +249,145 @@ class IngestionPipeline:
             }
             await self.repo_repo.update_stats(self.repo_id, stats)
 
-            # In Milestone 2 exit criteria: "Fixture ZIP and a public GitHub repo ingest through 'filtering' with live progress"
-            # Stages 4-10 (parsing, redacting, chunking, embedding, indexing, graph, overview) are built in M3-M6.
-            # Here we mark the job and repository as successfully filtered and ready for AST parsing!
-            counters = {
-                "files_scanned": stats["files_total"],
-                "files_kept": len(valid_files),
-                "files_skipped": len(skipped_files),
-                "loc": total_loc,
-            }
-
-            warnings = []
+            # ================= STAGE 4: PARSING (20 -> 35%) =================
+            await self.emit_progress(
+                stage="parsing",
+                progress=20,
+                message=f"Parsing AST and symbols for {len(valid_files)} files...",
+            )
+            parser_registry = ParserRegistry()
+            parsed_files_map: dict[str, ParsedFile] = {}
+            raw_content_map: dict[str, str] = {}
+            all_symbols_to_upsert: list[dict[str, Any]] = []
+            warnings: list[str] = []
             if len(skipped_files) > 0:
                 warnings.append(
                     f"Filtered out {len(skipped_files)} files (binaries, lockfiles, or ignored patterns)."
                 )
 
+            for file_doc in valid_files:
+                f_path = file_doc["path"]
+                disk_path = os.path.join(snapshot_dir, f_path)
+                try:
+                    with open(disk_path, encoding="utf-8", errors="replace") as f_src:
+                        source_code = f_src.read()
+                except Exception:
+                    source_code = ""
+
+                raw_content_map[f_path] = source_code
+                parsed = parser_registry.parse_file(source_code, f_path, file_doc.get("language"))
+                parsed_files_map[f_path] = parsed
+                if parsed.warnings:
+                    warnings.extend(parsed.warnings)
+
+                # Update file_doc with card, symbols_count, imports, is_entry_point
+                file_doc["symbols_count"] = len(parsed.symbols)
+                file_doc["imports"] = parsed.imports
+                file_doc["card"] = parsed.card
+                file_doc["is_entry_point"] = len(parsed.entry_point_hints) > 0
+
+                for s in parsed.symbols:
+                    all_symbols_to_upsert.append(s.to_dict(repo_id=self.repo_id, path=f_path))
+
+            # Upsert updated file docs and all symbols
+            await self.file_repo.upsert_files(self.repo_id, valid_files)
+            if all_symbols_to_upsert:
+                await self.symbol_repo.bulk_upsert_symbols(self.repo_id, all_symbols_to_upsert)
+
+            await self.check_cancellation()
+
+            # ================= STAGE 5: REDACTING (35 -> 40%) =================
             await self.emit_progress(
-                stage="filtering",
-                progress=20,
-                message=f"Completed filtering: {len(valid_files)} source files indexed ({total_loc:,} lines).",
+                stage="redacting",
+                progress=35,
+                message="Scanning and redacting credentials...",
+                counters={
+                    "files_parsed": len(valid_files),
+                    "symbols_found": len(all_symbols_to_upsert),
+                },
+            )
+            redactor = SecretRedactor()
+            redacted_content_map: dict[str, str] = {}
+            total_redactions = 0
+
+            for file_doc in valid_files:
+                f_path = file_doc["path"]
+                raw_code = raw_content_map.get(f_path, "")
+                redact_res = redactor.redact(raw_code)
+                redacted_content_map[f_path] = redact_res.redacted_text
+                file_doc["redaction_count"] = redact_res.redaction_count
+                total_redactions += redact_res.redaction_count
+
+            # Update file redaction counts
+            await self.file_repo.upsert_files(self.repo_id, valid_files)
+
+            await self.check_cancellation()
+
+            # ================= STAGE 6: CHUNKING (40 -> 45%) =================
+            await self.emit_progress(
+                stage="chunking",
+                progress=40,
+                message="Generating code-aware chunks, skeletons, and summaries...",
+                counters={
+                    "files_scanned": len(valid_files),
+                    "redactions_found": total_redactions,
+                },
+            )
+            chunker = CodeChunker()
+            all_chunks_to_upsert: list[dict[str, Any]] = []
+
+            for file_doc in valid_files:
+                f_path = file_doc["path"]
+                parsed = parsed_files_map[f_path]
+                redacted_text = redacted_content_map[f_path]
+                file_chunks = chunker.chunk_file(
+                    parsed_file=parsed,
+                    redacted_source=redacted_text,
+                    repo_id=self.repo_id,
+                    commit_sha=commit_sha,
+                )
+                all_chunks_to_upsert.extend(file_chunks)
+
+            # Directory summary chunks
+            dir_summaries = chunker.build_directory_summaries(
+                parsed_files=list(parsed_files_map.values()),
+                repo_id=self.repo_id,
+                commit_sha=commit_sha,
+            )
+            all_chunks_to_upsert.extend(dir_summaries)
+
+            if all_chunks_to_upsert:
+                await self.chunk_repo.bulk_upsert_chunks(self.repo_id, all_chunks_to_upsert)
+
+            stats = {
+                "files_total": len(valid_files) + len(skipped_files),
+                "files_indexed": len(valid_files),
+                "files_skipped": len(skipped_files),
+                "loc": total_loc,
+                "symbols": len(all_symbols_to_upsert),
+                "chunks": len(all_chunks_to_upsert),
+                "languages": languages,
+                "redactions": total_redactions,
+            }
+            await self.repo_repo.update_stats(self.repo_id, stats)
+
+            counters = {
+                "files_scanned": stats["files_total"],
+                "files_kept": len(valid_files),
+                "files_skipped": len(skipped_files),
+                "loc": total_loc,
+                "symbols": len(all_symbols_to_upsert),
+                "chunks": len(all_chunks_to_upsert),
+                "redactions": total_redactions,
+            }
+
+            await self.emit_progress(
+                stage="chunking",
+                progress=45,
+                message=(
+                    f"Completed parsing & chunking: {len(valid_files)} files, "
+                    f"{len(all_symbols_to_upsert)} symbols, {len(all_chunks_to_upsert)} chunks."
+                ),
                 counters=counters,
                 warnings=warnings,
                 status="succeeded",
@@ -265,7 +397,10 @@ class IngestionPipeline:
             await self.repo_repo.update_status(
                 self.repo_id,
                 status="ready",
-                status_message=f"Repository ready ({len(valid_files)} files indexed)",
+                status_message=(
+                    f"Repository ready ({len(valid_files)} files, "
+                    f"{len(all_symbols_to_upsert)} symbols, {len(all_chunks_to_upsert)} chunks)"
+                ),
                 commit_sha=commit_sha,
             )
 

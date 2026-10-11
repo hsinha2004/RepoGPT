@@ -19,18 +19,23 @@ from app.db.repositories.files import FileRepository
 from app.db.repositories.jobs import JobRepository
 from app.db.repositories.members import RepoMemberRepository
 from app.db.repositories.repos import RepositoryRepository
+from app.db.repositories.symbols import SymbolRepository
 from app.db.repositories.users import UserRepository
 from app.jobs.tasks import ingest_repository_task
 from app.schemas.repos import (
+    FileDetailResponse,
     RepoCreateGitHubRequest,
     RepoListResponse,
     RepoMemberAddRequest,
     RepoMemberResponse,
     RepoResponse,
     RepoUpdateSettingsRequest,
+    SkippedFileResponse,
+    SymbolResponse,
 )
 from app.services.ingestion.archive import is_valid_zip_magic
 from app.services.ingestion.github_fetcher import parse_github_url
+from app.services.redaction.redactor import SecretRedactor
 
 logger = structlog.get_logger(__name__)
 
@@ -51,6 +56,10 @@ def get_job_repository() -> JobRepository:
 
 def get_file_repository() -> FileRepository:
     return FileRepository()
+
+
+def get_symbol_repository() -> SymbolRepository:
+    return SymbolRepository()
 
 
 def get_user_repository() -> UserRepository:
@@ -370,6 +379,167 @@ async def list_repo_files(
         f["id"] = str(f["_id"])
         del f["_id"]
     return files
+
+
+@router.get(
+    "/{repo_id}/files/{file_path:path}",
+    response_model=FileDetailResponse,
+    summary="Get repository file content and symbols",
+)
+async def get_file_detail(
+    repo_id: str,
+    file_path: str,
+    user: dict[str, Any] = Depends(get_current_user),
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+    member_repo: RepoMemberRepository = Depends(get_member_repository),
+    file_repo: FileRepository = Depends(get_file_repository),
+    symbol_repo: SymbolRepository = Depends(get_symbol_repository),
+) -> FileDetailResponse:
+    """Retrieves file details, redacted content, and AST symbol outline for Explorer (§8.4, §10)."""
+    user_id = str(user["_id"])
+    repo_doc = await repo_repo.get_by_id(repo_id)
+    if not repo_doc:
+        raise NotFoundError(f"Repository {repo_id} not found.")
+
+    if repo_doc["owner_id"] != user_id:
+        membership = await member_repo.get_member(repo_id, user_id)
+        if not membership and user.get("role") != "admin":
+            raise ForbiddenError("Access forbidden to this repository.")
+
+    file_doc = await file_repo.get_file(repo_id=repo_id, path=file_path)
+    if not file_doc:
+        raise NotFoundError(f"File {file_path} not found in repository.")
+
+    settings = get_settings()
+    commit_sha = repo_doc.get("commit_sha") or "main"
+    disk_path = os.path.join(settings.DATA_DIR, "snapshots", repo_id, commit_sha, file_path)
+
+    raw_content = ""
+    if os.path.exists(disk_path):
+        try:
+            with open(disk_path, encoding="utf-8", errors="replace") as f_src:
+                raw_content = f_src.read()
+        except Exception:
+            raw_content = ""
+
+    # Redact credentials before display (§8.3)
+    redactor = SecretRedactor()
+    redacted_res = redactor.redact(raw_content)
+
+    # Fetch symbol outline for this file
+    sym_docs = await symbol_repo.list_for_file(repo_id, file_path)
+    symbols = [
+        SymbolResponse(
+            name=s.get("name", ""),
+            qualified_name=s.get("qualified_name", ""),
+            kind=s.get("kind", "const"),
+            signature=s.get("signature", ""),
+            docstring=s.get("docstring"),
+            start_line=s.get("start_line", 1),
+            end_line=s.get("end_line", 1),
+            parent=s.get("parent"),
+            language=s.get("language", file_doc.get("language", "generic")),
+            exported=s.get("exported", True),
+        )
+        for s in sym_docs
+    ]
+
+    return FileDetailResponse(
+        path=file_doc["path"],
+        language=file_doc.get("language", "generic"),
+        size_bytes=file_doc.get("size_bytes", len(raw_content)),
+        loc=file_doc.get("loc", len(raw_content.splitlines())),
+        content=redacted_res.redacted_text,
+        symbols=symbols,
+        card=file_doc.get("card", ""),
+        imports=file_doc.get("imports", []),
+        redaction_count=redacted_res.redaction_count,
+    )
+
+
+@router.get(
+    "/{repo_id}/symbols",
+    response_model=list[SymbolResponse],
+    summary="List or search repository symbols",
+)
+async def list_repo_symbols(
+    repo_id: str,
+    path: str | None = Query(None, description="Filter by file path"),
+    q: str | None = Query(None, description="Search symbol by name"),
+    limit: int = Query(100, ge=1, le=500),
+    user: dict[str, Any] = Depends(get_current_user),
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+    member_repo: RepoMemberRepository = Depends(get_member_repository),
+    symbol_repo: SymbolRepository = Depends(get_symbol_repository),
+) -> list[SymbolResponse]:
+    """Lists symbols in a file or searches symbols across repository."""
+    user_id = str(user["_id"])
+    repo_doc = await repo_repo.get_by_id(repo_id)
+    if not repo_doc:
+        raise NotFoundError(f"Repository {repo_id} not found.")
+
+    if repo_doc["owner_id"] != user_id:
+        membership = await member_repo.get_member(repo_id, user_id)
+        if not membership and user.get("role") != "admin":
+            raise ForbiddenError("Access forbidden to this repository.")
+
+    if path:
+        docs = await symbol_repo.list_for_file(repo_id, path)
+    elif q:
+        docs = await symbol_repo.search_by_name(repo_id, q, limit=limit)
+    else:
+        cursor = symbol_repo._col.find({"repo_id": str(repo_id)}).limit(limit)
+        docs = await cursor.to_list(length=limit)
+
+    return [
+        SymbolResponse(
+            name=s.get("name", ""),
+            qualified_name=s.get("qualified_name", ""),
+            kind=s.get("kind", "const"),
+            signature=s.get("signature", ""),
+            docstring=s.get("docstring"),
+            start_line=s.get("start_line", 1),
+            end_line=s.get("end_line", 1),
+            parent=s.get("parent"),
+            language=s.get("language", "generic"),
+            exported=s.get("exported", True),
+        )
+        for s in docs
+    ]
+
+
+@router.get(
+    "/{repo_id}/skipped-files",
+    response_model=list[SkippedFileResponse],
+    summary="List skipped or filtered files",
+)
+async def list_skipped_files(
+    repo_id: str,
+    user: dict[str, Any] = Depends(get_current_user),
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+    member_repo: RepoMemberRepository = Depends(get_member_repository),
+    file_repo: FileRepository = Depends(get_file_repository),
+) -> list[SkippedFileResponse]:
+    """Lists files skipped during repository ingestion with their reasons."""
+    user_id = str(user["_id"])
+    repo_doc = await repo_repo.get_by_id(repo_id)
+    if not repo_doc:
+        raise NotFoundError(f"Repository {repo_id} not found.")
+
+    if repo_doc["owner_id"] != user_id:
+        membership = await member_repo.get_member(repo_id, user_id)
+        if not membership and user.get("role") != "admin":
+            raise ForbiddenError("Access forbidden to this repository.")
+
+    skipped_docs = await file_repo.list_skipped(repo_id)
+    return [
+        SkippedFileResponse(
+            path=s.get("path", ""),
+            reason=s.get("reason", "ignored"),
+            size_bytes=s.get("size_bytes", 0),
+        )
+        for s in skipped_docs
+    ]
 
 
 @router.get(

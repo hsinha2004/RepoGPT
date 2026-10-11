@@ -80,3 +80,34 @@ class RepoMemberResponse(BaseModel):
     role: str
     added_by: str
     created_at: datetime | str
+
+
+class SymbolResponse(BaseModel):
+    name: str
+    qualified_name: str
+    kind: str
+    signature: str
+    docstring: str | None = None
+    start_line: int
+    end_line: int
+    parent: str | None = None
+    language: str
+    exported: bool = True
+
+
+class FileDetailResponse(BaseModel):
+    path: str
+    language: str
+    size_bytes: int = 0
+    loc: int = 0
+    content: str
+    symbols: list[SymbolResponse] = Field(default_factory=list)
+    card: str = ""
+    imports: list[str] = Field(default_factory=list)
+    redaction_count: int = 0
+
+
+class SkippedFileResponse(BaseModel):
+    path: str
+    reason: str
+    size_bytes: int = 0

@@ -326,6 +326,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/repos/{repo_id}/files/{file_path}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get repository file content and symbols
+         * @description Retrieves file details, redacted content, and AST symbol outline for Explorer (§8.4, §10).
+         */
+        get: operations["get_file_detail_api_v1_repos__repo_id__files__file_path__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/symbols": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List or search repository symbols
+         * @description Lists symbols in a file or searches symbols across repository.
+         */
+        get: operations["list_repo_symbols_api_v1_repos__repo_id__symbols_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/skipped-files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List skipped or filtered files
+         * @description Lists files skipped during repository ingestion with their reasons.
+         */
+        get: operations["list_skipped_files_api_v1_repos__repo_id__skipped_files_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/repos/{repo_id}/members": {
         parameters: {
             query?: never;
@@ -448,6 +508,39 @@ export interface components {
             current_password: string;
             /** New Password */
             new_password: string;
+        };
+        /** FileDetailResponse */
+        FileDetailResponse: {
+            /** Path */
+            path: string;
+            /** Language */
+            language: string;
+            /**
+             * Size Bytes
+             * @default 0
+             */
+            size_bytes: number;
+            /**
+             * Loc
+             * @default 0
+             */
+            loc: number;
+            /** Content */
+            content: string;
+            /** Symbols */
+            symbols?: components["schemas"]["SymbolResponse"][];
+            /**
+             * Card
+             * @default
+             */
+            card: string;
+            /** Imports */
+            imports?: string[];
+            /**
+             * Redaction Count
+             * @default 0
+             */
+            redaction_count: number;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -723,6 +816,44 @@ export interface components {
         SetPatRequest: {
             /** Token */
             token: string;
+        };
+        /** SkippedFileResponse */
+        SkippedFileResponse: {
+            /** Path */
+            path: string;
+            /** Reason */
+            reason: string;
+            /**
+             * Size Bytes
+             * @default 0
+             */
+            size_bytes: number;
+        };
+        /** SymbolResponse */
+        SymbolResponse: {
+            /** Name */
+            name: string;
+            /** Qualified Name */
+            qualified_name: string;
+            /** Kind */
+            kind: string;
+            /** Signature */
+            signature: string;
+            /** Docstring */
+            docstring?: string | null;
+            /** Start Line */
+            start_line: number;
+            /** End Line */
+            end_line: number;
+            /** Parent */
+            parent?: string | null;
+            /** Language */
+            language: string;
+            /**
+             * Exported
+             * @default true
+             */
+            exported: boolean;
         };
         /** TokenResponse */
         TokenResponse: {
@@ -1451,6 +1582,106 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     }[];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_file_detail_api_v1_repos__repo_id__files__file_path__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+                file_path: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_repo_symbols_api_v1_repos__repo_id__symbols_get: {
+        parameters: {
+            query?: {
+                /** @description Filter by file path */
+                path?: string | null;
+                /** @description Search symbol by name */
+                q?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SymbolResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_skipped_files_api_v1_repos__repo_id__skipped_files_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkippedFileResponse"][];
                 };
             };
             /** @description Validation Error */

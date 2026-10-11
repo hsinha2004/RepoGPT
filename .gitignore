@@ -45,6 +45,7 @@ frontend/dist/
 frontend/dist-ssr/
 frontend/.next/
 *.local
+*.tsbuildinfo
 
 # Environment & Secrets (Rule 8: Never commit .env*, except .env.example)
 .env

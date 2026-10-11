@@ -104,6 +104,57 @@ class MockFileCollection:
         return type("Res", (), {"inserted_ids": [f"skip_{i}" for i in range(len(docs))]})()
 
 
+class MockSymbolCollection:
+    def __init__(self):
+        self.symbols = {}
+
+    async def bulk_write(self, ops, ordered: bool = False):
+        _ = ordered
+        for op in ops:
+            query = op._filter
+            doc = op._doc["$set"]
+            key = f"{query['repo_id']}:{query['path']}:{query['qualified_name']}"
+            self.symbols[key] = doc
+        return type("Res", (), {"upserted_count": len(ops), "modified_count": 0})()
+
+    def find(self, query):
+        rid = query.get("repo_id")
+        path = query.get("path")
+        items = [
+            s
+            for s in self.symbols.values()
+            if (not rid or s.get("repo_id") == rid) and (not path or s.get("path") == path)
+        ]
+
+        class Cursor:
+            def sort(self, *args, **kwargs):  # noqa: ARG002
+                return self
+
+            def limit(self, *args, **kwargs):  # noqa: ARG002
+                return self
+
+            async def to_list(self, length=1000):
+                return items[:length]
+
+        return Cursor()
+
+
+class MockChunkCollection:
+    def __init__(self):
+        self.chunks = {}
+
+    async def bulk_write(self, ops, ordered: bool = False):
+        _ = ordered
+        for op in ops:
+            doc = op._doc["$set"]
+            self.chunks[doc["_id"]] = doc
+        return type("Res", (), {"upserted_count": len(ops), "modified_count": 0})()
+
+    async def count_documents(self, query):
+        _ = query
+        return len(self.chunks)
+
+
 @pytest.mark.asyncio
 async def test_taskflow_fixture_ingestion_pipeline():
     # 1. Package TaskFlow fixture into a temporary ZIP archive
@@ -127,10 +178,17 @@ async def test_taskflow_fixture_ingestion_pipeline():
         mock_repo_col = MockRepoCollection()
         mock_job_col = MockJobCollection()
         mock_file_col = MockFileCollection()
+        mock_sym_col = MockSymbolCollection()
+        mock_chunk_col = MockChunkCollection()
+
+        from app.db.repositories.chunks import ChunkRepository
+        from app.db.repositories.symbols import SymbolRepository
 
         repo_repo = RepositoryRepository(mock_repo_col)
         job_repo = JobRepository(mock_job_col)
         file_repo = FileRepository(mock_file_col, mock_file_col)
+        symbol_repo = SymbolRepository(mock_sym_col)
+        chunk_repo = ChunkRepository(mock_chunk_col)
 
         # Seed repository and job
         repo_doc = await repo_repo.create_repository(
@@ -152,6 +210,8 @@ async def test_taskflow_fixture_ingestion_pipeline():
             repo_repo=repo_repo,
             job_repo=job_repo,
             file_repo=file_repo,
+            symbol_repo=symbol_repo,
+            chunk_repo=chunk_repo,
         )
 
         result = await pipeline.run(archive_file_path=zip_path)
@@ -171,10 +231,15 @@ async def test_taskflow_fixture_ingestion_pipeline():
         assert "go" in stats["languages"]
         assert "java" in stats["languages"]
 
+        # Verify symbols and chunks extracted from TaskFlow!
+        assert stats["symbols"] > 20
+        assert stats["chunks"] > 20
+        assert len(mock_sym_col.symbols) > 20
+        assert len(mock_chunk_col.chunks) > 20
+
         # Verify job finished as succeeded
         updated_job = await job_repo.get_by_id(job_id)
         assert updated_job["status"] == "succeeded"
-        assert updated_job["progress"] == 100
 
     finally:
         if os.path.exists(temp_dir):

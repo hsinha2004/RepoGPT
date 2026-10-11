@@ -979,6 +979,215 @@
         }
       }
     },
+    "/api/v1/repos/{repo_id}/files/{file_path}": {
+      "get": {
+        "tags": [
+          "repos"
+        ],
+        "summary": "Get repository file content and symbols",
+        "description": "Retrieves file details, redacted content, and AST symbol outline for Explorer (\u00a78.4, \u00a710).",
+        "operationId": "get_file_detail_api_v1_repos__repo_id__files__file_path__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Repo Id"
+            }
+          },
+          {
+            "name": "file_path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "File Path"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/repos/{repo_id}/symbols": {
+      "get": {
+        "tags": [
+          "repos"
+        ],
+        "summary": "List or search repository symbols",
+        "description": "Lists symbols in a file or searches symbols across repository.",
+        "operationId": "list_repo_symbols_api_v1_repos__repo_id__symbols_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Repo Id"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by file path",
+              "title": "Path"
+            },
+            "description": "Filter by file path"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search symbol by name",
+              "title": "Q"
+            },
+            "description": "Search symbol by name"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SymbolResponse"
+                  },
+                  "title": "Response List Repo Symbols Api V1 Repos  Repo Id  Symbols Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/repos/{repo_id}/skipped-files": {
+      "get": {
+        "tags": [
+          "repos"
+        ],
+        "summary": "List skipped or filtered files",
+        "description": "Lists files skipped during repository ingestion with their reasons.",
+        "operationId": "list_skipped_files_api_v1_repos__repo_id__skipped_files_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Repo Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SkippedFileResponse"
+                  },
+                  "title": "Response List Skipped Files Api V1 Repos  Repo Id  Skipped Files Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/repos/{repo_id}/members": {
       "get": {
         "tags": [
@@ -1326,6 +1535,63 @@
           "new_password"
         ],
         "title": "ChangePasswordRequest"
+      },
+      "FileDetailResponse": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes",
+            "default": 0
+          },
+          "loc": {
+            "type": "integer",
+            "title": "Loc",
+            "default": 0
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "symbols": {
+            "items": {
+              "$ref": "#/components/schemas/SymbolResponse"
+            },
+            "type": "array",
+            "title": "Symbols"
+          },
+          "card": {
+            "type": "string",
+            "title": "Card",
+            "default": ""
+          },
+          "imports": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Imports"
+          },
+          "redaction_count": {
+            "type": "integer",
+            "title": "Redaction Count",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "language",
+          "content"
+        ],
+        "title": "FileDetailResponse"
       },
       "HTTPValidationError": {
         "properties": {
@@ -2033,6 +2299,99 @@
           "token"
         ],
         "title": "SetPatRequest"
+      },
+      "SkippedFileResponse": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "reason"
+        ],
+        "title": "SkippedFileResponse"
+      },
+      "SymbolResponse": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "qualified_name": {
+            "type": "string",
+            "title": "Qualified Name"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "signature": {
+            "type": "string",
+            "title": "Signature"
+          },
+          "docstring": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Docstring"
+          },
+          "start_line": {
+            "type": "integer",
+            "title": "Start Line"
+          },
+          "end_line": {
+            "type": "integer",
+            "title": "End Line"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent"
+          },
+          "language": {
+            "type": "string",
+            "title": "Language"
+          },
+          "exported": {
+            "type": "boolean",
+            "title": "Exported",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "qualified_name",
+          "kind",
+          "signature",
+          "start_line",
+          "end_line",
+          "language"
+        ],
+        "title": "SymbolResponse"
       },
       "TokenResponse": {
         "properties": {
