@@ -8,6 +8,7 @@ import shutil
 import tempfile
 import zipfile
 from typing import Any
+
 import pytest
 import yaml
 from bson import ObjectId
@@ -200,13 +201,15 @@ async def test_taskflow_hybrid_retrieval_benchmark_hit_rate() -> None:
         os.path.join(os.path.dirname(__file__), "..", "..", "..", "eval", "fixtures", "sample-repo")
     )
     benchmark_file = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "..", "..", "eval", "benchmarks", "sample_repo.yaml")
+        os.path.join(
+            os.path.dirname(__file__), "..", "..", "..", "eval", "benchmarks", "sample_repo.yaml"
+        )
     )
     assert os.path.isdir(fixture_dir), f"Fixture dir missing: {fixture_dir}"
     assert os.path.isfile(benchmark_file), f"Benchmark file missing: {benchmark_file}"
 
     # Load 30 questions
-    with open(benchmark_file, "r", encoding="utf-8") as bf:
+    with open(benchmark_file, encoding="utf-8") as bf:
         benchmark_data = yaml.safe_load(bf)
     questions = benchmark_data.get("questions", [])
     assert len(questions) == 30, f"Expected 30 benchmark questions, found {len(questions)}"
@@ -295,7 +298,8 @@ async def test_taskflow_hybrid_retrieval_benchmark_hit_rate() -> None:
 
             # Check if any expected file was retrieved in top 5
             is_hit = any(
-                exp in retrieved_files or any(ret.endswith(exp) or exp.endswith(ret) for ret in retrieved_files)
+                exp in retrieved_files
+                or any(ret.endswith(exp) or exp.endswith(ret) for ret in retrieved_files)
                 for exp in expected_files
             )
 

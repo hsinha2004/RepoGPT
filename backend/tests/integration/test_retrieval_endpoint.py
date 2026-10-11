@@ -11,8 +11,8 @@ from app.api.v1.repos import (
 from app.core.deps import get_current_user
 from app.main import create_app
 from app.schemas.retrieval import (
-    RouteResult,
     RouterEnrich,
+    RouteResult,
     RouterWeights,
     SearchResponse,
 )
@@ -27,7 +27,7 @@ class MockRepoRepo:
 
 
 class MockMemberRepo:
-    async def get_member(self, repo_id: str, user_id: str):
+    async def get_member(self, _repo_id: str, _user_id: str):
         return None
 
 

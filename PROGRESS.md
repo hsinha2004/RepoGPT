@@ -74,11 +74,17 @@ Updated at the completion of each milestone with status, verification details, a
   - Known issues: None
 
 
-- [ ] **M6: Agentic QA & chat**
+- [x] **M6: Agentic QA & chat**
   - Scope: LLM provider layer (Anthropic, OpenAI-compatible presets, fake), limiter, pricing, prompts, LangGraph QA graph, SSE streaming, citations, grounding, confidence, conversations, cache, feedback, export; frontend Chat with evidence panel, trace, confidence, stop/regenerate.
   - Exit criteria: SSE integration test passes; with a real provider key, answers cite correct TaskFlow files; offline mode works with no key.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - LLM Provider Subsystem: Protocol `LLMProvider`, `AnthropicProvider`, `OpenAICompatibleProvider` (covers OpenAI, Gemini, Groq, OpenRouter, Ollama), `FakeProvider` with deterministic routing, extractive answer synthesis, and grounding check. Structured output parsing and repair loop, model pricing calculator per 1M tokens with override support, Redis sliding window rate limiter (`llm:rpm:{provider}`) and concurrency semaphore. 6/6 tests passing in `test_llm_providers.py`.
+    - Citations & Confidence: Verified regex extraction of `[S#]`, cross-validation against candidate chunks, stripping of ungrounded citations, and calibrated confidence score calculation ($0.35R + 0.20C + 0.15K + 0.30G$) with insufficient evidence score capping $\le 0.35$. 5/5 tests passing in `test_citations_and_confidence.py`.
+    - LangGraph State Machine: 10-node QA graph (`contextualize` -> `route` -> `retrieve` -> `graph_expand` -> `rerank` -> `assess` ↺ `reformulate` -> `generate` -> `verify` -> `finalize`) with conditional loop edges and state tracking. 2/2 tests passing in `test_qa_graph.py`.
+    - SSE Streaming & API Endpoints: Endpoints for conversation CRUD, Markdown export, SSE message streaming (`text/event-stream` delivering `meta`, `status`, `route`, `sources`, `token`, `citations`, `confidence`, `done`, `error`), and message feedback. 2/2 integration tests passing in `test_chat_sse.py`.
+    - Frontend Chat UI: Full 3-pane layout (`ChatPage.tsx`) with conversation list, search filter, message thread, markdown/code rendering, inline citation chips, status spinner, feedback modal, strategy selector, and Evidence panel with Sources, Trace, and Confidence tabs. 4/4 Vitest tests passing.
+    - Quality Gates: All 164 backend pytest tests passing; `mypy backend/app` clean across 122 source files; `ruff check` and `ruff format` clean; frontend `tsc -b && vite build` built cleanly; zero-key offline mode fully functional.
   - Known issues: None
 
 - [ ] **M7: Graph, analysis & overview**

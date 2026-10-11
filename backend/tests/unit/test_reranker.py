@@ -1,4 +1,5 @@
 import pytest
+
 from app.core.config import Settings
 from app.services.retrieval.reranker.factory import get_reranker_provider
 from app.services.retrieval.reranker.fake import FakeRerankerProvider
