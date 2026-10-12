@@ -226,7 +226,7 @@ export const SearchPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={searchMutation.isPending || !query.trim()}
-                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 text-white font-medium text-sm transition shadow-lg shadow-purple-900/20 flex items-center gap-2"
+                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white font-medium text-sm transition shadow-lg shadow-emerald-950/20 flex items-center gap-2"
               >
                 {searchMutation.isPending ? (
                   <>

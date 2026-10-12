@@ -53,15 +53,18 @@ export const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-16 px-6 max-w-7xl mx-auto text-center flex-1 flex flex-col items-center justify-center">
+      <section className="relative pt-20 pb-16 px-6 max-w-7xl mx-auto text-center flex-1 flex flex-col items-center justify-center overflow-hidden">
+        {/* Subtle Green Ambient Glow */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[320px] bg-gradient-to-b from-emerald-500/15 via-teal-500/5 to-transparent blur-3xl pointer-events-none -z-10" />
+
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#27272a] bg-[#111113] text-xs text-[#a1a1aa] mb-8">
-          <Sparkles className="w-3.5 h-3.5 text-[#6366f1]" />
+          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
           <span>Agentic AI System for Codebase Understanding & Review</span>
         </div>
 
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight max-w-4xl leading-tight">
           Understand Any Complex Codebase in Seconds,{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#38bdf8]">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400">
             With Exact Citations
           </span>
         </h1>

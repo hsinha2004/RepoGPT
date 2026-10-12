@@ -182,7 +182,7 @@ export const IngestionStepper: React.FC<IngestionStepperProps> = ({
                   ? "bg-red-500"
                   : jobStatus === "succeeded"
                   ? "bg-emerald-500"
-                  : "bg-gradient-to-r from-[#6366f1] to-[#818cf8]"
+                  : "bg-gradient-to-r from-emerald-500 to-teal-400"
               }`}
               style={{ width: `${progressPercent}%` }}
             />
