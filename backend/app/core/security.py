@@ -96,6 +96,8 @@ def create_access_token(user_id: str, role: str, expires_delta: timedelta | None
 
 def decode_access_token(token: str) -> dict[str, Any]:
     """Decode and validate a JWT access token."""
+    if not token or not token.strip() or token.strip() in ("null", "undefined"):
+        raise UnauthorizedError("Missing or invalid access token")
     settings = get_settings()
     try:
         payload = jwt.decode(

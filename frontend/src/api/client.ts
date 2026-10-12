@@ -5,11 +5,31 @@ let inMemoryAccessToken: string | null = null;
 let refreshPromise: Promise<string | null> | null = null;
 
 export function getAccessToken(): string | null {
+  if (!inMemoryAccessToken) {
+    try {
+      const stored = localStorage.getItem("rg_access_token");
+      if (stored && stored !== "null" && stored !== "undefined") {
+        inMemoryAccessToken = stored;
+      }
+    } catch {
+      // Ignore localStorage access restrictions
+    }
+  }
   return inMemoryAccessToken;
 }
 
 export function setAccessToken(token: string | null): void {
-  inMemoryAccessToken = token;
+  if (token && token !== "null" && token !== "undefined") {
+    inMemoryAccessToken = token;
+    try {
+      localStorage.setItem("rg_access_token", token);
+    } catch {}
+  } else {
+    inMemoryAccessToken = null;
+    try {
+      localStorage.removeItem("rg_access_token");
+    } catch {}
+  }
 }
 
 export function getCsrfTokenFromCookie(): string | null {
@@ -20,7 +40,7 @@ export function getCsrfTokenFromCookie(): string | null {
 /**
  * Single-flight refresh token handler to prevent concurrent refresh races.
  */
-async function performRefreshToken(): Promise<string | null> {
+export async function performRefreshToken(): Promise<string | null> {
   if (refreshPromise) {
     return refreshPromise;
   }
@@ -57,10 +77,59 @@ async function performRefreshToken(): Promise<string | null> {
   return refreshPromise;
 }
 
+/**
+ * Robust fetch wrapper that attaches the Bearer token,
+ * automatically attempts token refresh if token is absent,
+ * and retries on 401 Unauthorized.
+ */
+export async function authFetch(
+  input: RequestInfo | URL,
+  init: RequestInit = {}
+): Promise<Response> {
+  let token = getAccessToken();
+  if (!token) {
+    token = await performRefreshToken();
+  }
+
+  const headers = new Headers(init.headers || {});
+  if (token && token !== "null" && token !== "undefined") {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  const res = await fetch(input, {
+    ...init,
+    headers,
+    credentials: "include",
+  });
+
+  const urlStr = typeof input === "string" ? input : input.toString();
+  if (
+    res.status === 401 &&
+    !urlStr.includes("/auth/refresh") &&
+    !urlStr.includes("/auth/login")
+  ) {
+    const newToken = await performRefreshToken();
+    if (newToken) {
+      headers.set("Authorization", `Bearer ${newToken}`);
+      return fetch(input, {
+        ...init,
+        headers,
+        credentials: "include",
+      });
+    }
+  }
+
+  return res;
+}
+
 const authMiddleware: Middleware = {
   async onRequest({ request }) {
-    if (inMemoryAccessToken) {
-      request.headers.set("Authorization", `Bearer ${inMemoryAccessToken}`);
+    let token = getAccessToken();
+    if (!token && !request.url.includes("/auth/")) {
+      token = await performRefreshToken();
+    }
+    if (token && token !== "null" && token !== "undefined") {
+      request.headers.set("Authorization", `Bearer ${token}`);
     }
     return request;
   },

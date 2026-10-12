@@ -7,7 +7,7 @@ import {
   AlertCircle,
   FileCode2,
 } from "lucide-react";
-import { getAccessToken } from "../../api/client";
+import { authFetch } from "../../api/client";
 
 interface AddRepoDialogProps {
   isOpen: boolean;
@@ -33,12 +33,10 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      const token = getAccessToken();
-      const res = await fetch("/api/v1/repos", {
+      const res = await authFetch("/api/v1/repos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           url: githubUrl.trim(),
@@ -48,7 +46,11 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
 
       const data = await res.json();
       if (!res.ok) {
-        setErrorMessage(data.error?.message || "Failed to add GitHub repository.");
+        if (res.status === 401) {
+          setErrorMessage("Authentication session expired. Please sign in again.");
+        } else {
+          setErrorMessage(data.error?.message || "Failed to add GitHub repository.");
+        }
         return;
       }
 
@@ -71,24 +73,24 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      const token = getAccessToken();
       const formData = new FormData();
       formData.append("file", selectedFile);
       if (uploadDisplayName.trim()) {
         formData.append("display_name", uploadDisplayName.trim());
       }
 
-      const res = await fetch("/api/v1/repos/upload", {
+      const res = await authFetch("/api/v1/repos/upload", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         body: formData,
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setErrorMessage(data.error?.message || "Failed to upload repository ZIP.");
+        if (res.status === 401) {
+          setErrorMessage("Authentication session expired. Please sign in again.");
+        } else {
+          setErrorMessage(data.error?.message || "Failed to upload repository ZIP.");
+        }
         return;
       }
 

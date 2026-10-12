@@ -16,7 +16,7 @@ import {
   Clock,
   Layers,
 } from "lucide-react";
-import { getAccessToken } from "../../api/client";
+import { authFetch } from "../../api/client";
 import { AddRepoDialog } from "./AddRepoDialog";
 import { IngestionStepper } from "./IngestionStepper";
 
@@ -62,10 +62,7 @@ export const DashboardPage: React.FC = () => {
   const fetchRepositories = async () => {
     setIsLoading(true);
     try {
-      const token = getAccessToken();
-      const res = await fetch("/api/v1/repos", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await authFetch("/api/v1/repos");
       if (res.ok) {
         const data = await res.json();
         setRepos(data.items || []);
@@ -80,10 +77,8 @@ export const DashboardPage: React.FC = () => {
   const handleDelete = async (repoId: string, displayName: string) => {
     if (!window.confirm(`Are you sure you want to permanently delete '${displayName}'?`)) return;
     try {
-      const token = getAccessToken();
-      const res = await fetch(`/api/v1/repos/${repoId}`, {
+      const res = await authFetch(`/api/v1/repos/${repoId}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         setRepos((prev) => prev.filter((r) => r.id !== repoId));

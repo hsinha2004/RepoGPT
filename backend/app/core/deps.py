@@ -30,7 +30,10 @@ async def get_current_user(
     if not credentials or not credentials.credentials:
         raise UnauthorizedError("Missing or invalid authorization header")
 
-    token = credentials.credentials
+    token = credentials.credentials.strip()
+    if not token or token in ("null", "undefined"):
+        raise UnauthorizedError("Missing or invalid authorization header")
+
     payload = decode_access_token(token)
     user_id = payload.get("sub")
     if not user_id:

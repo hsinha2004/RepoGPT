@@ -40,7 +40,7 @@ def set_auth_cookies(response: Response, refresh_token: str, csrf_token: str) ->
         max_age=max_age,
         httponly=True,
         secure=settings.COOKIE_SECURE,
-        samesite="strict",
+        samesite="lax",
         path="/api/v1/auth",
     )
 
@@ -51,18 +51,18 @@ def set_auth_cookies(response: Response, refresh_token: str, csrf_token: str) ->
         max_age=max_age,
         httponly=False,
         secure=settings.COOKIE_SECURE,
-        samesite="strict",
-        path="/api/v1/auth",
+        samesite="lax",
+        path="/",
     )
 
 
 def clear_auth_cookies(response: Response) -> None:
     settings = get_settings()
     response.delete_cookie(
-        key="rg_refresh", path="/api/v1/auth", secure=settings.COOKIE_SECURE, samesite="strict"
+        key="rg_refresh", path="/api/v1/auth", secure=settings.COOKIE_SECURE, samesite="lax"
     )
     response.delete_cookie(
-        key="rg_csrf", path="/api/v1/auth", secure=settings.COOKIE_SECURE, samesite="strict"
+        key="rg_csrf", path="/", secure=settings.COOKIE_SECURE, samesite="lax"
     )
 
 

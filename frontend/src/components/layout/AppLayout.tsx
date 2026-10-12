@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import {
   Code2,
@@ -16,13 +16,33 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "../../stores/authStore";
 import { useThemeStore } from "../../stores/themeStore";
+import { authFetch } from "../../api/client";
 
 export const AppLayout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const { user, setUser, logout } = useAuthStore();
   const { theme, setTheme } = useThemeStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    // If user is not yet loaded in Zustand, verify/restore session
+    if (!user) {
+      authFetch("/api/v1/auth/me")
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            setUser(data);
+          } else if (res.status === 401) {
+            logout();
+            navigate("/login");
+          }
+        })
+        .catch(() => {
+          // Network error or offline
+        });
+    }
+  }, [user, setUser, logout, navigate]);
 
   const handleLogout = () => {
     logout();
