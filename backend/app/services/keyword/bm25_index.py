@@ -57,8 +57,8 @@ class BM25Index:
             corpus_tokens.append(tokens)
 
         retriever = bm25s.BM25()
-        if corpus_tokens:
-            retriever.index(corpus_tokens)
+        tokens_to_index = corpus_tokens if corpus_tokens else [["__empty__"]]
+        retriever.index(tokens_to_index)
 
         # Persist index and chunk IDs
         retriever.save(str(index_path))

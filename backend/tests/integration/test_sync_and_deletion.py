@@ -61,10 +61,15 @@ class MockFileCollection:
     async def bulk_write(self, ops, ordered=False):
         _ = ordered
         for op in ops:
-            doc = op._doc["$set"]
-            key = f"{doc['repo_id']}:{doc['path']}"
-            self.files[key] = doc
-        return type("Res", (), {"upserted_count": len(ops), "modified_count": 0})()
+            query = getattr(op, "_filter", {})
+            doc = op._doc.get("$set", {})
+            repo_id = query.get("repo_id") or doc.get("repo_id")
+            path = query.get("path") or doc.get("path")
+            key = f"{repo_id}:{path}"
+            if key not in self.files:
+                self.files[key] = {"repo_id": repo_id, "path": path}
+            self.files[key].update(doc)
+        return type("Res", (), {"upserted_count": len(ops), "modified_count": len(ops)})()
 
     def find(self, query):
         rid = query.get("repo_id")
@@ -109,6 +114,27 @@ class MockSymbolCollection:
             key = f"{doc['repo_id']}:{doc['path']}:{doc['qualified_name']}"
             self.symbols[key] = doc
         return type("Res", (), {"upserted_count": len(ops), "modified_count": 0})()
+
+    def find(self, query):
+        rid = str(query.get("repo_id", ""))
+        matches = [s for s in self.symbols.values() if str(s.get("repo_id")) == rid]
+
+        class MockCursor:
+            def __init__(self, data):
+                self.data = data
+
+            def limit(self, count):
+                self.data = self.data[:count]
+                return self
+
+            async def to_list(self, length=None):
+                return self.data[:length] if length else self.data
+
+        return MockCursor(matches)
+
+    async def count_documents(self, query):
+        rid = str(query.get("repo_id", ""))
+        return len([s for s in self.symbols.values() if str(s.get("repo_id")) == rid])
 
     async def delete_many(self, query):
         rid = query.get("repo_id")

@@ -114,6 +114,19 @@ class SymbolRepository:
         res = await self._col.delete_many({"repo_id": str(repo_id), "path": {"$in": paths}})
         return res.deleted_count
 
+    async def count_for_repo(self, repo_id: str | ObjectId) -> int:
+        """Counts total symbols for a repository."""
+        return await self._col.count_documents({"repo_id": str(repo_id)})
+
+    async def list_for_repo(
+        self,
+        repo_id: str | ObjectId,
+        limit: int = 5000,
+    ) -> list[dict[str, Any]]:
+        """Retrieves symbols for a repository."""
+        cursor = self._col.find({"repo_id": str(repo_id)}).limit(limit)
+        return await cursor.to_list(length=limit)
+
     async def delete_for_repo(self, repo_id: str | ObjectId) -> int:
         """Deletes all symbols for a repository."""
         res = await self._col.delete_many({"repo_id": str(repo_id)})

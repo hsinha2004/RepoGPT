@@ -1469,6 +1469,271 @@
         }
       }
     },
+    "/api/v1/repos/{repo_id}/overview": {
+      "get": {
+        "tags": [
+          "repos"
+        ],
+        "summary": "Get repository onboarding overview (\u00a78.9, \u00a712)",
+        "operationId": "get_repository_overview_api_v1_repos__repo_id__overview_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Repo Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/repos/{repo_id}/overview/regenerate": {
+      "post": {
+        "tags": [
+          "repos"
+        ],
+        "summary": "Regenerate repository onboarding overview (\u00a78.9, \u00a712)",
+        "operationId": "regenerate_repository_overview_api_v1_repos__repo_id__overview_regenerate_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Repo Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/repos/{repo_id}/graph": {
+      "get": {
+        "tags": [
+          "repos"
+        ],
+        "summary": "Get repository dependency graph (\u00a78.8, \u00a712)",
+        "operationId": "get_repository_graph_api_v1_repos__repo_id__graph_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Repo Id"
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(file|directory)$",
+              "default": "file",
+              "title": "Level"
+            }
+          },
+          {
+            "name": "depth",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 5,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Depth"
+            }
+          },
+          {
+            "name": "focus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Focus"
+            }
+          },
+          {
+            "name": "hops",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 4,
+              "minimum": 1,
+              "default": 1,
+              "title": "Hops"
+            }
+          },
+          {
+            "name": "include_external",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include External"
+            }
+          },
+          {
+            "name": "include_calls",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true,
+              "title": "Include Calls"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GraphResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/repos/{repo_id}/stats": {
+      "get": {
+        "tags": [
+          "repos"
+        ],
+        "summary": "Get repository statistics (\u00a712)",
+        "operationId": "get_repository_stats_api_v1_repos__repo_id__stats_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Repo Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoStatsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/jobs/{job_id}": {
       "get": {
         "tags": [
@@ -2254,6 +2519,34 @@
         ],
         "title": "ConversationUpdate"
       },
+      "EntryPointItem": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "line": {
+            "type": "integer",
+            "title": "Line",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "path",
+          "kind",
+          "description"
+        ],
+        "title": "EntryPointItem"
+      },
       "ExportResponse": {
         "properties": {
           "markdown": {
@@ -2391,6 +2684,193 @@
           "content"
         ],
         "title": "FileDetailResponse"
+      },
+      "GraphEdge": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "target": {
+            "type": "string",
+            "title": "Target"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "imports",
+              "calls"
+            ],
+            "title": "Type",
+            "default": "imports"
+          },
+          "heuristic": {
+            "type": "boolean",
+            "title": "Heuristic",
+            "default": false
+          },
+          "symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol"
+          },
+          "weight": {
+            "type": "integer",
+            "title": "Weight",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "target"
+        ],
+        "title": "GraphEdge"
+      },
+      "GraphNode": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "full_path": {
+            "type": "string",
+            "title": "Full Path"
+          },
+          "is_external": {
+            "type": "boolean",
+            "title": "Is External",
+            "default": false
+          },
+          "top_directory": {
+            "type": "string",
+            "title": "Top Directory",
+            "default": "root"
+          },
+          "fan_in": {
+            "type": "integer",
+            "title": "Fan In",
+            "default": 0
+          },
+          "fan_out": {
+            "type": "integer",
+            "title": "Fan Out",
+            "default": 0
+          },
+          "pagerank": {
+            "type": "number",
+            "title": "Pagerank",
+            "default": 0.0
+          },
+          "in_cycle": {
+            "type": "boolean",
+            "title": "In Cycle",
+            "default": false
+          },
+          "is_orphan": {
+            "type": "boolean",
+            "title": "Is Orphan",
+            "default": false
+          },
+          "file_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "full_path"
+        ],
+        "title": "GraphNode"
+      },
+      "GraphResponse": {
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "file",
+              "directory"
+            ],
+            "title": "Level",
+            "default": "file"
+          },
+          "depth": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depth"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/GraphNode"
+            },
+            "type": "array",
+            "title": "Nodes"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/components/schemas/GraphEdge"
+            },
+            "type": "array",
+            "title": "Edges"
+          },
+          "cycles": {
+            "items": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Cycles"
+          },
+          "total_nodes": {
+            "type": "integer",
+            "title": "Total Nodes",
+            "default": 0
+          },
+          "total_edges": {
+            "type": "integer",
+            "title": "Total Edges",
+            "default": 0
+          },
+          "orphan_count": {
+            "type": "integer",
+            "title": "Orphan Count",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "GraphResponse"
       },
       "HTTPValidationError": {
         "properties": {
@@ -2783,6 +3263,125 @@
         ],
         "title": "MessageResponse"
       },
+      "OverviewResponse": {
+        "properties": {
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "commit_sha": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commit Sha"
+          },
+          "markdown": {
+            "type": "string",
+            "title": "Markdown"
+          },
+          "suggested_questions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Suggested Questions"
+          },
+          "tech_stack": {
+            "items": {
+              "$ref": "#/components/schemas/TechStackItem"
+            },
+            "type": "array",
+            "title": "Tech Stack"
+          },
+          "entry_points": {
+            "items": {
+              "$ref": "#/components/schemas/EntryPointItem"
+            },
+            "type": "array",
+            "title": "Entry Points"
+          },
+          "reading_order": {
+            "items": {
+              "$ref": "#/components/schemas/ReadingOrderItem"
+            },
+            "type": "array",
+            "title": "Reading Order"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/OverviewSourceItem"
+            },
+            "type": "array",
+            "title": "Sources"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "repo_id",
+          "markdown"
+        ],
+        "title": "OverviewResponse"
+      },
+      "OverviewSourceItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "start_line": {
+            "type": "integer",
+            "title": "Start Line",
+            "default": 1
+          },
+          "end_line": {
+            "type": "integer",
+            "title": "End Line",
+            "default": 1
+          },
+          "symbol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol"
+          },
+          "snippet": {
+            "type": "string",
+            "title": "Snippet",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "path"
+        ],
+        "title": "OverviewSourceItem"
+      },
       "PatStatusResponse": {
         "properties": {
           "has_pat": {
@@ -2856,6 +3455,34 @@
         },
         "type": "object",
         "title": "RankScores"
+      },
+      "ReadingOrderItem": {
+        "properties": {
+          "step": {
+            "type": "integer",
+            "title": "Step"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "step",
+          "path",
+          "category",
+          "reason"
+        ],
+        "title": "ReadingOrderItem"
       },
       "RegisterRequest": {
         "properties": {
@@ -3259,6 +3886,69 @@
         },
         "type": "object",
         "title": "RepoStats"
+      },
+      "RepoStatsResponse": {
+        "properties": {
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "commit_sha": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commit Sha"
+          },
+          "total_files": {
+            "type": "integer",
+            "title": "Total Files",
+            "default": 0
+          },
+          "total_loc": {
+            "type": "integer",
+            "title": "Total Loc",
+            "default": 0
+          },
+          "total_symbols": {
+            "type": "integer",
+            "title": "Total Symbols",
+            "default": 0
+          },
+          "total_chunks": {
+            "type": "integer",
+            "title": "Total Chunks",
+            "default": 0
+          },
+          "total_redactions": {
+            "type": "integer",
+            "title": "Total Redactions",
+            "default": 0
+          },
+          "languages": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Languages"
+          },
+          "file_counts_by_kind": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "File Counts By Kind"
+          }
+        },
+        "type": "object",
+        "required": [
+          "repo_id"
+        ],
+        "title": "RepoStatsResponse"
       },
       "RepoSyncRequest": {
         "properties": {
@@ -3822,6 +4512,29 @@
           "language"
         ],
         "title": "SymbolResponse"
+      },
+      "TechStackItem": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "evidence": {
+            "type": "string",
+            "title": "Evidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "category",
+          "evidence"
+        ],
+        "title": "TechStackItem"
       },
       "TokenResponse": {
         "properties": {

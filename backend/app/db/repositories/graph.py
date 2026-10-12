@@ -11,7 +11,13 @@ from app.db.mongo import get_collection
 
 class GraphRepository:
     def __init__(self, collection: AsyncCollection | None = None) -> None:
-        self._col = collection if collection is not None else get_collection("graph_edges")
+        if collection is not None:
+            self._col: AsyncCollection | None = collection
+        else:
+            try:
+                self._col = get_collection("graph_edges")
+            except Exception:
+                self._col = None
 
     async def bulk_upsert_edges(
         self,
@@ -19,7 +25,7 @@ class GraphRepository:
         edges: list[dict[str, Any]],
     ) -> int:
         """Bulk upserts dependency and call edges for a repository."""
-        if not edges:
+        if not edges or self._col is None:
             return 0
         rid = str(repo_id)
         ops = []
@@ -45,7 +51,7 @@ class GraphRepository:
         paths: list[str],
     ) -> list[dict[str, Any]]:
         """Retrieves 1-hop outgoing and incoming edges for the given file paths."""
-        if not paths:
+        if not paths or self._col is None:
             return []
         rid = str(repo_id)
         query = {
@@ -64,10 +70,14 @@ class GraphRepository:
         limit: int = 5000,
     ) -> list[dict[str, Any]]:
         """Lists edges for a repository."""
+        if self._col is None:
+            return []
         cursor = self._col.find({"repo_id": str(repo_id)}).limit(limit)
         return await cursor.to_list(length=limit)
 
     async def delete_for_repo(self, repo_id: str | ObjectId) -> int:
         """Deletes all edges for a repository."""
+        if self._col is None:
+            return 0
         res = await self._col.delete_many({"repo_id": str(repo_id)})
         return res.deleted_count

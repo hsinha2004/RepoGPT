@@ -14,13 +14,18 @@ from app.core.config import get_settings
 from app.core.deps import get_current_user
 from app.core.errors import ForbiddenError, NotFoundError, ValidationFailedError
 from app.core.security import decrypt_secret
+from app.db.repositories.chunks import ChunkRepository
 from app.db.repositories.files import FileRepository
+from app.db.repositories.graph import GraphRepository
 from app.db.repositories.jobs import JobRepository
 from app.db.repositories.members import RepoMemberRepository
+from app.db.repositories.overview import OverviewRepository
 from app.db.repositories.repos import RepositoryRepository
 from app.db.repositories.symbols import SymbolRepository
 from app.db.repositories.users import UserRepository
 from app.jobs.tasks import ingest_repository_task
+from app.schemas.graph import GraphResponse, RepoStatsResponse
+from app.schemas.overview import OverviewResponse
 from app.schemas.repos import (
     FileDetailResponse,
     RepoCreateGitHubRequest,
@@ -35,9 +40,16 @@ from app.schemas.repos import (
     SymbolResponse,
 )
 from app.schemas.retrieval import SearchRequest, SearchResponse
+from app.services.analysis.entry_points import EntryPointDetector
+from app.services.analysis.overview import OverviewService
+from app.services.analysis.reading_order import ReadingOrderGenerator
+from app.services.analysis.tech_stack import TechStackDetector
+from app.services.graph.analyzer import GraphAnalyzer
+from app.services.graph.builder import GraphBuilder
 from app.services.indexing.sync import IncrementalSyncService, RepoDeletionService
 from app.services.ingestion.archive import is_valid_zip_magic
 from app.services.ingestion.github_fetcher import parse_github_url
+from app.services.llm.factory import get_llm_provider
 from app.services.redaction.redactor import SecretRedactor
 from app.services.retrieval.service import RetrievalService
 
@@ -56,6 +68,18 @@ def get_member_repository() -> RepoMemberRepository:
 
 def get_job_repository() -> JobRepository:
     return JobRepository()
+
+
+def get_graph_repository() -> GraphRepository:
+    return GraphRepository()
+
+
+def get_overview_repository() -> OverviewRepository:
+    return OverviewRepository()
+
+
+def get_chunk_repository() -> ChunkRepository:
+    return ChunkRepository()
 
 
 def get_file_repository() -> FileRepository:
@@ -719,3 +743,277 @@ async def search_repository(
         raise ForbiddenError("Access forbidden to this repository.")
 
     return await retrieval_service.search(repo_id=repo_id, request=payload)
+
+
+async def _build_and_save_overview(
+    repo_id: str,
+    repo_doc: dict[str, Any],
+    file_repo: FileRepository,
+    symbol_repo: SymbolRepository,
+    graph_repo: GraphRepository,
+    overview_repo: OverviewRepository,
+) -> dict[str, Any]:
+    files = await file_repo.list_files(repo_id, limit=5000)
+    all_paths = [f["path"] for f in files]
+    readme_file = next(
+        (f for f in files if f.get("path", "").lower() == "readme.md"),
+        None,
+    )
+    readme_text = readme_file.get("content") or readme_file.get("text", "") if readme_file else ""
+
+    symbols = await symbol_repo.list_for_repo(repo_id, limit=5000)
+    symbols_by_file: dict[str, list[dict[str, Any]]] = {}
+    for s in symbols:
+        symbols_by_file.setdefault(s.get("path", ""), []).append(s)
+
+    edges = await graph_repo.list_for_repo(repo_id, limit=5000)
+    if not edges:
+        edges = GraphBuilder().build_edges(files, symbols_by_file)
+        if edges:
+            await graph_repo.bulk_upsert_edges(repo_id, edges)
+
+    analyzer = GraphAnalyzer(edges, all_paths)
+    metrics = analyzer.compute_file_metrics()
+    await file_repo.bulk_update_metrics(repo_id, metrics)
+
+    languages_stats = repo_doc.get("stats", {}).get("languages")
+    tech_stack = TechStackDetector().detect(files, languages_stats)
+    entry_points = EntryPointDetector().detect(files)
+    reading_order = ReadingOrderGenerator().generate(all_paths, entry_points, metrics, edges)
+    top_files = await file_repo.list_top_pagerank_files(repo_id, limit=15)
+    if not top_files:
+        top_files = files[:15]
+
+    llm = get_llm_provider()
+    overview_svc = OverviewService(llm)
+    overview_data = await overview_svc.generate_overview(
+        repo_name=repo_doc.get("display_name") or repo_doc.get("name") or "repository",
+        commit_sha=repo_doc.get("commit_sha", ""),
+        readme_text=readme_text,
+        tech_stack=tech_stack,
+        entry_points=entry_points,
+        reading_order=reading_order,
+        file_metrics=metrics,
+        top_files=top_files,
+    )
+    saved = await overview_repo.upsert(
+        repo_id=repo_id,
+        commit_sha=repo_doc.get("commit_sha", ""),
+        overview_data=overview_data,
+    )
+    return saved
+
+
+@router.get(
+    "/{repo_id}/overview",
+    response_model=OverviewResponse,
+    summary="Get repository onboarding overview (§8.9, §12)",
+)
+async def get_repository_overview(
+    repo_id: str,
+    user: dict[str, Any] = Depends(get_current_user),
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+    member_repo: RepoMemberRepository = Depends(get_member_repository),
+    file_repo: FileRepository = Depends(get_file_repository),
+    symbol_repo: SymbolRepository = Depends(get_symbol_repository),
+    graph_repo: GraphRepository = Depends(get_graph_repository),
+    overview_repo: OverviewRepository = Depends(get_overview_repository),
+) -> OverviewResponse:
+    user_id = str(user["_id"])
+    repo_doc = await repo_repo.get_by_id(repo_id)
+    if not repo_doc:
+        raise NotFoundError(f"Repository {repo_id} not found.")
+
+    is_owner = repo_doc["owner_id"] == user_id
+    member = await member_repo.get_member(repo_id, user_id)
+    if not is_owner and not member and user.get("role") != "admin":
+        raise ForbiddenError("Access forbidden to this repository.")
+
+    existing = await overview_repo.get_by_repo(repo_id)
+    if existing:
+        return OverviewResponse(
+            repo_id=str(repo_id),
+            commit_sha=existing.get("commit_sha"),
+            markdown=existing.get("markdown", ""),
+            suggested_questions=existing.get("suggested_questions", []),
+            tech_stack=existing.get("tech_stack", []),
+            entry_points=existing.get("entry_points", []),
+            reading_order=existing.get("reading_order", []),
+            sources=existing.get("sources", []),
+            updated_at=existing["updated_at"].isoformat() if existing.get("updated_at") else None,
+        )
+
+    # Compute and persist on-demand if missing
+    created = await _build_and_save_overview(
+        repo_id=repo_id,
+        repo_doc=repo_doc,
+        file_repo=file_repo,
+        symbol_repo=symbol_repo,
+        graph_repo=graph_repo,
+        overview_repo=overview_repo,
+    )
+    return OverviewResponse(
+        repo_id=str(repo_id),
+        commit_sha=created.get("commit_sha"),
+        markdown=created.get("markdown", ""),
+        suggested_questions=created.get("suggested_questions", []),
+        tech_stack=created.get("tech_stack", []),
+        entry_points=created.get("entry_points", []),
+        reading_order=created.get("reading_order", []),
+        sources=created.get("sources", []),
+        updated_at=created["updated_at"].isoformat() if created.get("updated_at") else None,
+    )
+
+
+@router.post(
+    "/{repo_id}/overview/regenerate",
+    response_model=OverviewResponse,
+    summary="Regenerate repository onboarding overview (§8.9, §12)",
+)
+async def regenerate_repository_overview(
+    repo_id: str,
+    user: dict[str, Any] = Depends(get_current_user),
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+    member_repo: RepoMemberRepository = Depends(get_member_repository),
+    file_repo: FileRepository = Depends(get_file_repository),
+    symbol_repo: SymbolRepository = Depends(get_symbol_repository),
+    graph_repo: GraphRepository = Depends(get_graph_repository),
+    overview_repo: OverviewRepository = Depends(get_overview_repository),
+) -> OverviewResponse:
+    user_id = str(user["_id"])
+    repo_doc = await repo_repo.get_by_id(repo_id)
+    if not repo_doc:
+        raise NotFoundError(f"Repository {repo_id} not found.")
+
+    is_owner = repo_doc["owner_id"] == user_id
+    member = await member_repo.get_member(repo_id, user_id)
+    role = member.get("role") if member else None
+    if not is_owner and role not in ["editor", "owner"] and user.get("role") != "admin":
+        raise ForbiddenError("Insufficient permissions to regenerate overview.")
+
+    created = await _build_and_save_overview(
+        repo_id=repo_id,
+        repo_doc=repo_doc,
+        file_repo=file_repo,
+        symbol_repo=symbol_repo,
+        graph_repo=graph_repo,
+        overview_repo=overview_repo,
+    )
+    return OverviewResponse(
+        repo_id=str(repo_id),
+        commit_sha=created.get("commit_sha"),
+        markdown=created.get("markdown", ""),
+        suggested_questions=created.get("suggested_questions", []),
+        tech_stack=created.get("tech_stack", []),
+        entry_points=created.get("entry_points", []),
+        reading_order=created.get("reading_order", []),
+        sources=created.get("sources", []),
+        updated_at=created["updated_at"].isoformat() if created.get("updated_at") else None,
+    )
+
+
+@router.get(
+    "/{repo_id}/graph",
+    response_model=GraphResponse,
+    summary="Get repository dependency graph (§8.8, §12)",
+)
+async def get_repository_graph(
+    repo_id: str,
+    level: str = Query("file", pattern="^(file|directory)$"),
+    depth: int | None = Query(None, ge=1, le=5),
+    focus: str | None = Query(None),
+    hops: int = Query(1, ge=1, le=4),
+    include_external: bool = Query(False),
+    include_calls: bool = Query(True),
+    user: dict[str, Any] = Depends(get_current_user),
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+    member_repo: RepoMemberRepository = Depends(get_member_repository),
+    file_repo: FileRepository = Depends(get_file_repository),
+    symbol_repo: SymbolRepository = Depends(get_symbol_repository),
+    graph_repo: GraphRepository = Depends(get_graph_repository),
+) -> GraphResponse:
+    user_id = str(user["_id"])
+    repo_doc = await repo_repo.get_by_id(repo_id)
+    if not repo_doc:
+        raise NotFoundError(f"Repository {repo_id} not found.")
+
+    is_owner = repo_doc["owner_id"] == user_id
+    member = await member_repo.get_member(repo_id, user_id)
+    if not is_owner and not member and user.get("role") != "admin":
+        raise ForbiddenError("Access forbidden to this repository.")
+
+    files = await file_repo.list_files(repo_id, limit=5000)
+    all_paths = [f["path"] for f in files]
+    edges = await graph_repo.list_for_repo(repo_id, limit=5000)
+
+    if not edges:
+        symbols = await symbol_repo.list_for_repo(repo_id, limit=5000)
+        symbols_by_file: dict[str, list[dict[str, Any]]] = {}
+        for s in symbols:
+            symbols_by_file.setdefault(s.get("path", ""), []).append(s)
+        edges = GraphBuilder().build_edges(files, symbols_by_file)
+        if edges:
+            await graph_repo.bulk_upsert_edges(repo_id, edges)
+
+    analyzer = GraphAnalyzer(edges, all_paths)
+    view = analyzer.get_graph_view(
+        level=level,
+        depth=depth,
+        focus=focus,
+        hops=hops,
+        include_external=include_external,
+        include_calls=include_calls,
+    )
+    return GraphResponse(**view)
+
+
+@router.get(
+    "/{repo_id}/stats",
+    response_model=RepoStatsResponse,
+    summary="Get repository statistics (§12)",
+)
+async def get_repository_stats(
+    repo_id: str,
+    user: dict[str, Any] = Depends(get_current_user),
+    repo_repo: RepositoryRepository = Depends(get_repo_repository),
+    member_repo: RepoMemberRepository = Depends(get_member_repository),
+    file_repo: FileRepository = Depends(get_file_repository),
+    symbol_repo: SymbolRepository = Depends(get_symbol_repository),
+    chunk_repo: ChunkRepository = Depends(get_chunk_repository),
+) -> RepoStatsResponse:
+    user_id = str(user["_id"])
+    repo_doc = await repo_repo.get_by_id(repo_id)
+    if not repo_doc:
+        raise NotFoundError(f"Repository {repo_id} not found.")
+
+    is_owner = repo_doc["owner_id"] == user_id
+    member = await member_repo.get_member(repo_id, user_id)
+    if not is_owner and not member and user.get("role") != "admin":
+        raise ForbiddenError("Access forbidden to this repository.")
+
+    files = await file_repo.list_files(repo_id, limit=5000)
+    total_loc = sum(f.get("loc", 0) for f in files)
+    total_redactions = sum(f.get("redaction_count", 0) for f in files)
+
+    counts_by_kind: dict[str, int] = {}
+    for f in files:
+        k = f.get("kind", "code")
+        counts_by_kind[k] = counts_by_kind.get(k, 0) + 1
+
+    total_symbols = await symbol_repo.count_for_repo(repo_id)
+    total_chunks = await chunk_repo.count_for_repo(repo_id)
+
+    stats = repo_doc.get("stats", {})
+    languages = stats.get("languages", {})
+
+    return RepoStatsResponse(
+        repo_id=str(repo_id),
+        commit_sha=repo_doc.get("commit_sha"),
+        total_files=len(files),
+        total_loc=total_loc,
+        total_symbols=total_symbols,
+        total_chunks=total_chunks,
+        total_redactions=total_redactions,
+        languages=languages,
+        file_counts_by_kind=counts_by_kind,
+    )

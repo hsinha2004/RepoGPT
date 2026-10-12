@@ -111,3 +111,23 @@ class FileRepository:
             self._files.find({"repo_id": str(repo_id)}).sort("metrics.pagerank", -1).limit(limit)
         )
         return await cursor.to_list(length=limit)
+
+    async def bulk_update_metrics(
+        self,
+        repo_id: str | ObjectId,
+        metrics_by_path: dict[str, dict[str, Any]],
+    ) -> int:
+        """Updates file metrics (pagerank, fan_in, fan_out, in_cycle, is_orphan)."""
+        if not metrics_by_path:
+            return 0
+        rid = str(repo_id)
+        ops = []
+        for path, m in metrics_by_path.items():
+            ops.append(
+                UpdateOne(
+                    {"repo_id": rid, "path": path},
+                    {"$set": {"metrics": m}},
+                )
+            )
+        res = await self._files.bulk_write(ops, ordered=False)
+        return res.modified_count

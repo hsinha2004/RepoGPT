@@ -87,11 +87,19 @@ Updated at the completion of each milestone with status, verification details, a
     - Quality Gates: All 164 backend pytest tests passing; `mypy backend/app` clean across 122 source files; `ruff check` and `ruff format` clean; frontend `tsc -b && vite build` built cleanly; zero-key offline mode fully functional.
   - Known issues: None
 
-- [ ] **M7: Graph, analysis & overview**
+- [x] **M7: Graph, analysis & overview**
   - Scope: Import resolvers, heuristic calls, NetworkX metrics, directory aggregation, tech stack, entry points, reading order, overview (LLM + heuristic); frontend Overview and Graph pages.
   - Exit criteria: Graph of TaskFlow shows frontend -> API -> service -> repository -> db chain; overview lists correct stack and entry points.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - Multi-Language Import Resolvers: Language-specific import resolvers in `app/services/graph/resolvers/` for Python (relative `.`/`..`, package roots, `.py`/`__init__.py`), JavaScript/TypeScript (relative, `@/` / `~/` aliases, `index.ts`/`tsx` extensions), Java (fully qualified package/class names and wildcard packages), and Go (standard library detection, `go.mod` module path matching, package directories). 5/5 unit tests passing in `test_resolvers.py`.
+    - Graph Builder & NetworkX Analysis: `GraphBuilder` constructing import and call dependency edges (`imports`, `calls`). `GraphAnalyzer` computing PageRank centrality, in-degree/out-degree (fan-in / fan-out), orphan detection, simple cycle detection ($\le 50$), weakly connected components, ego-graph focus subgraphs, and directory-level rollup aggregation. 5/5 unit tests passing in `test_graph_analysis.py`.
+    - Architectural Detection & Analysis: `TechStackDetector` identifying frameworks, libraries, databases, and runtimes across 8 categories with manifest evidence; `EntryPointDetector` detecting CLI, API server, background worker, script, and app factories; `ReadingOrderGenerator` producing topologically and centrality-sorted onboarding reading path.
+    - Onboarding Overview Service: `OverviewService` synthesizing structured markdown architectural narratives with verified inline `[S#]` citations, 6–8 repo-specific suggested questions, and zero-key deterministic heuristic fallback.
+    - Pipeline & Incremental Sync: Integrated Stage 9 (`graph`, 90 -> 95%) and Stage 10 (`overview`, 95 -> 100%) into `IngestionPipeline` and `IncrementalSyncService` with snapshot file metrics bulk persistence.
+    - API Endpoints: Fully typed OpenAPI endpoints mounted at `GET /api/v1/repos/{id}/overview`, `POST /api/v1/repos/{id}/overview/regenerate`, `GET /api/v1/repos/{id}/graph`, and `GET /api/v1/repos/{id}/stats`. Integration verified in `test_graph_overview.py`.
+    - Frontend Architecture & Visual Graph: Interactive `OverviewPage.tsx` with dynamic `[S#]` citations, tech stack chips, language breakdown bar, stat counters, entry points table, suggested questions, and regenerator button; interactive `GraphPage.tsx` with `@xyflow/react`, `elkjs` hierarchical auto-layout, directory cluster filtering, centrality metrics, cycle warnings, and detail inspection drawer. 6/6 Vitest tests passing in `overview.test.ts` and `graph.test.ts`.
+    - Quality Gates: All 175 backend pytest tests passing (100%); `ruff check` and `ruff format` 100% clean; `mypy backend/app` clean across 137 source files; frontend `tsc -b` and `vite build` passing with 0 errors.
   - Known issues: None
 
 - [ ] **M8: Evaluation**

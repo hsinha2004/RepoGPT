@@ -16,10 +16,18 @@ from app.db.mongo import get_database
 from app.db.redis import get_redis_client
 from app.db.repositories.chunks import ChunkRepository
 from app.db.repositories.files import FileRepository
+from app.db.repositories.graph import GraphRepository
 from app.db.repositories.jobs import JobRepository
+from app.db.repositories.overview import OverviewRepository
 from app.db.repositories.repos import RepositoryRepository
 from app.db.repositories.symbols import SymbolRepository
+from app.services.analysis.entry_points import EntryPointDetector
+from app.services.analysis.overview import OverviewService
+from app.services.analysis.reading_order import ReadingOrderGenerator
+from app.services.analysis.tech_stack import TechStackDetector
 from app.services.chunking.chunker import CodeChunker
+from app.services.graph.analyzer import GraphAnalyzer
+from app.services.graph.builder import GraphBuilder
 from app.services.indexing.embeddings.cache import EmbeddingCache
 from app.services.indexing.embeddings.factory import get_embedding_provider
 from app.services.indexing.vector.factory import get_vector_store
@@ -27,6 +35,7 @@ from app.services.ingestion.archive import SafeArchiveExtractor
 from app.services.ingestion.filter import IngestionFilter
 from app.services.ingestion.github_fetcher import GitHubFetcher, parse_github_url
 from app.services.keyword.bm25_index import BM25Index, get_bm25_manager
+from app.services.llm.factory import get_llm_provider
 from app.services.parsing.models import ParsedFile
 from app.services.parsing.registry import ParserRegistry
 from app.services.redaction.redactor import SecretRedactor
@@ -44,6 +53,8 @@ class IngestionPipeline:
         file_repo: FileRepository | None = None,
         symbol_repo: SymbolRepository | None = None,
         chunk_repo: ChunkRepository | None = None,
+        graph_repo: GraphRepository | None = None,
+        overview_repo: OverviewRepository | None = None,
         cache: EmbeddingCache | None = None,
     ) -> None:
         self.job_id = job_id
@@ -56,13 +67,32 @@ class IngestionPipeline:
             or file_repo is None
             or symbol_repo is None
             or chunk_repo is None
+            or graph_repo is None
+            or overview_repo is None
         ):
-            db = get_database()
-        self.repo_repo = repo_repo or RepositoryRepository(db.repositories)  # type: ignore[union-attr]
-        self.job_repo = job_repo or JobRepository(db.jobs)  # type: ignore[union-attr]
-        self.file_repo = file_repo or FileRepository(db.files, db.skipped_files)  # type: ignore[union-attr]
-        self.symbol_repo = symbol_repo or SymbolRepository(db.symbols)  # type: ignore[union-attr]
-        self.chunk_repo = chunk_repo or ChunkRepository(db.chunks)  # type: ignore[union-attr]
+            try:
+                db = get_database()
+            except Exception:
+                db = None
+        self.repo_repo = repo_repo or (
+            RepositoryRepository(db.repositories) if db is not None else RepositoryRepository()
+        )
+        self.job_repo = job_repo or (JobRepository(db.jobs) if db is not None else JobRepository())
+        self.file_repo = file_repo or (
+            FileRepository(db.files, db.skipped_files) if db is not None else FileRepository()
+        )
+        self.symbol_repo = symbol_repo or (
+            SymbolRepository(db.symbols) if db is not None else SymbolRepository()
+        )
+        self.chunk_repo = chunk_repo or (
+            ChunkRepository(db.chunks) if db is not None else ChunkRepository()
+        )
+        self.graph_repo = graph_repo or (
+            GraphRepository(db.graph_edges) if db is not None else GraphRepository()
+        )
+        self.overview_repo = overview_repo or (
+            OverviewRepository(db.repo_overviews) if db is not None else OverviewRepository()
+        )
         self.settings = get_settings()
 
     async def emit_progress(
@@ -517,6 +547,113 @@ class IngestionPipeline:
                 stage="indexing",
                 progress=90,
                 message=f"Indexes built successfully: {len(chunk_vector_ids)} vectors, {len(all_chunks_to_upsert)} BM25 docs.",
+            )
+
+            # ================= STAGE 9: GRAPH (90 -> 95%) =================
+            await self.emit_progress(
+                stage="graph",
+                progress=90,
+                message="Constructing dependency graph and computing centrality metrics...",
+            )
+
+            # Build symbols_by_file map
+            symbols_by_file: dict[str, list[dict[str, Any]]] = {}
+            for sym_doc in all_symbols_to_upsert:
+                symbols_by_file.setdefault(sym_doc.get("path", ""), []).append(sym_doc)
+
+            # Detect Go module name if go.mod exists
+            go_mod_module = ""
+            for f_doc in valid_files:
+                if f_doc.get("path") == "go.mod":
+                    go_disk = os.path.join(snapshot_dir, "go.mod")
+                    if os.path.exists(go_disk):
+                        try:
+                            with open(go_disk, encoding="utf-8", errors="ignore") as gf:
+                                for line in gf:
+                                    sline = line.strip()
+                                    if sline.startswith("module "):
+                                        go_mod_module = sline.split(maxsplit=1)[1].strip()
+                                        break
+                        except Exception:
+                            pass
+                    break
+
+            builder = GraphBuilder()
+            edges = builder.build_edges(
+                files=valid_files,
+                symbols_by_file=symbols_by_file,
+                go_module=go_mod_module,
+            )
+
+            await self.graph_repo.delete_for_repo(self.repo_id)
+            if edges:
+                await self.graph_repo.bulk_upsert_edges(self.repo_id, edges)
+
+            all_paths = [f["path"] for f in valid_files]
+            analyzer = GraphAnalyzer(edges, all_paths)
+            file_metrics = analyzer.compute_file_metrics()
+            await self.file_repo.bulk_update_metrics(self.repo_id, file_metrics)
+
+            await self.check_cancellation()
+            await self.emit_progress(
+                stage="graph",
+                progress=95,
+                message=f"Dependency graph constructed ({len(edges)} edges) and centrality metrics calculated.",
+            )
+
+            # ================= STAGE 10: OVERVIEW (95 -> 100%) =================
+            await self.emit_progress(
+                stage="overview",
+                progress=95,
+                message="Generating architectural overview and onboarding tour...",
+            )
+
+            files_with_content = []
+            for f_doc in valid_files:
+                f_copy = dict(f_doc)
+                f_copy["content"] = raw_content_map.get(f_doc["path"], "")
+                files_with_content.append(f_copy)
+
+            tech_detector = TechStackDetector()
+            tech_stack = tech_detector.detect(files_with_content, languages)
+
+            ep_detector = EntryPointDetector()
+            entry_points = ep_detector.detect(files_with_content)
+
+            ro_gen = ReadingOrderGenerator()
+            reading_order = ro_gen.generate(all_paths, entry_points, file_metrics, edges)
+
+            readme_text = ""
+            for f_doc in valid_files:
+                if f_doc.get("path", "").lower() in ("readme.md", "readme", "readme.txt"):
+                    readme_text = raw_content_map.get(f_doc["path"], "")
+                    break
+
+            top_files = sorted(
+                valid_files,
+                key=lambda f: file_metrics.get(f["path"], {}).get("pagerank", 0.0),
+                reverse=True,
+            )
+
+            llm = get_llm_provider()
+            overview_service = OverviewService(llm)
+            overview_data = await overview_service.generate_overview(
+                repo_name=repo_doc.get("display_name") or repo_doc.get("name") or "Repository",
+                commit_sha=commit_sha,
+                readme_text=readme_text,
+                tech_stack=tech_stack,
+                entry_points=entry_points,
+                reading_order=reading_order,
+                file_metrics=file_metrics,
+                top_files=top_files[:15],
+            )
+            await self.overview_repo.upsert(self.repo_id, commit_sha, overview_data)
+
+            await self.check_cancellation()
+            await self.emit_progress(
+                stage="overview",
+                progress=100,
+                message="Repository indexing, dependency graph, and architectural overview complete.",
                 status="succeeded",
             )
 

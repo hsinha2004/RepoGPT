@@ -20,9 +20,17 @@ from app.db.mongo import get_collection
 from app.db.redis import get_redis_client
 from app.db.repositories.chunks import ChunkRepository
 from app.db.repositories.files import FileRepository
+from app.db.repositories.graph import GraphRepository
+from app.db.repositories.overview import OverviewRepository
 from app.db.repositories.repos import RepositoryRepository
 from app.db.repositories.symbols import SymbolRepository
+from app.services.analysis.entry_points import EntryPointDetector
+from app.services.analysis.overview import OverviewService
+from app.services.analysis.reading_order import ReadingOrderGenerator
+from app.services.analysis.tech_stack import TechStackDetector
 from app.services.chunking.chunker import CodeChunker
+from app.services.graph.analyzer import GraphAnalyzer
+from app.services.graph.builder import GraphBuilder
 from app.services.indexing.embeddings.cache import EmbeddingCache
 from app.services.indexing.embeddings.factory import get_embedding_provider
 from app.services.indexing.vector.factory import get_vector_store
@@ -367,6 +375,92 @@ class IncrementalSyncService:
         new_bm25_dir = bm25_manager.get_index_dir(repo_id, new_commit_sha)
         new_index = BM25Index.build(all_chunks, new_bm25_dir)
         bm25_manager.put_index(repo_id, new_commit_sha, new_index)
+
+        # 8b. Rebuild dependency graph edges, file metrics, and overview
+        all_current_files = await self.file_repo.list_files(repo_id, limit=20000)
+        all_current_symbols = await self.symbol_repo.list_for_repo(repo_id, limit=50000)
+        symbols_by_file: dict[str, list[dict[str, Any]]] = {}
+        for sym_doc in all_current_symbols:
+            symbols_by_file.setdefault(sym_doc.get("path", ""), []).append(sym_doc)
+
+        go_module = ""
+        for f_doc in all_current_files:
+            if f_doc.get("path") == "go.mod":
+                go_disk = (
+                    Path(self.settings.DATA_DIR) / "snapshots" / repo_id / new_commit_sha / "go.mod"
+                )
+                if go_disk.exists():
+                    try:
+                        with open(go_disk, encoding="utf-8", errors="ignore") as gf:
+                            for line in gf:
+                                sline = line.strip()
+                                if sline.startswith("module "):
+                                    go_module = sline.split(maxsplit=1)[1].strip()
+                                    break
+                    except Exception:
+                        pass
+                break
+
+        graph_builder = GraphBuilder()
+        edges = graph_builder.build_edges(
+            all_current_files, symbols_by_file=symbols_by_file, go_module=go_module
+        )
+        graph_repo = GraphRepository()
+        await graph_repo.delete_for_repo(repo_id)
+        if edges:
+            await graph_repo.bulk_upsert_edges(repo_id, edges)
+
+        all_paths = [f["path"] for f in all_current_files]
+        analyzer = GraphAnalyzer(edges, all_paths)
+        file_metrics = analyzer.compute_file_metrics()
+        await self.file_repo.bulk_update_metrics(repo_id, file_metrics)
+
+        # Re-generate overview
+        languages_stats = repo.get("stats", {}).get("languages") or {}
+        tech_stack = TechStackDetector().detect(all_current_files, languages_stats)
+        entry_points = EntryPointDetector().detect(all_current_files)
+        reading_order = ReadingOrderGenerator().generate(
+            all_paths, entry_points, file_metrics, edges
+        )
+
+        readme_file = next(
+            (f for f in all_current_files if f.get("path", "").lower() in ("readme.md", "readme")),
+            None,
+        )
+        readme_text = ""
+        if readme_file:
+            readme_disk = (
+                Path(self.settings.DATA_DIR)
+                / "snapshots"
+                / repo_id
+                / new_commit_sha
+                / readme_file["path"]
+            )
+            if readme_disk.exists():
+                try:
+                    with open(readme_disk, encoding="utf-8", errors="ignore") as rf:
+                        readme_text = rf.read()
+                except Exception:
+                    pass
+
+        top_files = sorted(
+            all_current_files,
+            key=lambda f: file_metrics.get(f.get("path", ""), {}).get("pagerank", 0.0),
+            reverse=True,
+        )
+        from app.services.llm.factory import get_llm_provider
+
+        overview_data = await OverviewService(get_llm_provider()).generate_overview(
+            repo_name=repo.get("display_name") or repo.get("name") or "Repository",
+            commit_sha=new_commit_sha,
+            readme_text=readme_text,
+            tech_stack=tech_stack,
+            entry_points=entry_points,
+            reading_order=reading_order,
+            file_metrics=file_metrics,
+            top_files=top_files[:15],
+        )
+        await OverviewRepository().upsert(repo_id, new_commit_sha, overview_data)
 
         # 9. Atomically switch repository commit_sha & status
         total_loc = sum(f.get("loc", 0) for f in new_valid_files)

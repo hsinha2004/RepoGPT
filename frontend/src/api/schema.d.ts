@@ -470,6 +470,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/repos/{repo_id}/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get repository onboarding overview (§8.9, §12) */
+        get: operations["get_repository_overview_api_v1_repos__repo_id__overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/overview/regenerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Regenerate repository onboarding overview (§8.9, §12) */
+        post: operations["regenerate_repository_overview_api_v1_repos__repo_id__overview_regenerate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/graph": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get repository dependency graph (§8.8, §12) */
+        get: operations["get_repository_graph_api_v1_repos__repo_id__graph_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get repository statistics (§12) */
+        get: operations["get_repository_stats_api_v1_repos__repo_id__stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/jobs/{job_id}": {
         parameters: {
             query?: never;
@@ -726,6 +794,20 @@ export interface components {
             /** Title */
             title: string;
         };
+        /** EntryPointItem */
+        EntryPointItem: {
+            /** Path */
+            path: string;
+            /** Kind */
+            kind: string;
+            /** Description */
+            description: string;
+            /**
+             * Line
+             * @default 1
+             */
+            line: number;
+        };
         /** ExportResponse */
         ExportResponse: {
             /** Markdown */
@@ -790,6 +872,111 @@ export interface components {
              * @default 0
              */
             redaction_count: number;
+        };
+        /** GraphEdge */
+        GraphEdge: {
+            /** Id */
+            id: string;
+            /** Source */
+            source: string;
+            /** Target */
+            target: string;
+            /**
+             * Type
+             * @default imports
+             * @enum {string}
+             */
+            type: "imports" | "calls";
+            /**
+             * Heuristic
+             * @default false
+             */
+            heuristic: boolean;
+            /** Symbol */
+            symbol?: string | null;
+            /**
+             * Weight
+             * @default 1
+             */
+            weight: number;
+        };
+        /** GraphNode */
+        GraphNode: {
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Full Path */
+            full_path: string;
+            /**
+             * Is External
+             * @default false
+             */
+            is_external: boolean;
+            /**
+             * Top Directory
+             * @default root
+             */
+            top_directory: string;
+            /**
+             * Fan In
+             * @default 0
+             */
+            fan_in: number;
+            /**
+             * Fan Out
+             * @default 0
+             */
+            fan_out: number;
+            /**
+             * Pagerank
+             * @default 0
+             */
+            pagerank: number;
+            /**
+             * In Cycle
+             * @default false
+             */
+            in_cycle: boolean;
+            /**
+             * Is Orphan
+             * @default false
+             */
+            is_orphan: boolean;
+            /** File Count */
+            file_count?: number | null;
+        };
+        /** GraphResponse */
+        GraphResponse: {
+            /**
+             * Level
+             * @default file
+             * @enum {string}
+             */
+            level: "file" | "directory";
+            /** Depth */
+            depth?: number | null;
+            /** Nodes */
+            nodes?: components["schemas"]["GraphNode"][];
+            /** Edges */
+            edges?: components["schemas"]["GraphEdge"][];
+            /** Cycles */
+            cycles?: string[][];
+            /**
+             * Total Nodes
+             * @default 0
+             */
+            total_nodes: number;
+            /**
+             * Total Edges
+             * @default 0
+             */
+            total_edges: number;
+            /**
+             * Orphan Count
+             * @default 0
+             */
+            orphan_count: number;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -954,6 +1141,51 @@ export interface components {
              */
             created_at: string;
         };
+        /** OverviewResponse */
+        OverviewResponse: {
+            /** Repo Id */
+            repo_id: string;
+            /** Commit Sha */
+            commit_sha?: string | null;
+            /** Markdown */
+            markdown: string;
+            /** Suggested Questions */
+            suggested_questions?: string[];
+            /** Tech Stack */
+            tech_stack?: components["schemas"]["TechStackItem"][];
+            /** Entry Points */
+            entry_points?: components["schemas"]["EntryPointItem"][];
+            /** Reading Order */
+            reading_order?: components["schemas"]["ReadingOrderItem"][];
+            /** Sources */
+            sources?: components["schemas"]["OverviewSourceItem"][];
+            /** Updated At */
+            updated_at?: string | null;
+        };
+        /** OverviewSourceItem */
+        OverviewSourceItem: {
+            /** Id */
+            id: string;
+            /** Path */
+            path: string;
+            /**
+             * Start Line
+             * @default 1
+             */
+            start_line: number;
+            /**
+             * End Line
+             * @default 1
+             */
+            end_line: number;
+            /** Symbol */
+            symbol?: string | null;
+            /**
+             * Snippet
+             * @default
+             */
+            snippet: string;
+        };
         /** PatStatusResponse */
         PatStatusResponse: {
             /** Has Pat */
@@ -971,6 +1203,17 @@ export interface components {
             symbol?: number | null;
             /** Graph */
             graph?: number | null;
+        };
+        /** ReadingOrderItem */
+        ReadingOrderItem: {
+            /** Step */
+            step: number;
+            /** Path */
+            path: string;
+            /** Category */
+            category: string;
+            /** Reason */
+            reason: string;
         };
         /** RegisterRequest */
         RegisterRequest: {
@@ -1134,6 +1377,46 @@ export interface components {
              * @default 0
              */
             redactions: number;
+        };
+        /** RepoStatsResponse */
+        RepoStatsResponse: {
+            /** Repo Id */
+            repo_id: string;
+            /** Commit Sha */
+            commit_sha?: string | null;
+            /**
+             * Total Files
+             * @default 0
+             */
+            total_files: number;
+            /**
+             * Total Loc
+             * @default 0
+             */
+            total_loc: number;
+            /**
+             * Total Symbols
+             * @default 0
+             */
+            total_symbols: number;
+            /**
+             * Total Chunks
+             * @default 0
+             */
+            total_chunks: number;
+            /**
+             * Total Redactions
+             * @default 0
+             */
+            total_redactions: number;
+            /** Languages */
+            languages?: {
+                [key: string]: number;
+            };
+            /** File Counts By Kind */
+            file_counts_by_kind?: {
+                [key: string]: number;
+            };
         };
         /** RepoSyncRequest */
         RepoSyncRequest: {
@@ -1371,6 +1654,15 @@ export interface components {
              * @default true
              */
             exported: boolean;
+        };
+        /** TechStackItem */
+        TechStackItem: {
+            /** Name */
+            name: string;
+            /** Category */
+            category: string;
+            /** Evidence */
+            evidence: string;
         };
         /** TokenResponse */
         TokenResponse: {
@@ -2378,6 +2670,137 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SearchResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_repository_overview_api_v1_repos__repo_id__overview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    regenerate_repository_overview_api_v1_repos__repo_id__overview_regenerate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_repository_graph_api_v1_repos__repo_id__graph_get: {
+        parameters: {
+            query?: {
+                level?: string;
+                depth?: number | null;
+                focus?: string | null;
+                hops?: number;
+                include_external?: boolean;
+                include_calls?: boolean;
+            };
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GraphResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_repository_stats_api_v1_repos__repo_id__stats_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RepoStatsResponse"];
                 };
             };
             /** @description Validation Error */

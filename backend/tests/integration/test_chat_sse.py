@@ -154,9 +154,7 @@ def chat_app():
 
     mock_chat_service = MagicMock()
 
-    async def mock_stream(
-        conversation_id, user_id, content, strategy="auto", regenerate_of=None
-    ):
+    async def mock_stream(conversation_id, user_id, content, strategy="auto", regenerate_of=None):
         _ = (user_id, content, strategy, regenerate_of)
         yield {
             "event": "meta",
