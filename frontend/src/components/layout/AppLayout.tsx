@@ -211,7 +211,8 @@ export const AppLayout: React.FC = () => {
           <div className="border-b border-[#27272a] bg-[#111113]/50 px-6 overflow-x-auto scrollbar-none flex gap-1">
             {repoNavTabs.map((tab) => {
               const TabIcon = tab.icon;
-              const isActive = location.pathname === tab.path;
+              const isActive =
+                location.pathname === tab.path || location.pathname.startsWith(`${tab.path}/`);
               return (
                 <Link
                   key={tab.path}
@@ -250,9 +251,22 @@ export const AppLayout: React.FC = () => {
         )}
 
         {/* Main Content Area */}
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
-          <Outlet />
-        </main>
+        {(() => {
+          const isWorkbenchView = Boolean(
+            location.pathname.match(/\/app\/repos\/[^/]+\/(chat|explorer|graph)(\/.*)?$/)
+          );
+          return (
+            <main
+              className={`flex-1 ${
+                isWorkbenchView
+                  ? "min-h-0 flex flex-col overflow-hidden"
+                  : "p-6 md:p-8 overflow-y-auto"
+              }`}
+            >
+              <Outlet />
+            </main>
+          );
+        })()}
       </div>
     </div>
   );

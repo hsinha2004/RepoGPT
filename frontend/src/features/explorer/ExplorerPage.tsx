@@ -152,7 +152,7 @@ export const ExplorerPage: React.FC = () => {
 
   if (filesLoading) {
     return (
-      <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
+      <div className="flex flex-1 min-h-0 items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-zinc-400">
           <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
           <span className="text-sm">Loading repository tree...</span>
@@ -163,7 +163,7 @@ export const ExplorerPage: React.FC = () => {
 
   if (filesError) {
     return (
-      <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
+      <div className="flex flex-1 min-h-0 items-center justify-center p-6">
         <div className="flex items-center gap-2 p-4 bg-red-950/40 border border-red-800 text-red-300 rounded text-sm">
           <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
           <span>Failed to load repository files. Please try again or check ingestion status.</span>
@@ -173,7 +173,7 @@ export const ExplorerPage: React.FC = () => {
   }
 
   return (
-    <div className="h-[calc(100vh-5.5rem)] flex border border-zinc-800/80 rounded-lg overflow-hidden bg-[#0d0d0f]">
+    <div className="flex-1 min-h-0 flex overflow-hidden bg-[#0d0d0f]">
       {/* Left: File Tree Explorer (260px) */}
       <div className="w-64 shrink-0 h-full">
         <FileTree

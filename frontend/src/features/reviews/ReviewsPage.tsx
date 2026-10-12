@@ -368,50 +368,20 @@ export const ReviewsPage: React.FC = () => {
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-20">
-      {/* Sub-navigation bar */}
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-[#27272a] pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#6366f1]/15 border border-[#6366f1]/30 flex items-center justify-center text-[#818cf8]">
-            <GitPullRequest className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-lg bg-[#6366f1]/10 border border-[#6366f1]/25 flex items-center justify-center text-[#818cf8]">
+            <GitPullRequest className="w-4 h-4" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-white">
-                {repo?.display_name || "Repository"}
-              </h1>
-              <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                Phase 2 • PR Review
-              </span>
-            </div>
+            <h1 className="text-base font-semibold tracking-tight text-white">
+              Pull Request & Code Reviews
+            </h1>
             <p className="text-xs text-[#71717a]">
-              Context-aware pull request review, bug & security finding verification, and publishing
+              Context-aware pull request review, bug & security finding verification, and GitHub publishing.
             </p>
           </div>
-        </div>
-
-        {/* Feature quick links */}
-        <div className="flex items-center gap-2">
-          <Link
-            to={`/app/repos/${repoId}/overview`}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#18181b] border border-[#27272a] text-[#a1a1aa] hover:text-white transition-colors"
-          >
-            <Layers className="w-3.5 h-3.5 text-[#818cf8]" />
-            <span>Overview</span>
-          </Link>
-          <Link
-            to={`/app/repos/${repoId}/chat`}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#18181b] border border-[#27272a] text-[#a1a1aa] hover:text-white transition-colors"
-          >
-            <MessageSquare className="w-3.5 h-3.5 text-[#10b981]" />
-            <span>Chat</span>
-          </Link>
-          <Link
-            to={`/app/repos/${repoId}/graph`}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#18181b] border border-[#27272a] text-[#a1a1aa] hover:text-white transition-colors"
-          >
-            <FileCode className="w-3.5 h-3.5 text-[#f59e0b]" />
-            <span>Graph</span>
-          </Link>
         </div>
       </div>
 

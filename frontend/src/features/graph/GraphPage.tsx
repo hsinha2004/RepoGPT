@@ -337,7 +337,7 @@ export const GraphPage: React.FC = () => {
   }, [selectedNode, graphData]);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] -m-6 relative overflow-hidden bg-[#09090b]">
+    <div className="flex flex-col flex-1 min-h-0 relative overflow-hidden bg-[#09090b]">
       {/* Top Controls Toolbar */}
       <div className="px-6 py-3 border-b border-[#27272a] bg-[#111113]/90 backdrop-blur z-20 flex flex-wrap items-center justify-between gap-4">
         {/* Left: View Level & Search */}

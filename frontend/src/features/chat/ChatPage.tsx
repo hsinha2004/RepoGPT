@@ -468,7 +468,7 @@ export const ChatPage: React.FC = () => {
   );
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#09090b] text-[#fafafa]">
+    <div className="flex flex-1 min-h-0 w-full overflow-hidden bg-[#09090b] text-[#fafafa]">
       {/* ======================================================== */}
       {/* 1. LEFT PANE: CONVERSATION LIST (Sidebar)              */}
       {/* ======================================================== */}
