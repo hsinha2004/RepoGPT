@@ -136,7 +136,9 @@ async def test_authz_enumeration_and_unauthorized_rejection(
                     scoped_routes.append((method.upper(), path))
 
     # Assert that routes were dynamically detected
-    assert len(scoped_routes) >= 10, f"Expected at least 10 scoped routes, found {len(scoped_routes)}"
+    assert len(scoped_routes) >= 10, (
+        f"Expected at least 10 scoped routes, found {len(scoped_routes)}"
+    )
 
     # Create dummy unauthorized user
     attacker_token = create_access_token(
@@ -195,4 +197,6 @@ async def test_authz_enumeration_and_unauthorized_rejection(
             "/api/v1/admin/jobs/607f1f77bcf86cd799439013/retry",
             headers=auth_headers,
         )
-        assert admin_res.status_code == 404, f"Expected 404 for non-existent admin job, got {admin_res.status_code}"
+        assert admin_res.status_code == 404, (
+            f"Expected 404 for non-existent admin job, got {admin_res.status_code}"
+        )

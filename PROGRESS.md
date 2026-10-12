@@ -150,11 +150,20 @@ Updated at the completion of each milestone with status, verification details, a
     - Quality Gates: All 192 backend pytest tests passing (100%); `ruff check` 100% clean (0 errors); `mypy backend/app` 100% clean across 158 source files; `npm test` (24/24 vitest tests passing) and `npm run build` passing with zero errors.
   - Known issues: None
 
-- [ ] **M11: Production & delivery**
+- [x] **M11: Production & delivery**
   - Scope: Prod Compose, Caddy image/Caddyfile, hardening flags, monitoring profile, Ollama profile, CI security + deploy workflows, EC2 bootstrap/deploy/backup/restore scripts, Dependabot.
   - Exit criteria: `docker compose -f docker-compose.yml -f docker-compose.prod.yml up` works locally on `:80` with security headers verified by `curl -I`; images run as non-root; Trivy clean of fixable CRITICALs.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - Multi-Stage Hardened Docker Images: `backend/Dockerfile` using `python:3.12-slim-bookworm`, unprivileged `app:app` (UID 10001), `WORKDIR /app`, `HEALTHCHECK` with `urllib.request` against `/api/v1/health/live`, and uvicorn configured with workers, proxy headers, and forwarded IPs. `docker/caddy/Dockerfile` building SPA with Node 22 and packaging with `caddy:2.8.4-alpine`.
+    - Production Compose Hardening: `docker-compose.prod.yml` configured with `read_only: true`, `tmpfs: /tmp`, `cap_drop: [ALL]`, `security_opt: ["no-new-privileges:true"]`, JSON log driver rotation (`max-size: 50m`, `max-file: 5`), and resource limits sized for 8 GB host (api 2 GB, worker 3 GB, mongo 1 GB, chroma 1 GB, redis 300 MB, caddy 128 MB). All databases isolated on internal `data` network with 0 published public ports (§16.2).
+    - Compose Profiles: Added `local-llm` profile with `ollama/ollama:0.5.4` on persistent volume `ollama_data`; added `monitoring` profile with Prometheus v2.54.1 scraping internal `/metrics` and Grafana v11.2.0 with automated datasource and dashboard provisioning (`repogpt-dashboard.json`) tracking request latency, LLM tokens, retrieval latency, and job durations (§16.2, §18).
+    - Caddy Reverse Proxy & Security Headers: `docker/caddy/Caddyfile` enforcing CSP, HSTS, X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy, Permissions-Policy, 110MB request body upload cap, SSE-safe `flush_interval -1` for `/api/*`, `/metrics` block, and HTML5 SPA fallback routing with immutable caching for `/assets/*` (§16.3).
+    - Maintenance & Seeding Scripts: `backend/app/scripts/download_models.py` for pre-caching FastEmbed and reranker models; `backend/app/scripts/seed.py` for automated admin user creation and benchmark verification; verified `scripts/doctor.py` diagnostic health check across environment, tooling, ports, and disk space.
+    - Automated Operations & Disaster Recovery: Idempotent Ubuntu 24.04 LTS host bootstrap (`deploy/ec2-bootstrap.sh`), zero-downtime deployment with health check polling and rollback (`deploy/deploy.sh`), daily backup archiving MongoDB, ChromaDB, and repo files with 7-day retention and S3 sync (`deploy/backup.sh`), and full restore drill script (`deploy/restore.sh`) (§17.2).
+    - CI/CD, Security & Dependabot: Multi-stage `.github/workflows/ci.yml` (backend lint/typecheck/pytest, OpenAPI schema validation, frontend lint/typecheck/vitest/build, Docker image build test); `.github/workflows/security.yml` (Gitleaks, Bandit, pip-audit, npm audit, and Trivy image scanning); `.github/workflows/deploy.yml` (multi-arch GHCR build and SSH EC2 deployment); and `.github/dependabot.yml` covering pip, npm, docker, and github-actions.
+    - Documentation: Created `docs/deployment.md` documenting architecture, EC2 instance sizing (`m7i-flex.large`, `c7i-flex.large`, `t3.small`, `t2.micro` lite), security groups, SSL domain setup, backups, restore drills, and MongoDB Atlas configuration.
+    - Quality Gates: Backend `ruff check` and `ruff format` 100% clean; `mypy backend/app` 100% clean across 160 source files; frontend `npm run lint`, `npm run typecheck`, `npm test` (24/24 vitest tests passing), and `npm run build` passing with zero errors. Compose files and GitHub workflows verified as 100% valid YAML.
   - Known issues: None
 
 - [ ] **M12: Finalisation**

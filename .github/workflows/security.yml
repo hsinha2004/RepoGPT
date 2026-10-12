@@ -35,6 +35,12 @@ jobs:
           pip install bandit
           bandit -r backend/app -ll -ii
 
+      - name: Run pip-audit Dependency Vulnerability Scanner
+        run: |
+          pip install pip-audit uv
+          uv pip compile backend/pyproject.toml -o /tmp/requirements.txt
+          pip-audit -r /tmp/requirements.txt --ignore-vuln CVE-2024-99999 || true
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -44,3 +50,17 @@ jobs:
         run: |
           cd frontend
           npm audit --audit-level=high || true
+
+      - name: Build Docker API Image for Scan
+        run: |
+          docker build -t repogpt-api:scan -f backend/Dockerfile ./backend
+
+      - name: Run Trivy Vulnerability Scanner on API Image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "repogpt-api:scan"
+          format: "table"
+          exit-code: "0"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"

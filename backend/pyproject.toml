@@ -86,6 +86,9 @@ ignore = [
     "UP046", # Generic class uses Generic subclass instead of type parameters (Pydantic compatibility)
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ARG", "F841"]
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"

@@ -108,12 +108,14 @@ class GitHubReviewClient:
             if f.get("suggested_code"):
                 body_parts.extend(["", "```suggestion", f["suggested_code"], "```"])
 
-            comments.append({
-                "path": f["path"],
-                "line": f["end_line"],
-                "side": f.get("side", "RIGHT"),
-                "body": "\n".join(body_parts),
-            })
+            comments.append(
+                {
+                    "path": f["path"],
+                    "line": f["end_line"],
+                    "side": f.get("side", "RIGHT"),
+                    "body": "\n".join(body_parts),
+                }
+            )
 
         payload = {
             "body": summary or "Automated review findings generated via RepoGPT.",

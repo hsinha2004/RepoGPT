@@ -57,28 +57,30 @@ class ReviewEvaluator:
             diff_dicts: list[dict[str, Any]] = []
             for pd in parsed_diffs:
                 total_changed_lines += pd.added_line_count + pd.deleted_line_count
-                diff_dicts.append({
-                    "path": pd.path,
-                    "old_path": pd.old_path,
-                    "is_added": pd.is_added,
-                    "is_deleted": pd.is_deleted,
-                    "is_modified": pd.is_modified,
-                    "added_line_count": pd.added_line_count,
-                    "deleted_line_count": pd.deleted_line_count,
-                    "changed_new_lines": pd.changed_new_lines,
-                    "hunks": [
-                        {
-                            "old_start": h.old_start,
-                            "old_length": h.old_length,
-                            "new_start": h.new_start,
-                            "new_length": h.new_length,
-                            "raw_lines": h.raw_lines,
-                            "added_lines": h.added_lines,
-                            "deleted_lines": h.deleted_lines,
-                        }
-                        for h in pd.hunks
-                    ],
-                })
+                diff_dicts.append(
+                    {
+                        "path": pd.path,
+                        "old_path": pd.old_path,
+                        "is_added": pd.is_added,
+                        "is_deleted": pd.is_deleted,
+                        "is_modified": pd.is_modified,
+                        "added_line_count": pd.added_line_count,
+                        "deleted_line_count": pd.deleted_line_count,
+                        "changed_new_lines": pd.changed_new_lines,
+                        "hunks": [
+                            {
+                                "old_start": h.old_start,
+                                "old_length": h.old_length,
+                                "new_start": h.new_start,
+                                "new_length": h.new_length,
+                                "raw_lines": h.raw_lines,
+                                "added_lines": h.added_lines,
+                                "deleted_lines": h.deleted_lines,
+                            }
+                            for h in pd.hunks
+                        ],
+                    }
+                )
 
             # Run review graph on this patch
             state: ReviewGraphState = {

@@ -28,7 +28,11 @@ class StaticAnalyzer:
             self.ruff_path = ruff_path
         else:
             # Detect in virtualenv or PATH
-            venv_ruff = os.path.join(sys.prefix, "Scripts", "ruff.exe") if os.name == "nt" else os.path.join(sys.prefix, "bin", "ruff")
+            venv_ruff = (
+                os.path.join(sys.prefix, "Scripts", "ruff.exe")
+                if os.name == "nt"
+                else os.path.join(sys.prefix, "bin", "ruff")
+            )
             self.ruff_path = venv_ruff if os.path.exists(venv_ruff) else "ruff"
 
     def analyze_python_file(
@@ -77,16 +81,29 @@ class StaticAnalyzer:
                         line_num = issue.get("location", {}).get("row", 1)
                         if line_num in changed_set:
                             code = issue.get("code", "STATIC")
-                            severity = "critical" if code.startswith("S") else "high" if code.startswith("F") else "medium"
-                            findings.append({
-                                "code": code,
-                                "message": issue.get("message", "Static check violation"),
-                                "start_line": line_num,
-                                "end_line": line_num,
-                                "severity": severity,
-                                "category": "security" if code.startswith("S") else "bug",
-                            })
-            except (subprocess.TimeoutExpired, subprocess.SubprocessError, json.JSONDecodeError, FileNotFoundError) as exc:
+                            severity = (
+                                "critical"
+                                if code.startswith("S")
+                                else "high"
+                                if code.startswith("F")
+                                else "medium"
+                            )
+                            findings.append(
+                                {
+                                    "code": code,
+                                    "message": issue.get("message", "Static check violation"),
+                                    "start_line": line_num,
+                                    "end_line": line_num,
+                                    "severity": severity,
+                                    "category": "security" if code.startswith("S") else "bug",
+                                }
+                            )
+            except (
+                subprocess.TimeoutExpired,
+                subprocess.SubprocessError,
+                json.JSONDecodeError,
+                FileNotFoundError,
+            ) as exc:
                 logger.debug("static_analysis_skipped", path=path, reason=str(exc))
 
         return findings

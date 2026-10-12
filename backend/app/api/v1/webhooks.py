@@ -43,11 +43,14 @@ async def github_webhook(
     if len(raw_body) > 10 * 1024 * 1024:  # 10 MB payload size cap
         raise HTTPException(status_code=413, detail="Webhook payload exceeds limit.")
 
-    computed_sig = "sha256=" + hmac.new(
-        webhook_secret.encode("utf-8"),
-        raw_body,
-        hashlib.sha256,
-    ).hexdigest()
+    computed_sig = (
+        "sha256="
+        + hmac.new(
+            webhook_secret.encode("utf-8"),
+            raw_body,
+            hashlib.sha256,
+        ).hexdigest()
+    )
 
     # Constant-time comparison (§11.6, §11.13)
     if not hmac.compare_digest(computed_sig, x_hub_signature_256):

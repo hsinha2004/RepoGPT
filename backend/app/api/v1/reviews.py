@@ -197,7 +197,11 @@ async def publish_review(
         raise NotFoundError("Review not found", code="REVIEW_NOT_FOUND")
 
     user_id = str(current_user["_id"])
-    token = payload.github_token or current_user.get("github_token") or getattr(review_service.settings, "GITHUB_TOKEN", None)
+    token = (
+        payload.github_token
+        or current_user.get("github_token")
+        or getattr(review_service.settings, "GITHUB_TOKEN", None)
+    )
     published = await review_service.publish_to_github(
         review_id=review_id,
         user_id=user_id,

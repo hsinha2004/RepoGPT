@@ -84,7 +84,9 @@ class MockReviewsCollection:
 
         return MockCursor(items)
 
-    async def update_one(self, query: dict[str, Any], update: dict[str, Any], *args: Any, **kwargs: Any) -> Any:
+    async def update_one(
+        self, query: dict[str, Any], update: dict[str, Any], *args: Any, **kwargs: Any
+    ) -> Any:
         qid = str(query.get("_id", ""))
         target = self.db.reviews.get(qid)
         if target and "$set" in update:
@@ -127,12 +129,14 @@ async def test_reviews_api_end_to_end_lifecycle(monkeypatch: pytest.MonkeyPatch)
             "path": path,
             "content": "import db\n\ndef list_user_tasks(user_id: int):\n    return db.query(user_id)\n",
         }
+
     monkeypatch.setattr(FileRepository, "get_by_path", mock_get_by_path)
 
     app = create_app()
 
     # Override authentication dependencies
     from app.db.mongo import get_database
+
     app.dependency_overrides[get_database] = lambda: mock_db
     app.dependency_overrides[get_current_user] = lambda: {
         "_id": ObjectId(user_id),
@@ -241,6 +245,7 @@ async def test_reviews_github_fetch_and_publish_flow(monkeypatch: pytest.MonkeyP
 
     async def mock_get_by_path(self: Any, r_id: str, path: str) -> dict[str, Any]:
         return {"path": path, "content": "def hello(): pass\n"}
+
     monkeypatch.setattr(FileRepository, "get_by_path", mock_get_by_path)
 
     # Mock GitHub REST API calls via respx
@@ -272,6 +277,7 @@ async def test_reviews_github_fetch_and_publish_flow(monkeypatch: pytest.MonkeyP
 
     app = create_app()
     from app.db.mongo import get_database
+
     app.dependency_overrides[get_database] = lambda: mock_db
     app.dependency_overrides[get_current_user] = lambda: {
         "_id": ObjectId(user_id),
@@ -291,7 +297,9 @@ async def test_reviews_github_fetch_and_publish_flow(monkeypatch: pytest.MonkeyP
         review_id = review_data["id"]
         assert review_data["source"]["type"] == "github"
         assert review_data["source"]["pr_number"] == 42
-        assert review_data["indexed_commit_mismatch"] is True  # old_base_commit_111 != different_base_222
+        assert (
+            review_data["indexed_commit_mismatch"] is True
+        )  # old_base_commit_111 != different_base_222
 
         # Finding should be present
         assert len(review_data["findings"]) >= 1

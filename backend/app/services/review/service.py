@@ -124,28 +124,30 @@ class ReviewService:
             )
             static_results[path] = static_issues
 
-            diff_dicts.append({
-                "path": path,
-                "old_path": pd.old_path,
-                "is_added": pd.is_added,
-                "is_deleted": pd.is_deleted,
-                "is_modified": pd.is_modified,
-                "added_line_count": pd.added_line_count,
-                "deleted_line_count": pd.deleted_line_count,
-                "changed_new_lines": pd.changed_new_lines,
-                "hunks": [
-                    {
-                        "old_start": h.old_start,
-                        "old_length": h.old_length,
-                        "new_start": h.new_start,
-                        "new_length": h.new_length,
-                        "raw_lines": h.raw_lines,
-                        "added_lines": h.added_lines,
-                        "deleted_lines": h.deleted_lines,
-                    }
-                    for h in pd.hunks
-                ],
-            })
+            diff_dicts.append(
+                {
+                    "path": path,
+                    "old_path": pd.old_path,
+                    "is_added": pd.is_added,
+                    "is_deleted": pd.is_deleted,
+                    "is_modified": pd.is_modified,
+                    "added_line_count": pd.added_line_count,
+                    "deleted_line_count": pd.deleted_line_count,
+                    "changed_new_lines": pd.changed_new_lines,
+                    "hunks": [
+                        {
+                            "old_start": h.old_start,
+                            "old_length": h.old_length,
+                            "new_start": h.new_start,
+                            "new_length": h.new_length,
+                            "raw_lines": h.raw_lines,
+                            "added_lines": h.added_lines,
+                            "deleted_lines": h.deleted_lines,
+                        }
+                        for h in pd.hunks
+                    ],
+                }
+            )
 
         # 4. Execute LangGraph Review Graph
         state: ReviewGraphState = {
@@ -199,10 +201,14 @@ class ReviewService:
         """
         parsed_pr = parse_github_pr_url(pr_url)
         if not parsed_pr:
-            raise BadRequestError("Invalid GitHub pull request URL. Must be https://github.com/{owner}/{repo}/pull/{number}")
+            raise BadRequestError(
+                "Invalid GitHub pull request URL. Must be https://github.com/{owner}/{repo}/pull/{number}"
+            )
 
         owner, repo_name, pr_num = parsed_pr
-        pr_details = await self.github_client.fetch_pr_details(owner, repo_name, pr_num, custom_token)
+        pr_details = await self.github_client.fetch_pr_details(
+            owner, repo_name, pr_num, custom_token
+        )
         diff_text = await self.github_client.fetch_pr_diff(owner, repo_name, pr_num, custom_token)
 
         # Check commit mismatch against indexed commit
@@ -253,7 +259,9 @@ class ReviewService:
 
         source = review_doc.get("source", {})
         if source.get("type") != "github" or not source.get("pr_url"):
-            raise BadRequestError("Only reviews created from GitHub PRs can be published to GitHub.")
+            raise BadRequestError(
+                "Only reviews created from GitHub PRs can be published to GitHub."
+            )
 
         parsed_pr = parse_github_pr_url(source["pr_url"])
         if not parsed_pr:
@@ -264,7 +272,9 @@ class ReviewService:
         accepted_findings = [f for f in findings if f.get("status") in {"accepted", "edited"}]
 
         if not accepted_findings:
-            raise BadRequestError("At least one accepted finding is required to publish review to GitHub.")
+            raise BadRequestError(
+                "At least one accepted finding is required to publish review to GitHub."
+            )
 
         res = await self.github_client.publish_review_comments(
             owner=owner,
@@ -303,14 +313,16 @@ class ReviewService:
 
         lines.extend(["", "## Actionable Findings", ""])
         for f in review_doc.get("findings", []):
-            lines.extend([
-                f"### [{f.get('severity', '').upper()}] {f.get('title')} ({f.get('category')})",
-                f"**File:** `{f.get('path')}` (Lines {f.get('start_line')}–{f.get('end_line')})  ",
-                f"**Status:** `{f.get('status', 'pending')}` | **Confidence:** {f.get('confidence', 0.8):.2f}",
-                "",
-                f.get("explanation", ""),
-                "",
-            ])
+            lines.extend(
+                [
+                    f"### [{f.get('severity', '').upper()}] {f.get('title')} ({f.get('category')})",
+                    f"**File:** `{f.get('path')}` (Lines {f.get('start_line')}–{f.get('end_line')})  ",
+                    f"**Status:** `{f.get('status', 'pending')}` | **Confidence:** {f.get('confidence', 0.8):.2f}",
+                    "",
+                    f.get("explanation", ""),
+                    "",
+                ]
+            )
             if f.get("suggestion"):
                 lines.extend([f"> **Suggestion:** {f.get('suggestion')}", ""])
             if f.get("suggested_code"):

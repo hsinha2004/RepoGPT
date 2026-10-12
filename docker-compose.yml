@@ -111,12 +111,60 @@ services:
     networks:
       - data
 
+  # Profile: local-llm (§16.2)
+  ollama:
+    image: ollama/ollama:0.5.4
+    profiles:
+      - local-llm
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - data
+    ports:
+      - "127.0.0.1:11434:11434"
+
+  # Profile: monitoring (§16.2, §18)
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    profiles:
+      - monitoring
+    restart: unless-stopped
+    volumes:
+      - ./docker/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - data
+    ports:
+      - "127.0.0.1:9090:9090"
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    profiles:
+      - monitoring
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./docker/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    networks:
+      - data
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - prometheus
+
 volumes:
   mongo_data:
   redis_data:
   chroma_data:
   repo_data:
   model_cache:
+  ollama_data:
+  prometheus_data:
+  grafana_data:
 
 networks:
   edge:

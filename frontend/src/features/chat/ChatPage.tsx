@@ -116,7 +116,7 @@ const SAMPLE_QUESTIONS = [
 ];
 
 export const chatMarkdownComponents = {
-  code({ className, children, ...props }: any) {
+  code({ className: _className, children, ...props }: any) {
     return (
       <code
         className="rounded bg-[#18181b] px-1 py-0.5 font-mono text-[11px] text-[#e4e4e7]"

@@ -52,13 +52,15 @@ class ReviewContextBuilder:
             try:
                 parsed_file = self.parser_registry.parse_file(head_content, path)
                 for s in parsed_file.symbols:
-                    head_symbols.append({
-                        "name": s.name,
-                        "kind": s.kind,
-                        "start_line": s.start_line,
-                        "end_line": s.end_line,
-                        "signature": getattr(s, "signature", None),
-                    })
+                    head_symbols.append(
+                        {
+                            "name": s.name,
+                            "kind": s.kind,
+                            "start_line": s.start_line,
+                            "end_line": s.end_line,
+                            "signature": getattr(s, "signature", None),
+                        }
+                    )
             except Exception as exc:
                 logger.warning("head_symbol_extraction_failed", path=path, error=str(exc))
 
@@ -70,24 +72,28 @@ class ReviewContextBuilder:
 
         if file_diff.is_added:
             for hs in head_symbols:
-                mapped.append({
-                    "name": hs["name"],
-                    "kind": hs["kind"],
-                    "start_line": hs["start_line"],
-                    "end_line": hs["end_line"],
-                    "status": "added",
-                })
+                mapped.append(
+                    {
+                        "name": hs["name"],
+                        "kind": hs["kind"],
+                        "start_line": hs["start_line"],
+                        "end_line": hs["end_line"],
+                        "status": "added",
+                    }
+                )
             return mapped
 
         if file_diff.is_deleted:
             for bs in base_symbols:
-                mapped.append({
-                    "name": bs.get("name", "unknown"),
-                    "kind": bs.get("kind", "symbol"),
-                    "start_line": bs.get("start_line", 1),
-                    "end_line": bs.get("end_line", 1),
-                    "status": "removed",
-                })
+                mapped.append(
+                    {
+                        "name": bs.get("name", "unknown"),
+                        "kind": bs.get("kind", "symbol"),
+                        "start_line": bs.get("start_line", 1),
+                        "end_line": bs.get("end_line", 1),
+                        "status": "removed",
+                    }
+                )
             return mapped
 
         # Modified file: find which head symbols encompass any changed lines
@@ -98,13 +104,15 @@ class ReviewContextBuilder:
             if any(s_start <= ln <= s_end for ln in changed_lines):
                 base_s = base_by_name.get(hs["name"])
                 status = "modified" if base_s else "added"
-                mapped.append({
-                    "name": hs["name"],
-                    "kind": hs["kind"],
-                    "start_line": s_start,
-                    "end_line": s_end,
-                    "status": status,
-                })
+                mapped.append(
+                    {
+                        "name": hs["name"],
+                        "kind": hs["kind"],
+                        "start_line": s_start,
+                        "end_line": s_end,
+                        "status": status,
+                    }
+                )
 
         return mapped
 
@@ -142,14 +150,16 @@ class ReviewContextBuilder:
             file_doc = await self.file_repo.get_by_path(repo_id, t_path)
             if file_doc:
                 snippet = file_doc.get("content", "")[:600]
-                context_items.append({
-                    "source_id": f"C{c_counter}",
-                    "path": t_path,
-                    "start_line": 1,
-                    "end_line": min(30, file_doc.get("line_count", 30)),
-                    "category": "test",
-                    "snippet": snippet,
-                })
+                context_items.append(
+                    {
+                        "source_id": f"C{c_counter}",
+                        "path": t_path,
+                        "start_line": 1,
+                        "end_line": min(30, file_doc.get("line_count", 30)),
+                        "category": "test",
+                        "snippet": snippet,
+                    }
+                )
                 c_counter += 1
                 break
 
@@ -159,14 +169,16 @@ class ReviewContextBuilder:
             c_doc = await self.file_repo.get_by_path(repo_id, c_path)
             if c_doc:
                 snippet = c_doc.get("content", "")[:400]
-                context_items.append({
-                    "source_id": f"C{c_counter}",
-                    "path": c_path,
-                    "start_line": 1,
-                    "end_line": 20,
-                    "category": "convention",
-                    "snippet": snippet,
-                })
+                context_items.append(
+                    {
+                        "source_id": f"C{c_counter}",
+                        "path": c_path,
+                        "start_line": 1,
+                        "end_line": 20,
+                        "category": "convention",
+                        "snippet": snippet,
+                    }
+                )
                 c_counter += 1
                 break
 

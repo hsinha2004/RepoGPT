@@ -40,7 +40,7 @@ def test_unified_diff_parser_and_patch_applier() -> None:
 
     # Apply patch to original content
     head = apply_patch_to_text(ORIGINAL_CONTENT, fd)
-    assert "query = f\"SELECT * FROM tasks WHERE id = {task_id}\"" in head
+    assert 'query = f"SELECT * FROM tasks WHERE id = {task_id}"' in head
     assert "return db.query(task_id)" not in head
     assert "def list_tasks():" in head
 
@@ -122,8 +122,14 @@ async def test_seeded_patches_evaluation_suite() -> None:
 
     assert metrics.patches_evaluated == 6
     assert metrics.total_seeded == 6
-    assert metrics.matched_seeded == 6, f"Expected 6/6 matched seeded issues, got {metrics.matched_seeded}"
-    assert metrics.detection_recall == 1.0, f"Expected 100% detection recall, got {metrics.detection_recall}"
-    assert metrics.strict_recall >= 0.83, f"Expected >= 83% strict recall, got {metrics.strict_recall}"
+    assert metrics.matched_seeded == 6, (
+        f"Expected 6/6 matched seeded issues, got {metrics.matched_seeded}"
+    )
+    assert metrics.detection_recall == 1.0, (
+        f"Expected 100% detection recall, got {metrics.detection_recall}"
+    )
+    assert metrics.strict_recall >= 0.83, (
+        f"Expected >= 83% strict recall, got {metrics.strict_recall}"
+    )
     assert metrics.precision > 0.0
     assert metrics.localization_accuracy >= 0.80

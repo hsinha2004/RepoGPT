@@ -51,7 +51,9 @@ async def test_eval_api_endpoints_lifecycle(monkeypatch: pytest.MonkeyPatch) -> 
         assert b_detail.json()["id"] == b_id
 
         # 4. Non-existent benchmark -> 404
-        missing_b = await client.get("/api/v1/eval/benchmarks/non_existent_123", headers=auth_headers)
+        missing_b = await client.get(
+            "/api/v1/eval/benchmarks/non_existent_123", headers=auth_headers
+        )
         assert missing_b.status_code == 404
 
         # 5. Pre-flight Estimation

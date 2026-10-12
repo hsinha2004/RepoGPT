@@ -107,12 +107,14 @@ class ReviewValidator:
             if is_anchored:
                 validated.append(normalized_finding)
             else:
-                general_comments.append({
-                    "path": path,
-                    "title": title,
-                    "comment": item.get("explanation", ""),
-                    "category": category,
-                })
+                general_comments.append(
+                    {
+                        "path": path,
+                        "title": title,
+                        "comment": item.get("explanation", ""),
+                        "category": category,
+                    }
+                )
 
         # Deduplicate near-duplicates (same file, overlapping lines, similar title)
         deduped: list[dict[str, Any]] = []
@@ -121,8 +123,12 @@ class ReviewValidator:
             for d in deduped:
                 if d["path"] == f["path"]:
                     # Line overlap
-                    lines_overlap = not (f["end_line"] < d["start_line"] or f["start_line"] > d["end_line"])
-                    if lines_overlap and (f["category"] == d["category"] or f["title"].lower() == d["title"].lower()):
+                    lines_overlap = not (
+                        f["end_line"] < d["start_line"] or f["start_line"] > d["end_line"]
+                    )
+                    if lines_overlap and (
+                        f["category"] == d["category"] or f["title"].lower() == d["title"].lower()
+                    ):
                         is_duplicate = True
                         break
             if not is_duplicate:
@@ -130,7 +136,7 @@ class ReviewValidator:
 
         # Sort by (severity_weight * confidence) descending
         deduped.sort(
-            key=lambda x: (SEVERITY_WEIGHTS.get(x["severity"], 1) * x["confidence"]),
+            key=lambda x: SEVERITY_WEIGHTS.get(x["severity"], 1) * x["confidence"],
             reverse=True,
         )
 

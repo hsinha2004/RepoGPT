@@ -74,7 +74,9 @@ class ReviewStats(BaseModel):
 
 
 class ReviewCreateGitHub(BaseModel):
-    pr_url: str = Field(..., description="GitHub pull request URL (e.g. https://github.com/owner/repo/pull/123)")
+    pr_url: str = Field(
+        ..., description="GitHub pull request URL (e.g. https://github.com/owner/repo/pull/123)"
+    )
 
 
 class ReviewResponse(BaseModel):

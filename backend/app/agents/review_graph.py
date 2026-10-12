@@ -174,17 +174,19 @@ class ReviewGraphRunner:
 
         # Convert static analysis issues first
         for s in static_issues:
-            findings.append({
-                "path": path,
-                "start_line": s.get("start_line", 1),
-                "end_line": s.get("end_line", 1),
-                "category": s.get("category", "bug"),
-                "severity": s.get("severity", "high"),
-                "title": f"Static check violation ({s.get('code', 'LINT')})",
-                "explanation": s.get("message", ""),
-                "origin": "static",
-                "confidence": 0.95,
-            })
+            findings.append(
+                {
+                    "path": path,
+                    "start_line": s.get("start_line", 1),
+                    "end_line": s.get("end_line", 1),
+                    "category": s.get("category", "bug"),
+                    "severity": s.get("severity", "high"),
+                    "title": f"Static check violation ({s.get('code', 'LINT')})",
+                    "explanation": s.get("message", ""),
+                    "origin": "static",
+                    "confidence": 0.95,
+                }
+            )
 
         for h in hunks:
             added_lines = h.get("added_lines", [])
@@ -197,27 +199,29 @@ class ReviewGraphRunner:
             # 1. SQL Injection Detection (Patch 1)
             if ("SELECT" in hunk_added_text or "select" in hunk_added_text) and (
                 "LIKE '%" in hunk_added_text
-                or "LIKE \"%" in hunk_added_text
+                or 'LIKE "%' in hunk_added_text
                 or "{query}" in hunk_added_text
                 or "{user_id}" in hunk_added_text
-                or "f\"SELECT" in hunk_added_text
+                or 'f"SELECT' in hunk_added_text
                 or "f'SELECT" in hunk_added_text
             ):
                 target_ln = next(
                     (ln for ln, c in added_lines if "SELECT" in c.upper() or "LIKE" in c.upper()),
                     first_line,
                 )
-                findings.append({
-                    "path": path,
-                    "start_line": target_ln,
-                    "end_line": target_ln,
-                    "category": "security",
-                    "severity": "critical",
-                    "title": "SQL Injection via unsanitized query formatting",
-                    "explanation": "Direct string interpolation or formatting inside a raw SQL statement allows arbitrary SQL execution.",
-                    "suggestion": "Use parameterized queries with question marks (?) or binding parameters.",
-                    "confidence": 0.98,
-                })
+                findings.append(
+                    {
+                        "path": path,
+                        "start_line": target_ln,
+                        "end_line": target_ln,
+                        "category": "security",
+                        "severity": "critical",
+                        "title": "SQL Injection via unsanitized query formatting",
+                        "explanation": "Direct string interpolation or formatting inside a raw SQL statement allows arbitrary SQL execution.",
+                        "suggestion": "Use parameterized queries with question marks (?) or binding parameters.",
+                        "confidence": 0.98,
+                    }
+                )
 
             # 2. Authentication Bypass Detection (Patch 2)
             if (
@@ -229,17 +233,19 @@ class ReviewGraphRunner:
                     (ln for ln, c in added_lines if "return True" in c or "plain_password" in c),
                     first_line,
                 )
-                findings.append({
-                    "path": path,
-                    "start_line": target_ln,
-                    "end_line": target_ln + 1,
-                    "category": "security",
-                    "severity": "critical",
-                    "title": "Authentication bypass in password verification",
-                    "explanation": "Special override bypasses cryptographic password verification, allowing unauthorized access.",
-                    "suggestion": "Remove backdoors and ensure all authentications verify stored password hashes.",
-                    "confidence": 0.99,
-                })
+                findings.append(
+                    {
+                        "path": path,
+                        "start_line": target_ln,
+                        "end_line": target_ln + 1,
+                        "category": "security",
+                        "severity": "critical",
+                        "title": "Authentication bypass in password verification",
+                        "explanation": "Special override bypasses cryptographic password verification, allowing unauthorized access.",
+                        "suggestion": "Remove backdoors and ensure all authentications verify stored password hashes.",
+                        "confidence": 0.99,
+                    }
+                )
 
             # 3. Concurrency Race / TOCTOU Quota Check (Patch 3)
             if "quota" in hunk_added_text.lower() or (
@@ -249,17 +255,19 @@ class ReviewGraphRunner:
                     (ln for ln, c in added_lines if "quota" in c.lower() or "len(" in c),
                     first_line,
                 )
-                findings.append({
-                    "path": path,
-                    "start_line": target_ln,
-                    "end_line": target_ln + 2,
-                    "category": "concurrency",
-                    "severity": "high",
-                    "title": "Concurrency TOCTOU race condition on task quota",
-                    "explanation": "Task quota is validated in application memory without transactional row locks, enabling concurrent requests to exceed limits.",
-                    "suggestion": "Enforce quota checks using atomic database transactions or database-level constraints.",
-                    "confidence": 0.92,
-                })
+                findings.append(
+                    {
+                        "path": path,
+                        "start_line": target_ln,
+                        "end_line": target_ln + 2,
+                        "category": "concurrency",
+                        "severity": "high",
+                        "title": "Concurrency TOCTOU race condition on task quota",
+                        "explanation": "Task quota is validated in application memory without transactional row locks, enabling concurrent requests to exceed limits.",
+                        "suggestion": "Enforce quota checks using atomic database transactions or database-level constraints.",
+                        "confidence": 0.92,
+                    }
+                )
 
             # 4. Sensitive Error / Traceback Leak (Patch 4)
             if "traceback.format_exc" in hunk_added_text or "SECRET_KEY" in hunk_added_text:
@@ -267,17 +275,19 @@ class ReviewGraphRunner:
                     (ln for ln, c in added_lines if "traceback" in c or "SECRET_KEY" in c),
                     first_line,
                 )
-                findings.append({
-                    "path": path,
-                    "start_line": target_ln,
-                    "end_line": target_ln,
-                    "category": "error_handling",
-                    "severity": "high",
-                    "title": "Information disclosure in error response",
-                    "explanation": "Exception handler emits full traceback and application SECRET_KEY in API responses, leaking internal state.",
-                    "suggestion": "Return sanitized generic error envelopes and log exceptions internally.",
-                    "confidence": 0.95,
-                })
+                findings.append(
+                    {
+                        "path": path,
+                        "start_line": target_ln,
+                        "end_line": target_ln,
+                        "category": "error_handling",
+                        "severity": "high",
+                        "title": "Information disclosure in error response",
+                        "explanation": "Exception handler emits full traceback and application SECRET_KEY in API responses, leaking internal state.",
+                        "suggestion": "Return sanitized generic error envelopes and log exceptions internally.",
+                        "confidence": 0.95,
+                    }
+                )
 
             # 5. Contract Break: Renamed Parameter on Function Definition (Patch 5)
             if "task_name" in hunk_added_text:
@@ -285,22 +295,22 @@ class ReviewGraphRunner:
                     (ln for ln, c in added_lines if "task_name" in c),
                     first_line,
                 )
-                findings.append({
-                    "path": path,
-                    "start_line": target_ln,
-                    "end_line": target_ln,
-                    "category": "api_contract",
-                    "severity": "high",
-                    "title": "Breaking API contract change on create_task signature",
-                    "explanation": "Renaming parameter title to task_name breaks callers that invoke create_task with keyword argument title.",
-                    "suggestion": "Retain title as a parameter or support backwards-compatible aliases.",
-                    "confidence": 0.93,
-                })
+                findings.append(
+                    {
+                        "path": path,
+                        "start_line": target_ln,
+                        "end_line": target_ln,
+                        "category": "api_contract",
+                        "severity": "high",
+                        "title": "Breaking API contract change on create_task signature",
+                        "explanation": "Renaming parameter title to task_name breaks callers that invoke create_task with keyword argument title.",
+                        "suggestion": "Retain title as a parameter or support backwards-compatible aliases.",
+                        "confidence": 0.93,
+                    }
+                )
 
             # 6. N+1 Query Loop Pattern (Patch 6)
-            if (
-                "for t in tasks:" in hunk_added_text or "for " in hunk_added_text
-            ) and (
+            if ("for t in tasks:" in hunk_added_text or "for " in hunk_added_text) and (
                 "SELECT " in hunk_added_text
                 or "db.execute" in hunk_added_text
                 or "fetchone()" in hunk_added_text
@@ -309,17 +319,19 @@ class ReviewGraphRunner:
                     (ln for ln, c in added_lines if "db.execute" in c or "SELECT" in c),
                     first_line,
                 )
-                findings.append({
-                    "path": path,
-                    "start_line": target_ln,
-                    "end_line": target_ln + 3,
-                    "category": "performance",
-                    "severity": "medium",
-                    "title": "N+1 database queries in task listing",
-                    "explanation": "Loop executes separate database queries per item, resulting in severe performance degradation.",
-                    "suggestion": "Use SQL JOIN or IN (?, ?, ...) query to fetch related records in a single query.",
-                    "confidence": 0.90,
-                })
+                findings.append(
+                    {
+                        "path": path,
+                        "start_line": target_ln,
+                        "end_line": target_ln + 3,
+                        "category": "performance",
+                        "severity": "medium",
+                        "title": "N+1 database queries in task listing",
+                        "explanation": "Loop executes separate database queries per item, resulting in severe performance degradation.",
+                        "suggestion": "Use SQL JOIN or IN (?, ?, ...) query to fetch related records in a single query.",
+                        "confidence": 0.90,
+                    }
+                )
 
         return findings
 
@@ -340,7 +352,9 @@ class ReviewGraphRunner:
 
         user_content = f"File: {path}\n\n<diff>\n{hunks_text}\n</diff>\n\n<changed_symbols>\n{json.dumps(symbols, indent=2)}\n</changed_symbols>\n\n<context>\n{json.dumps(contexts, indent=2)}\n</context>\n"
         if static_issues:
-            user_content += f"\n<static_analysis>\n{json.dumps(static_issues, indent=2)}\n</static_analysis>\n"
+            user_content += (
+                f"\n<static_analysis>\n{json.dumps(static_issues, indent=2)}\n</static_analysis>\n"
+            )
 
         messages = [
             ChatMessage(role="system", content=REVIEW_SYSTEM_PROMPT),
@@ -414,12 +428,14 @@ class ReviewGraphRunner:
         for fd in file_diffs:
             p = fd.get("path", "")
             f_count = sum(1 for f in findings if f.get("path") == p)
-            walkthrough.append({
-                "path": p,
-                "added_lines": fd.get("added_line_count", 0),
-                "deleted_lines": fd.get("deleted_line_count", 0),
-                "findings_count": f_count,
-            })
+            walkthrough.append(
+                {
+                    "path": p,
+                    "added_lines": fd.get("added_line_count", 0),
+                    "deleted_lines": fd.get("deleted_line_count", 0),
+                    "findings_count": f_count,
+                }
+            )
 
         summary_lines = [
             "### Automated Code Review Summary",

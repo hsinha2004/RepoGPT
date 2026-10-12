@@ -37,9 +37,7 @@ class ParsedFileDiff:
     changed_new_lines: list[int] = field(default_factory=list)
 
 
-RE_HUNK_HEADER = re.compile(
-    r"^@@\s+-(\d+)(?:,(\d+))?\s+\+(\d+)(?:,(\d+))?\s+@@"
-)
+RE_HUNK_HEADER = re.compile(r"^@@\s+-(\d+)(?:,(\d+))?\s+\+(\d+)(?:,(\d+))?\s+@@")
 
 
 def _parse_diff_resilient(diff_text: str) -> list[ParsedFileDiff]:
