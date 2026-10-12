@@ -12,7 +12,13 @@ class ConversationRepository:
     """MongoDB repository for the conversations collection (§6.2, §9.9)."""
 
     def __init__(self, collection: Any | None = None) -> None:
-        self._col = collection if collection is not None else get_collection("conversations")
+        self._col_raw = collection
+
+    @property
+    def _col(self) -> Any:
+        if self._col_raw is not None:
+            return self._col_raw
+        return get_collection("conversations")
 
     async def create(self, repo_id: str, user_id: str, title: str) -> dict[str, Any]:
         now = datetime.now(UTC)

@@ -115,6 +115,42 @@ const SAMPLE_QUESTIONS = [
   "How is configuration and Docker deployment structured?",
 ];
 
+export const chatMarkdownComponents = {
+  code({ className, children, ...props }: any) {
+    return (
+      <code
+        className="rounded bg-[#18181b] px-1 py-0.5 font-mono text-[11px] text-[#e4e4e7]"
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  },
+  a({ href, children, ...props }: any) {
+    const isSafe =
+      href &&
+      (href.startsWith("https://") ||
+        href.startsWith("http://") ||
+        href.startsWith("/") ||
+        href.startsWith("#"));
+    if (!isSafe) {
+      return <span>{children}</span>;
+    }
+    const isExternal = href.startsWith("http://") || href.startsWith("https://");
+    return (
+      <a
+        href={href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer nofollow" : undefined}
+        className="text-[#6366f1] underline hover:text-[#818cf8]"
+        {...props}
+      >
+        {children}
+      </a>
+    );
+  },
+};
+
 export const ChatPage: React.FC = () => {
   const { repoId, conversationId } = useParams();
   const navigate = useNavigate();
@@ -725,18 +761,7 @@ export const ChatPage: React.FC = () => {
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         rehypePlugins={[rehypeSanitize]}
-                        components={{
-                          code({ className, children, ...props }: any) {
-                            return (
-                              <code
-                                className="rounded bg-[#18181b] px-1 py-0.5 font-mono text-[11px] text-[#e4e4e7]"
-                                {...props}
-                              >
-                                {children}
-                              </code>
-                            );
-                          },
-                        }}
+                        components={chatMarkdownComponents}
                       >
                         {m.content}
                       </ReactMarkdown>
@@ -823,7 +848,11 @@ export const ChatPage: React.FC = () => {
                 )}
 
                 <div className="prose prose-invert prose-xs max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeSanitize]}
+                    components={chatMarkdownComponents}
+                  >
                     {streamingContent || "Synthesizing answer..."}
                   </ReactMarkdown>
                 </div>

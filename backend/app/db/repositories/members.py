@@ -12,8 +12,14 @@ from app.db.mongo import get_collection
 
 
 class RepoMemberRepository:
-    def __init__(self, collection: AsyncCollection | None = None) -> None:
-        self._col = collection if collection is not None else get_collection("repo_members")
+    def __init__(self, collection: AsyncCollection[Any] | None = None) -> None:
+        self._col_raw = collection
+
+    @property
+    def _col(self) -> AsyncCollection[Any]:
+        if self._col_raw is not None:
+            return self._col_raw
+        return get_collection("repo_members")
 
     async def add_member(
         self,

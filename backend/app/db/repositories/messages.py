@@ -12,7 +12,13 @@ class MessageRepository:
     """MongoDB repository for the messages collection (§6.2, §9.9)."""
 
     def __init__(self, collection: Any | None = None) -> None:
-        self._col = collection if collection is not None else get_collection("messages")
+        self._col_raw = collection
+
+    @property
+    def _col(self) -> Any:
+        if self._col_raw is not None:
+            return self._col_raw
+        return get_collection("messages")
 
     async def create(
         self,

@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../../api/client";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeSanitize from "rehype-sanitize";
 import { toast } from "sonner";
 import {
   Layers,
@@ -435,6 +436,7 @@ export const OverviewPage: React.FC = () => {
             <div className="prose prose-invert prose-sm max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-white prose-p:text-[#d4d4d8] prose-p:leading-relaxed prose-code:font-mono prose-code:text-[#c7d2fe] prose-code:bg-[#18181b] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-[#27272a] prose-li:text-[#d4d4d8] prose-strong:text-white">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeSanitize]}
                 components={{
                   // Enhance text nodes to turn [S#] citations into interactive pills
                   p({ children }) {

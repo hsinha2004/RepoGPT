@@ -13,8 +13,14 @@ from app.db.mongo import get_collection
 
 
 class JobRepository:
-    def __init__(self, collection: AsyncCollection | None = None) -> None:
-        self._col = collection if collection is not None else get_collection("jobs")
+    def __init__(self, collection: AsyncCollection[Any] | None = None) -> None:
+        self._col_raw = collection
+
+    @property
+    def _col(self) -> AsyncCollection[Any]:
+        if self._col_raw is not None:
+            return self._col_raw
+        return get_collection("jobs")
 
     async def create_job(
         self,
@@ -183,3 +189,39 @@ class JobRepository:
         """Lists latest jobs executed on the repository."""
         cursor = self._col.find({"repo_id": str(repo_id)}).sort("created_at", -1).limit(limit)
         return await cursor.to_list(length=limit)
+
+    async def list_all_jobs(
+        self,
+        limit: int = 50,
+        skip: int = 0,
+        status: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Lists all background jobs with optional status filtering."""
+        query: dict[str, Any] = {}
+        if status:
+            query["status"] = status
+        cursor = self._col.find(query).sort("created_at", -1).skip(skip).limit(limit)
+        return await cursor.to_list(length=limit)
+
+    async def retry_job(self, job_id: str | ObjectId) -> dict[str, Any] | None:
+        """Resets a failed job to 'queued' state for worker pick up."""
+        oid = to_object_id(job_id)
+        now = datetime.now(UTC)
+        res = await self._col.find_one_and_update(
+            {"_id": oid},
+            {
+                "$set": {
+                    "status": "queued",
+                    "stage": "queued",
+                    "progress": 0,
+                    "message": "Job re-queued by administrator",
+                    "error": None,
+                    "cancel_requested": False,
+                    "started_at": None,
+                    "finished_at": None,
+                    "updated_at": now,
+                }
+            },
+            return_document=True,
+        )
+        return res

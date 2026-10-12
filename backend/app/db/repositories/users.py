@@ -157,3 +157,57 @@ class UserRepository:
     async def delete_user(self, user_id: str) -> bool:
         res = await self._col().delete_one({"_id": ObjectId(user_id)})
         return res.deleted_count > 0
+
+    async def list_users(
+        self,
+        limit: int = 50,
+        skip: int = 0,
+        role: str | None = None,
+        search: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Lists users with optional role and search filtering."""
+        query: dict[str, Any] = {}
+        if role:
+            query["role"] = role
+        if search:
+            import re
+
+            regex = re.compile(re.escape(search), re.IGNORECASE)
+            query["$or"] = [{"email": regex}, {"name": regex}]
+        cursor = self._col().find(query).sort("created_at", -1).skip(skip).limit(limit)
+        return await cursor.to_list(length=limit)
+
+    async def update_user_admin(
+        self,
+        user_id: str,
+        role: str | None = None,
+        is_active: bool | None = None,
+    ) -> dict[str, Any] | None:
+        """Admin update of user role or active status."""
+        updates: dict[str, Any] = {"updated_at": datetime.now(UTC)}
+        if role is not None:
+            updates["role"] = role
+        if is_active is not None:
+            updates["is_active"] = is_active
+        res = await self._col().find_one_and_update(
+            {"_id": ObjectId(user_id)},
+            {"$set": updates},
+            return_document=True,
+        )
+        return res
+
+    async def admin_reset_password(self, user_id: str, new_password_hash: str) -> bool:
+        """Admin resets a user's password."""
+        res = await self._col().update_one(
+            {"_id": ObjectId(user_id)},
+            {
+                "$set": {
+                    "password_hash": new_password_hash,
+                    "failed_login_count": 0,
+                    "locked_until": None,
+                    "must_change_password": True,
+                    "updated_at": datetime.now(UTC),
+                }
+            },
+        )
+        return res.modified_count > 0
