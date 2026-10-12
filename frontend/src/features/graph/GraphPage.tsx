@@ -40,7 +40,8 @@ interface GraphNodeData {
   fan_out: number;
   is_external: boolean;
   in_cycle: boolean;
-  top_dir: string;
+  top_dir?: string;
+  top_directory?: string;
   loc?: number;
   language?: string;
   isSelected?: boolean;
@@ -57,12 +58,15 @@ interface GraphEdgeData {
 
 interface GraphApiResponse {
   level: "file" | "directory";
-  node_count: number;
-  edge_count: number;
+  node_count?: number;
+  edge_count?: number;
+  total_nodes?: number;
+  total_edges?: number;
   nodes: GraphNodeData[];
   edges: GraphEdgeData[];
   cycles: string[][];
-  orphans: string[];
+  orphans?: string[];
+  orphan_count?: number;
 }
 
 const DIR_COLORS: Record<string, { bg: string; border: string; text: string; dot: string }> = {
@@ -79,15 +83,16 @@ const DIR_COLORS: Record<string, { bg: string; border: string; text: string; dot
   external: { bg: "bg-[#18181b]", border: "border-dashed border-[#52525b]", text: "text-[#a1a1aa]", dot: "bg-[#a1a1aa]" },
 };
 
-function getDirColor(topDir: string, isExternal: boolean) {
+function getDirColor(topDir?: string | null, isExternal?: boolean) {
   if (isExternal) return DIR_COLORS.external;
-  const key = topDir.toLowerCase();
+  const key = (topDir || "").toLowerCase();
   return DIR_COLORS[key] || DIR_COLORS.default;
 }
 
 // Custom Node Component
 const CustomGraphNode: React.FC<{ data: GraphNodeData }> = ({ data }) => {
-  const colors = getDirColor(data.top_dir, data.is_external);
+  const dirName = data.top_directory || data.top_dir || "root";
+  const colors = getDirColor(dirName, data.is_external);
 
   return (
     <div
@@ -107,7 +112,7 @@ const CustomGraphNode: React.FC<{ data: GraphNodeData }> = ({ data }) => {
         <div className="flex items-center gap-1.5 min-w-0">
           <span className={`w-2 h-2 rounded-full shrink-0 ${colors.dot}`} />
           <span className="text-[10px] uppercase font-mono font-semibold tracking-wider text-[#71717a] truncate">
-            {data.is_external ? "External" : data.top_dir || "root"}
+            {data.is_external ? "External" : dirName}
           </span>
         </div>
 
@@ -201,8 +206,6 @@ export const GraphPage: React.FC = () => {
     if (!graphData) return;
 
     let isMounted = true;
-    setIsLayouting(true);
-
     const rawNodes = graphData.nodes || [];
     const rawEdges = graphData.edges || [];
 
@@ -214,6 +217,15 @@ export const GraphPage: React.FC = () => {
             n.label.toLowerCase().includes(searchQuery.toLowerCase())
         )
       : rawNodes;
+
+    if (filteredNodes.length === 0) {
+      setNodes([]);
+      setEdges([]);
+      setIsLayouting(false);
+      return;
+    }
+
+    setIsLayouting(true);
 
     const visibleNodeIds = new Set(filteredNodes.map((n) => n.id));
 
@@ -314,7 +326,7 @@ export const GraphPage: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [graphData, searchQuery, selectedNode]);
+  }, [graphData, searchQuery]);
 
   // Handle Node Selection
   const onNodeClick = useCallback(
@@ -390,11 +402,17 @@ export const GraphPage: React.FC = () => {
         <div className="flex items-center gap-4 text-xs font-mono text-[#a1a1aa]">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#6366f1]" />
-            <span>{graphData?.node_count || 0} Nodes</span>
+            <span>
+              {graphData?.total_nodes ?? graphData?.node_count ?? graphData?.nodes?.length ?? 0}{" "}
+              Nodes
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#10b981]" />
-            <span>{graphData?.edge_count || 0} Edges</span>
+            <span>
+              {graphData?.total_edges ?? graphData?.edge_count ?? graphData?.edges?.length ?? 0}{" "}
+              Edges
+            </span>
           </div>
           {graphData?.cycles && graphData.cycles.length > 0 && (
             <div className="flex items-center gap-1.5 text-[#f43f5e] font-semibold">
@@ -473,6 +491,20 @@ export const GraphPage: React.FC = () => {
           </div>
         ) : null}
 
+        {!isLoading && !isLayouting && nodes.length === 0 && (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#09090b] text-center p-6">
+            <div className="w-10 h-10 rounded-xl bg-[#18181b] border border-[#27272a] flex items-center justify-center text-[#71717a] mb-3">
+              <FileCode className="w-5 h-5 text-[#818cf8]" />
+            </div>
+            <h3 className="text-sm font-semibold text-white">No Dependency Connections Found</h3>
+            <p className="text-xs text-[#71717a] max-w-sm mt-1">
+              {searchQuery
+                ? `No nodes match filter "${searchQuery}".`
+                : "This repository contains standalone files without internal imports. Check \"External pkgs\" above to visualize external library dependencies."}
+            </p>
+          </div>
+        )}
+
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -510,7 +542,7 @@ export const GraphPage: React.FC = () => {
                     }`}
                   />
                   <span className="text-[10px] uppercase font-mono font-semibold text-[#71717a]">
-                    {selectedNode.is_external ? "External" : selectedNode.top_dir}
+                    {selectedNode.is_external ? "External" : selectedNode.top_dir || "root"}
                   </span>
                 </div>
                 <h3 className="font-mono text-sm font-bold text-white truncate" title={selectedNode.id}>
