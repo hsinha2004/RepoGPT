@@ -20,6 +20,7 @@ logger = structlog.get_logger(__name__)
 class JavascriptExtractor(BaseExtractor):
     def __init__(self, language_name: str = "javascript") -> None:
         self.language_name = language_name
+        self.parser: tree_sitter.Parser | None = None
         try:
             self.parser = tslp.get_parser(language_name)
         except Exception as e:

@@ -17,6 +17,7 @@ logger = structlog.get_logger(__name__)
 
 class GoExtractor(BaseExtractor):
     def __init__(self) -> None:
+        self.parser: tree_sitter.Parser | None = None
         try:
             self.parser = tslp.get_parser("go")
         except Exception as e:

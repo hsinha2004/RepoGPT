@@ -16,6 +16,7 @@ logger = structlog.get_logger(__name__)
 
 class PythonExtractor(BaseExtractor):
     def __init__(self) -> None:
+        self.parser: tree_sitter.Parser | None = None
         try:
             self.parser = tslp.get_parser("python")
         except Exception as e:
