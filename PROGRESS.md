@@ -102,11 +102,22 @@ Updated at the completion of each milestone with status, verification details, a
     - Quality Gates: All 175 backend pytest tests passing (100%); `ruff check` and `ruff format` 100% clean; `mypy backend/app` clean across 137 source files; frontend `tsc -b` and `vite build` passing with 0 errors.
   - Known issues: None
 
-- [ ] **M8: Evaluation**
+- [x] **M8: Evaluation**
   - Scope: Benchmark schema/upload, built-in benchmarks (TaskFlow 30 Q, requests 15 Q), metrics, runner job + CLI, exports, `eval-report`, live metrics; frontend Evaluation pages (all tabs except Code review).
   - Exit criteria: Eval run on TaskFlow completes for all 5 strategies; charts render; CSV/MD export works; slow eval thresholds met.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - Benchmark Suites & Schemas: Pydantic schemas in `app/schemas/eval.py` (`Benchmark`, `BenchmarkQuestion`, `EvalRunCreate`, `StrategyMetrics`, `CalibrationBin`, `EvalQuestionResult`, `EvalLiveMetrics`). Built-in benchmark suites in `eval/benchmarks/sample_repo.yaml` (30 questions on TaskFlow) and `eval/benchmarks/psf_requests.yaml` (15 questions on psf/requests v2.32.3) covering all 6 categories (locate, explain, flow, architecture, dependency, config).
+    - Mathematical Metrics Engine: `app/services/eval/metrics.py` implements Hit@k (k=1,3,5,10), Precision@k, Recall@k, Mean Reciprocal Rank (MRR), nDCG@k with graded relevance (rel=2 for symbol hit, rel=1 for file hit, rel=0 for irrelevant), Symbol Recall@k, Citation Validity / Precision / Recall, Must-mention coverage, Answer correctness thresholding, Brier score, Expected Calibration Error (ECE across 10 bins), and latency percentiles (p50/p95). Hand-computed unit tests passing 8/8 in `test_eval_metrics.py`.
+    - Evaluation Runner & CLI: `EvaluationRunner` in `app/services/eval/runner.py` executing multi-strategy evaluation runs (`keyword`, `vector`, `hybrid`, `hybrid_rerank`, `auto`), calculating per-strategy KPIs, latency breakdowns, and calibration bins. CLI tool in `app/services/eval/cli.py` and report exporter in `app/services/eval/report.py` producing Markdown comparison tables, CSV logs, and JSON summaries. 2/2 integration tests passing in `test_eval_run.py` and `test_eval_api.py`.
+    - API Endpoints: REST endpoints mounted in `app/api/v1/eval.py` for listing/viewing benchmarks, uploading custom YAML benchmarks, pre-flight estimation (`/api/v1/eval/estimate`), starting runs, fetching run details & question-level results, exporting reports (CSV, Markdown, JSON), comparing runs, and querying live chat telemetry.
+    - Frontend Evaluation Views: Full evaluation dashboard at `/app/evaluation` and `/app/evaluation/runs/:runId` with:
+      - *Benchmarks Tab*: Built-in badge, question viewer modal with category chips, YAML file uploader.
+      - *Runs Tab*: Multi-strategy run launcher with real-time pre-flight estimation card (LLM calls, tokens, cost, duration).
+      - *Run Detail View*: 6 KPI metric cards, strategy performance comparison bar chart (Recharts), stage latency breakdown stacked bar chart, 10-bin confidence calibration reliability diagram with y=x diagonal, per-category breakdown table, per-question drill-down table with expand/collapse traces, CSV/MD/JSON export buttons, and run comparison delta table with color-coded differences.
+      - *Live Chat Metrics Tab*: 7-day volume area chart, latency p50/p95 trend line chart, tokens & cost cards, user satisfaction gauge, and live confidence score 10-bin histogram.
+      - *Code Review Tab*: Informative preview card for Phase 2 (Milestone 10).
+    - Quality Gates: All 184 backend unit & integration tests passing; `ruff check` and `ruff format` 100% clean; `mypy backend/app` clean across 145 source files; `npm run typecheck`, `npm test` (14/14 tests), and `npm run build` passing with zero errors.
   - Known issues: None
 
 - [ ] **M9: Phase 1 gate — hardening**

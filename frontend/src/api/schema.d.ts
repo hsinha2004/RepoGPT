@@ -690,16 +690,307 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/eval/benchmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Benchmarks
+         * @description Lists built-in and user-uploaded evaluation benchmarks.
+         */
+        get: operations["list_benchmarks_api_v1_eval_benchmarks_get"];
+        put?: never;
+        /**
+         * Upload Benchmark
+         * @description Uploads a benchmark file in YAML or JSON format (§14.1).
+         */
+        post: operations["upload_benchmark_api_v1_eval_benchmarks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/eval/benchmarks/{benchmark_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Benchmark Detail
+         * @description Retrieves full details and questions for a benchmark.
+         */
+        get: operations["get_benchmark_detail_api_v1_eval_benchmarks__benchmark_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Benchmark
+         * @description Deletes a custom uploaded benchmark.
+         */
+        delete: operations["delete_benchmark_api_v1_eval_benchmarks__benchmark_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/eval/estimate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Estimate Evaluation
+         * @description Calculates pre-flight LLM calls, tokens, cost, and duration estimate (§14.3).
+         */
+        post: operations["estimate_evaluation_api_v1_eval_estimate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/eval/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Eval Runs
+         * @description Lists past evaluation runs.
+         */
+        get: operations["list_eval_runs_api_v1_eval_runs_get"];
+        put?: never;
+        /**
+         * Create Eval Run
+         * @description Creates and starts an evaluation run across strategies (§14.3).
+         */
+        post: operations["create_eval_run_api_v1_eval_runs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/eval/runs/{run_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Eval Run Detail
+         * @description Retrieves status and aggregate metrics of an evaluation run.
+         */
+        get: operations["get_eval_run_detail_api_v1_eval_runs__run_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/eval/runs/{run_id}/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Eval Run Results
+         * @description Retrieves per-question evaluation drill-down results.
+         */
+        get: operations["get_eval_run_results_api_v1_eval_runs__run_id__results_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/eval/runs/{run_id}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export Eval Run
+         * @description Exports evaluation run data as JSON, CSV, or Markdown (§14.3).
+         */
+        get: operations["export_eval_run_api_v1_eval_runs__run_id__export_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/eval/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Compare Runs
+         * @description Computes comparison deltas between two evaluation runs.
+         */
+        get: operations["compare_runs_api_v1_eval_compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/eval/live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Live Eval Metrics
+         * @description Returns telemetry and satisfaction rates from production chat usage (§14.2).
+         */
+        get: operations["get_live_eval_metrics_api_v1_eval_live_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * Benchmark
+         * @description Benchmark schema representing a dataset of ground-truth questions.
+         */
+        Benchmark: {
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            repo: components["schemas"]["BenchmarkRepo"];
+            /** Questions */
+            questions?: components["schemas"]["BenchmarkQuestion"][];
+            /**
+             * Question Count
+             * @default 0
+             */
+            question_count: number;
+            /**
+             * Is Builtin
+             * @default false
+             */
+            is_builtin: boolean;
+            /** Created At */
+            created_at?: string | null;
+            /** Owner Id */
+            owner_id?: string | null;
+        };
+        /**
+         * BenchmarkQuestion
+         * @description Ground-truth question in an evaluation benchmark (§14.1).
+         */
+        BenchmarkQuestion: {
+            /** Id */
+            id: string;
+            /** Question */
+            question: string;
+            /**
+             * Category
+             * @default locate
+             */
+            category: string;
+            /**
+             * Expected Intent
+             * @default locate
+             */
+            expected_intent: string;
+            /** Expected Files */
+            expected_files?: string[];
+            /** Expected Symbols */
+            expected_symbols?: string[];
+            /** Must Mention */
+            must_mention?: string[];
+            /**
+             * Reference Answer
+             * @default
+             */
+            reference_answer: string;
+        };
+        /**
+         * BenchmarkRepo
+         * @description Repository specification for a benchmark.
+         */
+        BenchmarkRepo: {
+            /**
+             * Type
+             * @default fixture
+             */
+            type: string;
+            /** Path */
+            path?: string | null;
+            /** Url */
+            url?: string | null;
+            /** Ref */
+            ref?: string | null;
+        };
+        /** Body_upload_benchmark_api_v1_eval_benchmarks_post */
+        Body_upload_benchmark_api_v1_eval_benchmarks_post: {
+            /** File */
+            file?: string | null;
+        };
         /** Body_upload_repository_archive_api_v1_repos_upload_post */
         Body_upload_repository_archive_api_v1_repos_upload_post: {
             /** File */
             file: string;
             /** Display Name */
             display_name?: string | null;
+        };
+        /**
+         * CalibrationBin
+         * @description Calibration bin for reliability diagram.
+         */
+        CalibrationBin: {
+            /** Bin Center */
+            bin_center: number;
+            /** Confidence Avg */
+            confidence_avg: number;
+            /** Accuracy */
+            accuracy: number;
+            /** Count */
+            count: number;
         };
         /** ChangePasswordRequest */
         ChangePasswordRequest: {
@@ -807,6 +1098,282 @@ export interface components {
              * @default 1
              */
             line: number;
+        };
+        /**
+         * EvalEstimateRequest
+         * @description Pre-flight evaluation resource estimate request.
+         */
+        EvalEstimateRequest: {
+            /** Benchmark Id */
+            benchmark_id: string;
+            /** Strategies */
+            strategies?: string[];
+            /**
+             * Generate Answers
+             * @default true
+             */
+            generate_answers: boolean;
+            /**
+             * Llm Judge
+             * @default false
+             */
+            llm_judge: boolean;
+            /** K Values */
+            k_values?: number[];
+        };
+        /**
+         * EvalEstimateResponse
+         * @description Resource estimation for an evaluation run.
+         */
+        EvalEstimateResponse: {
+            /** Estimated Llm Calls */
+            estimated_llm_calls: number;
+            /** Estimated Tokens */
+            estimated_tokens: number;
+            /** Estimated Cost Usd */
+            estimated_cost_usd: number;
+            /** Estimated Duration Seconds */
+            estimated_duration_seconds: number;
+            /** Question Count */
+            question_count: number;
+            /** Strategies Count */
+            strategies_count: number;
+        };
+        /**
+         * EvalLiveMetrics
+         * @description Aggregated live metrics from user chats.
+         */
+        EvalLiveMetrics: {
+            /** Questions Per Day */
+            questions_per_day?: {
+                [key: string]: unknown;
+            }[];
+            /** Latency P50 P95 */
+            latency_p50_p95?: {
+                [key: string]: unknown;
+            }[];
+            /** Tokens And Cost */
+            tokens_and_cost?: {
+                [key: string]: unknown;
+            }[];
+            /**
+             * Feedback Satisfaction Ratio
+             * @default 0
+             */
+            feedback_satisfaction_ratio: number;
+            /**
+             * Total Feedback Count
+             * @default 0
+             */
+            total_feedback_count: number;
+            /** Confidence Distribution */
+            confidence_distribution?: {
+                [key: string]: unknown;
+            }[];
+        };
+        /**
+         * EvalQuestionResult
+         * @description Detailed result for an individual question/strategy run.
+         */
+        EvalQuestionResult: {
+            /** Id */
+            id?: string | null;
+            /** Run Id */
+            run_id: string;
+            /** Question Id */
+            question_id: string;
+            /** Question */
+            question: string;
+            /** Category */
+            category: string;
+            /** Expected Intent */
+            expected_intent: string;
+            /** Expected Files */
+            expected_files: string[];
+            /** Expected Symbols */
+            expected_symbols?: string[];
+            /** Strategy */
+            strategy: string;
+            /** Predicted Intent */
+            predicted_intent: string;
+            /** Retrieved Files */
+            retrieved_files?: string[];
+            /**
+             * Hit At 5
+             * @default false
+             */
+            hit_at_5: boolean;
+            /**
+             * Reciprocal Rank
+             * @default 0
+             */
+            reciprocal_rank: number;
+            /** Generated Answer */
+            generated_answer?: string | null;
+            /** Citations */
+            citations?: string[];
+            /** Confidence */
+            confidence?: number | null;
+            /**
+             * Citation Valid
+             * @default false
+             */
+            citation_valid: boolean;
+            /**
+             * Citation Precision
+             * @default 0
+             */
+            citation_precision: number;
+            /**
+             * Citation Recall
+             * @default 0
+             */
+            citation_recall: number;
+            /**
+             * Must Mention Coverage
+             * @default 0
+             */
+            must_mention_coverage: number;
+            /**
+             * Answer Correct
+             * @default false
+             */
+            answer_correct: boolean;
+            /**
+             * Latency Ms
+             * @default 0
+             */
+            latency_ms: number;
+            /**
+             * Tokens
+             * @default 0
+             */
+            tokens: number;
+            /**
+             * Cost Usd
+             * @default 0
+             */
+            cost_usd: number;
+            /** Timings */
+            timings?: {
+                [key: string]: number;
+            };
+        };
+        /**
+         * EvalRunCreate
+         * @description Configuration to start a new evaluation run.
+         */
+        EvalRunCreate: {
+            /** Repo Id */
+            repo_id: string;
+            /** Benchmark Id */
+            benchmark_id: string;
+            /** Strategies */
+            strategies?: string[];
+            /**
+             * Router Mode
+             * @default hybrid
+             */
+            router_mode: string;
+            /** K Values */
+            k_values?: number[];
+            /**
+             * Generate Answers
+             * @default true
+             */
+            generate_answers: boolean;
+            /**
+             * Llm Judge
+             * @default false
+             */
+            llm_judge: boolean;
+            /**
+             * Vector Store
+             * @default chroma
+             */
+            vector_store: string;
+            /** Embedding Model */
+            embedding_model?: string | null;
+        };
+        /**
+         * EvalRunSummary
+         * @description Full summary of an evaluation run including aggregate metrics.
+         */
+        EvalRunSummary: {
+            /** Id */
+            id: string;
+            /** Repo Id */
+            repo_id: string;
+            /**
+             * Repo Name
+             * @default
+             */
+            repo_name: string;
+            /** Benchmark Id */
+            benchmark_id: string;
+            /**
+             * Benchmark Name
+             * @default
+             */
+            benchmark_name: string;
+            /**
+             * Status
+             * @default queued
+             */
+            status: string;
+            /**
+             * Progress
+             * @default 0
+             */
+            progress: number;
+            /**
+             * Current Stage
+             * @default
+             */
+            current_stage: string;
+            /** Strategies */
+            strategies?: string[];
+            /** K Values */
+            k_values?: number[];
+            /**
+             * Generate Answers
+             * @default true
+             */
+            generate_answers: boolean;
+            /**
+             * Llm Judge
+             * @default false
+             */
+            llm_judge: boolean;
+            /**
+             * Vector Store
+             * @default chroma
+             */
+            vector_store: string;
+            /** Embedding Model */
+            embedding_model?: string | null;
+            /** Created At */
+            created_at: string;
+            /** Completed At */
+            completed_at?: string | null;
+            /** Error */
+            error?: string | null;
+            /** Strategy Metrics */
+            strategy_metrics?: {
+                [key: string]: components["schemas"]["StrategyMetrics"];
+            };
+            /** Latency Breakdown */
+            latency_breakdown?: {
+                [key: string]: {
+                    [key: string]: number;
+                };
+            };
+            /** Category Breakdown */
+            category_breakdown?: {
+                [key: string]: {
+                    [key: string]: unknown;
+                };
+            };
         };
         /** ExportResponse */
         ExportResponse: {
@@ -1628,6 +2195,166 @@ export interface components {
              * @default 0
              */
             size_bytes: number;
+        };
+        /**
+         * StrategyMetrics
+         * @description Computed metrics for one strategy in an evaluation run (§14.2).
+         */
+        StrategyMetrics: {
+            /** Strategy */
+            strategy: string;
+            /**
+             * Hit At 1
+             * @default 0
+             */
+            hit_at_1: number;
+            /**
+             * Hit At 3
+             * @default 0
+             */
+            hit_at_3: number;
+            /**
+             * Hit At 5
+             * @default 0
+             */
+            hit_at_5: number;
+            /**
+             * Hit At 10
+             * @default 0
+             */
+            hit_at_10: number;
+            /**
+             * Precision At 1
+             * @default 0
+             */
+            precision_at_1: number;
+            /**
+             * Precision At 3
+             * @default 0
+             */
+            precision_at_3: number;
+            /**
+             * Precision At 5
+             * @default 0
+             */
+            precision_at_5: number;
+            /**
+             * Precision At 10
+             * @default 0
+             */
+            precision_at_10: number;
+            /**
+             * Recall At 1
+             * @default 0
+             */
+            recall_at_1: number;
+            /**
+             * Recall At 3
+             * @default 0
+             */
+            recall_at_3: number;
+            /**
+             * Recall At 5
+             * @default 0
+             */
+            recall_at_5: number;
+            /**
+             * Recall At 10
+             * @default 0
+             */
+            recall_at_10: number;
+            /**
+             * Mrr
+             * @default 0
+             */
+            mrr: number;
+            /**
+             * Ndcg At 5
+             * @default 0
+             */
+            ndcg_at_5: number;
+            /**
+             * Ndcg At 10
+             * @default 0
+             */
+            ndcg_at_10: number;
+            /**
+             * Symbol Recall At 5
+             * @default 0
+             */
+            symbol_recall_at_5: number;
+            /**
+             * Intent Accuracy
+             * @default 0
+             */
+            intent_accuracy: number;
+            /**
+             * Citation Validity
+             * @default 0
+             */
+            citation_validity: number;
+            /**
+             * Citation Precision
+             * @default 0
+             */
+            citation_precision: number;
+            /**
+             * Citation Recall
+             * @default 0
+             */
+            citation_recall: number;
+            /**
+             * Must Mention Coverage
+             * @default 0
+             */
+            must_mention_coverage: number;
+            /**
+             * Answer Correctness
+             * @default 0
+             */
+            answer_correctness: number;
+            /**
+             * Faithfulness
+             * @default 0
+             */
+            faithfulness: number;
+            /**
+             * Latency P50 Ms
+             * @default 0
+             */
+            latency_p50_ms: number;
+            /**
+             * Latency P95 Ms
+             * @default 0
+             */
+            latency_p95_ms: number;
+            /**
+             * Total Tokens
+             * @default 0
+             */
+            total_tokens: number;
+            /**
+             * Total Cost Usd
+             * @default 0
+             */
+            total_cost_usd: number;
+            /**
+             * Avg Cost Usd
+             * @default 0
+             */
+            avg_cost_usd: number;
+            /**
+             * Brier Score
+             * @default 0
+             */
+            brier_score: number;
+            /**
+             * Ece
+             * @default 0
+             */
+            ece: number;
+            /** Calibration Bins */
+            calibration_bins?: components["schemas"]["CalibrationBin"][];
         };
         /** SymbolResponse */
         SymbolResponse: {
@@ -3165,6 +3892,365 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_benchmarks_api_v1_eval_benchmarks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Benchmark"][];
+                };
+            };
+        };
+    };
+    upload_benchmark_api_v1_eval_benchmarks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_upload_benchmark_api_v1_eval_benchmarks_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Benchmark"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_benchmark_detail_api_v1_eval_benchmarks__benchmark_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                benchmark_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Benchmark"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_benchmark_api_v1_eval_benchmarks__benchmark_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                benchmark_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    estimate_evaluation_api_v1_eval_estimate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvalEstimateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalEstimateResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_eval_runs_api_v1_eval_runs_get: {
+        parameters: {
+            query?: {
+                repo_id?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalRunSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_eval_run_api_v1_eval_runs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvalRunCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalRunSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_eval_run_detail_api_v1_eval_runs__run_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalRunSummary"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_eval_run_results_api_v1_eval_runs__run_id__results_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalQuestionResult"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_eval_run_api_v1_eval_runs__run_id__export_get: {
+        parameters: {
+            query?: {
+                format?: string;
+            };
+            header?: never;
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    compare_runs_api_v1_eval_compare_get: {
+        parameters: {
+            query: {
+                run_a: string;
+                run_b: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_live_eval_metrics_api_v1_eval_live_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvalLiveMetrics"];
                 };
             };
         };

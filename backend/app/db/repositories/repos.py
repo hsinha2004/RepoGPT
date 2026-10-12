@@ -13,8 +13,14 @@ from app.db.mongo import get_collection
 
 
 class RepositoryRepository:
-    def __init__(self, collection: AsyncCollection | None = None) -> None:
-        self._col = collection if collection is not None else get_collection("repositories")
+    def __init__(self, collection: AsyncCollection[Any] | None = None) -> None:
+        self._col_raw = collection
+
+    @property
+    def _col(self) -> AsyncCollection[Any]:
+        if self._col_raw is not None:
+            return self._col_raw
+        return get_collection("repositories")
 
     async def create_repository(
         self,

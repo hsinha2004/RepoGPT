@@ -2277,10 +2277,751 @@
           }
         }
       }
+    },
+    "/api/v1/eval/benchmarks": {
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "List Benchmarks",
+        "description": "Lists built-in and user-uploaded evaluation benchmarks.",
+        "operationId": "list_benchmarks_api_v1_eval_benchmarks_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Benchmark"
+                  },
+                  "type": "array",
+                  "title": "Response List Benchmarks Api V1 Eval Benchmarks Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Upload Benchmark",
+        "description": "Uploads a benchmark file in YAML or JSON format (\u00a714.1).",
+        "operationId": "upload_benchmark_api_v1_eval_benchmarks_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_benchmark_api_v1_eval_benchmarks_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Benchmark"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/eval/benchmarks/{benchmark_id}": {
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Get Benchmark Detail",
+        "description": "Retrieves full details and questions for a benchmark.",
+        "operationId": "get_benchmark_detail_api_v1_eval_benchmarks__benchmark_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "benchmark_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Benchmark Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Benchmark"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Delete Benchmark",
+        "description": "Deletes a custom uploaded benchmark.",
+        "operationId": "delete_benchmark_api_v1_eval_benchmarks__benchmark_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "benchmark_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Benchmark Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/eval/estimate": {
+      "post": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Estimate Evaluation",
+        "description": "Calculates pre-flight LLM calls, tokens, cost, and duration estimate (\u00a714.3).",
+        "operationId": "estimate_evaluation_api_v1_eval_estimate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvalEstimateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalEstimateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/eval/runs": {
+      "post": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Create Eval Run",
+        "description": "Creates and starts an evaluation run across strategies (\u00a714.3).",
+        "operationId": "create_eval_run_api_v1_eval_runs_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvalRunCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalRunSummary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "List Eval Runs",
+        "description": "Lists past evaluation runs.",
+        "operationId": "list_eval_runs_api_v1_eval_runs_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Repo Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EvalRunSummary"
+                  },
+                  "title": "Response List Eval Runs Api V1 Eval Runs Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/eval/runs/{run_id}": {
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Get Eval Run Detail",
+        "description": "Retrieves status and aggregate metrics of an evaluation run.",
+        "operationId": "get_eval_run_detail_api_v1_eval_runs__run_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalRunSummary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/eval/runs/{run_id}/results": {
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Get Eval Run Results",
+        "description": "Retrieves per-question evaluation drill-down results.",
+        "operationId": "get_eval_run_results_api_v1_eval_runs__run_id__results_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EvalQuestionResult"
+                  },
+                  "title": "Response Get Eval Run Results Api V1 Eval Runs  Run Id  Results Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/eval/runs/{run_id}/export": {
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Export Eval Run",
+        "description": "Exports evaluation run data as JSON, CSV, or Markdown (\u00a714.3).",
+        "operationId": "export_eval_run_api_v1_eval_runs__run_id__export_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(json|csv|md|markdown)$",
+              "default": "json",
+              "title": "Format"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/eval/compare": {
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Compare Runs",
+        "description": "Computes comparison deltas between two evaluation runs.",
+        "operationId": "compare_runs_api_v1_eval_compare_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "run_a",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run A"
+            }
+          },
+          {
+            "name": "run_b",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run B"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Compare Runs Api V1 Eval Compare Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/eval/live": {
+      "get": {
+        "tags": [
+          "evaluation"
+        ],
+        "summary": "Get Live Eval Metrics",
+        "description": "Returns telemetry and satisfaction rates from production chat usage (\u00a714.2).",
+        "operationId": "get_live_eval_metrics_api_v1_eval_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvalLiveMetrics"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
     }
   },
   "components": {
     "schemas": {
+      "Benchmark": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "repo": {
+            "$ref": "#/components/schemas/BenchmarkRepo"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/BenchmarkQuestion"
+            },
+            "type": "array",
+            "title": "Questions"
+          },
+          "question_count": {
+            "type": "integer",
+            "title": "Question Count",
+            "default": 0
+          },
+          "is_builtin": {
+            "type": "boolean",
+            "title": "Is Builtin",
+            "default": false
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "owner_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "repo"
+        ],
+        "title": "Benchmark",
+        "description": "Benchmark schema representing a dataset of ground-truth questions."
+      },
+      "BenchmarkQuestion": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "default": "locate"
+          },
+          "expected_intent": {
+            "type": "string",
+            "title": "Expected Intent",
+            "default": "locate"
+          },
+          "expected_files": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Expected Files"
+          },
+          "expected_symbols": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Expected Symbols"
+          },
+          "must_mention": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Must Mention"
+          },
+          "reference_answer": {
+            "type": "string",
+            "title": "Reference Answer",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "question"
+        ],
+        "title": "BenchmarkQuestion",
+        "description": "Ground-truth question in an evaluation benchmark (\u00a714.1)."
+      },
+      "BenchmarkRepo": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "default": "fixture"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ref"
+          }
+        },
+        "type": "object",
+        "title": "BenchmarkRepo",
+        "description": "Repository specification for a benchmark."
+      },
+      "Body_upload_benchmark_api_v1_eval_benchmarks_post": {
+        "properties": {
+          "file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "contentMediaType": "application/octet-stream"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "title": "Body_upload_benchmark_api_v1_eval_benchmarks_post"
+      },
       "Body_upload_repository_archive_api_v1_repos_upload_post": {
         "properties": {
           "file": {
@@ -2305,6 +3046,35 @@
           "file"
         ],
         "title": "Body_upload_repository_archive_api_v1_repos_upload_post"
+      },
+      "CalibrationBin": {
+        "properties": {
+          "bin_center": {
+            "type": "number",
+            "title": "Bin Center"
+          },
+          "confidence_avg": {
+            "type": "number",
+            "title": "Confidence Avg"
+          },
+          "accuracy": {
+            "type": "number",
+            "title": "Accuracy"
+          },
+          "count": {
+            "type": "integer",
+            "title": "Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "bin_center",
+          "confidence_avg",
+          "accuracy",
+          "count"
+        ],
+        "title": "CalibrationBin",
+        "description": "Calibration bin for reliability diagram."
       },
       "ChangePasswordRequest": {
         "properties": {
@@ -2546,6 +3316,500 @@
           "description"
         ],
         "title": "EntryPointItem"
+      },
+      "EvalEstimateRequest": {
+        "properties": {
+          "benchmark_id": {
+            "type": "string",
+            "title": "Benchmark Id"
+          },
+          "strategies": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Strategies"
+          },
+          "generate_answers": {
+            "type": "boolean",
+            "title": "Generate Answers",
+            "default": true
+          },
+          "llm_judge": {
+            "type": "boolean",
+            "title": "Llm Judge",
+            "default": false
+          },
+          "k_values": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "K Values"
+          }
+        },
+        "type": "object",
+        "required": [
+          "benchmark_id"
+        ],
+        "title": "EvalEstimateRequest",
+        "description": "Pre-flight evaluation resource estimate request."
+      },
+      "EvalEstimateResponse": {
+        "properties": {
+          "estimated_llm_calls": {
+            "type": "integer",
+            "title": "Estimated Llm Calls"
+          },
+          "estimated_tokens": {
+            "type": "integer",
+            "title": "Estimated Tokens"
+          },
+          "estimated_cost_usd": {
+            "type": "number",
+            "title": "Estimated Cost Usd"
+          },
+          "estimated_duration_seconds": {
+            "type": "number",
+            "title": "Estimated Duration Seconds"
+          },
+          "question_count": {
+            "type": "integer",
+            "title": "Question Count"
+          },
+          "strategies_count": {
+            "type": "integer",
+            "title": "Strategies Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "estimated_llm_calls",
+          "estimated_tokens",
+          "estimated_cost_usd",
+          "estimated_duration_seconds",
+          "question_count",
+          "strategies_count"
+        ],
+        "title": "EvalEstimateResponse",
+        "description": "Resource estimation for an evaluation run."
+      },
+      "EvalLiveMetrics": {
+        "properties": {
+          "questions_per_day": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Questions Per Day"
+          },
+          "latency_p50_p95": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Latency P50 P95"
+          },
+          "tokens_and_cost": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Tokens And Cost"
+          },
+          "feedback_satisfaction_ratio": {
+            "type": "number",
+            "title": "Feedback Satisfaction Ratio",
+            "default": 0.0
+          },
+          "total_feedback_count": {
+            "type": "integer",
+            "title": "Total Feedback Count",
+            "default": 0
+          },
+          "confidence_distribution": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Confidence Distribution"
+          }
+        },
+        "type": "object",
+        "title": "EvalLiveMetrics",
+        "description": "Aggregated live metrics from user chats."
+      },
+      "EvalQuestionResult": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "question_id": {
+            "type": "string",
+            "title": "Question Id"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "expected_intent": {
+            "type": "string",
+            "title": "Expected Intent"
+          },
+          "expected_files": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Expected Files"
+          },
+          "expected_symbols": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Expected Symbols"
+          },
+          "strategy": {
+            "type": "string",
+            "title": "Strategy"
+          },
+          "predicted_intent": {
+            "type": "string",
+            "title": "Predicted Intent"
+          },
+          "retrieved_files": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Retrieved Files"
+          },
+          "hit_at_5": {
+            "type": "boolean",
+            "title": "Hit At 5",
+            "default": false
+          },
+          "reciprocal_rank": {
+            "type": "number",
+            "title": "Reciprocal Rank",
+            "default": 0.0
+          },
+          "generated_answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Generated Answer"
+          },
+          "citations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Citations"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "citation_valid": {
+            "type": "boolean",
+            "title": "Citation Valid",
+            "default": false
+          },
+          "citation_precision": {
+            "type": "number",
+            "title": "Citation Precision",
+            "default": 0.0
+          },
+          "citation_recall": {
+            "type": "number",
+            "title": "Citation Recall",
+            "default": 0.0
+          },
+          "must_mention_coverage": {
+            "type": "number",
+            "title": "Must Mention Coverage",
+            "default": 0.0
+          },
+          "answer_correct": {
+            "type": "boolean",
+            "title": "Answer Correct",
+            "default": false
+          },
+          "latency_ms": {
+            "type": "number",
+            "title": "Latency Ms",
+            "default": 0.0
+          },
+          "tokens": {
+            "type": "integer",
+            "title": "Tokens",
+            "default": 0
+          },
+          "cost_usd": {
+            "type": "number",
+            "title": "Cost Usd",
+            "default": 0.0
+          },
+          "timings": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Timings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "question_id",
+          "question",
+          "category",
+          "expected_intent",
+          "expected_files",
+          "strategy",
+          "predicted_intent"
+        ],
+        "title": "EvalQuestionResult",
+        "description": "Detailed result for an individual question/strategy run."
+      },
+      "EvalRunCreate": {
+        "properties": {
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "benchmark_id": {
+            "type": "string",
+            "title": "Benchmark Id"
+          },
+          "strategies": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Strategies"
+          },
+          "router_mode": {
+            "type": "string",
+            "title": "Router Mode",
+            "default": "hybrid"
+          },
+          "k_values": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "K Values"
+          },
+          "generate_answers": {
+            "type": "boolean",
+            "title": "Generate Answers",
+            "default": true
+          },
+          "llm_judge": {
+            "type": "boolean",
+            "title": "Llm Judge",
+            "default": false
+          },
+          "vector_store": {
+            "type": "string",
+            "title": "Vector Store",
+            "default": "chroma"
+          },
+          "embedding_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Embedding Model"
+          }
+        },
+        "type": "object",
+        "required": [
+          "repo_id",
+          "benchmark_id"
+        ],
+        "title": "EvalRunCreate",
+        "description": "Configuration to start a new evaluation run."
+      },
+      "EvalRunSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "repo_name": {
+            "type": "string",
+            "title": "Repo Name",
+            "default": ""
+          },
+          "benchmark_id": {
+            "type": "string",
+            "title": "Benchmark Id"
+          },
+          "benchmark_name": {
+            "type": "string",
+            "title": "Benchmark Name",
+            "default": ""
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "queued"
+          },
+          "progress": {
+            "type": "integer",
+            "title": "Progress",
+            "default": 0
+          },
+          "current_stage": {
+            "type": "string",
+            "title": "Current Stage",
+            "default": ""
+          },
+          "strategies": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Strategies"
+          },
+          "k_values": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "K Values"
+          },
+          "generate_answers": {
+            "type": "boolean",
+            "title": "Generate Answers",
+            "default": true
+          },
+          "llm_judge": {
+            "type": "boolean",
+            "title": "Llm Judge",
+            "default": false
+          },
+          "vector_store": {
+            "type": "string",
+            "title": "Vector Store",
+            "default": "chroma"
+          },
+          "embedding_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Embedding Model"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "strategy_metrics": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StrategyMetrics"
+            },
+            "type": "object",
+            "title": "Strategy Metrics"
+          },
+          "latency_breakdown": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "type": "number"
+              },
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Latency Breakdown"
+          },
+          "category_breakdown": {
+            "additionalProperties": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Category Breakdown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "repo_id",
+          "benchmark_id",
+          "created_at"
+        ],
+        "title": "EvalRunSummary",
+        "description": "Full summary of an evaluation run including aggregate metrics."
       },
       "ExportResponse": {
         "properties": {
@@ -4442,6 +5706,177 @@
           "reason"
         ],
         "title": "SkippedFileResponse"
+      },
+      "StrategyMetrics": {
+        "properties": {
+          "strategy": {
+            "type": "string",
+            "title": "Strategy"
+          },
+          "hit_at_1": {
+            "type": "number",
+            "title": "Hit At 1",
+            "default": 0.0
+          },
+          "hit_at_3": {
+            "type": "number",
+            "title": "Hit At 3",
+            "default": 0.0
+          },
+          "hit_at_5": {
+            "type": "number",
+            "title": "Hit At 5",
+            "default": 0.0
+          },
+          "hit_at_10": {
+            "type": "number",
+            "title": "Hit At 10",
+            "default": 0.0
+          },
+          "precision_at_1": {
+            "type": "number",
+            "title": "Precision At 1",
+            "default": 0.0
+          },
+          "precision_at_3": {
+            "type": "number",
+            "title": "Precision At 3",
+            "default": 0.0
+          },
+          "precision_at_5": {
+            "type": "number",
+            "title": "Precision At 5",
+            "default": 0.0
+          },
+          "precision_at_10": {
+            "type": "number",
+            "title": "Precision At 10",
+            "default": 0.0
+          },
+          "recall_at_1": {
+            "type": "number",
+            "title": "Recall At 1",
+            "default": 0.0
+          },
+          "recall_at_3": {
+            "type": "number",
+            "title": "Recall At 3",
+            "default": 0.0
+          },
+          "recall_at_5": {
+            "type": "number",
+            "title": "Recall At 5",
+            "default": 0.0
+          },
+          "recall_at_10": {
+            "type": "number",
+            "title": "Recall At 10",
+            "default": 0.0
+          },
+          "mrr": {
+            "type": "number",
+            "title": "Mrr",
+            "default": 0.0
+          },
+          "ndcg_at_5": {
+            "type": "number",
+            "title": "Ndcg At 5",
+            "default": 0.0
+          },
+          "ndcg_at_10": {
+            "type": "number",
+            "title": "Ndcg At 10",
+            "default": 0.0
+          },
+          "symbol_recall_at_5": {
+            "type": "number",
+            "title": "Symbol Recall At 5",
+            "default": 0.0
+          },
+          "intent_accuracy": {
+            "type": "number",
+            "title": "Intent Accuracy",
+            "default": 0.0
+          },
+          "citation_validity": {
+            "type": "number",
+            "title": "Citation Validity",
+            "default": 0.0
+          },
+          "citation_precision": {
+            "type": "number",
+            "title": "Citation Precision",
+            "default": 0.0
+          },
+          "citation_recall": {
+            "type": "number",
+            "title": "Citation Recall",
+            "default": 0.0
+          },
+          "must_mention_coverage": {
+            "type": "number",
+            "title": "Must Mention Coverage",
+            "default": 0.0
+          },
+          "answer_correctness": {
+            "type": "number",
+            "title": "Answer Correctness",
+            "default": 0.0
+          },
+          "faithfulness": {
+            "type": "number",
+            "title": "Faithfulness",
+            "default": 0.0
+          },
+          "latency_p50_ms": {
+            "type": "number",
+            "title": "Latency P50 Ms",
+            "default": 0.0
+          },
+          "latency_p95_ms": {
+            "type": "number",
+            "title": "Latency P95 Ms",
+            "default": 0.0
+          },
+          "total_tokens": {
+            "type": "integer",
+            "title": "Total Tokens",
+            "default": 0
+          },
+          "total_cost_usd": {
+            "type": "number",
+            "title": "Total Cost Usd",
+            "default": 0.0
+          },
+          "avg_cost_usd": {
+            "type": "number",
+            "title": "Avg Cost Usd",
+            "default": 0.0
+          },
+          "brier_score": {
+            "type": "number",
+            "title": "Brier Score",
+            "default": 0.0
+          },
+          "ece": {
+            "type": "number",
+            "title": "Ece",
+            "default": 0.0
+          },
+          "calibration_bins": {
+            "items": {
+              "$ref": "#/components/schemas/CalibrationBin"
+            },
+            "type": "array",
+            "title": "Calibration Bins"
+          }
+        },
+        "type": "object",
+        "required": [
+          "strategy"
+        ],
+        "title": "StrategyMetrics",
+        "description": "Computed metrics for one strategy in an evaluation run (\u00a714.2)."
       },
       "SymbolResponse": {
         "properties": {

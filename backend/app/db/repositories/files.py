@@ -14,11 +14,23 @@ from app.db.mongo import get_collection
 class FileRepository:
     def __init__(
         self,
-        files_col: AsyncCollection | None = None,
-        skipped_col: AsyncCollection | None = None,
+        files_col: AsyncCollection[Any] | None = None,
+        skipped_col: AsyncCollection[Any] | None = None,
     ) -> None:
-        self._files = files_col if files_col is not None else get_collection("files")
-        self._skipped = skipped_col if skipped_col is not None else get_collection("skipped_files")
+        self._files_raw = files_col
+        self._skipped_raw = skipped_col
+
+    @property
+    def _files(self) -> AsyncCollection[Any]:
+        if self._files_raw is not None:
+            return self._files_raw
+        return get_collection("files")
+
+    @property
+    def _skipped(self) -> AsyncCollection[Any]:
+        if self._skipped_raw is not None:
+            return self._skipped_raw
+        return get_collection("skipped_files")
 
     async def upsert_files(self, repo_id: str | ObjectId, files: list[dict[str, Any]]) -> int:
         """Bulk upserts file documents for a repository."""

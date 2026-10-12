@@ -35,6 +35,7 @@ export const AppRouter: React.FC = () => {
           <Route path="repos/:repoId/search" element={<SearchPage />} />
           <Route path="repos/:repoId/reviews" element={<ReviewsPage />} />
           <Route path="evaluation" element={<EvaluationPage />} />
+          <Route path="evaluation/runs/:runId" element={<EvaluationPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="admin" element={<AdminPage />} />
         </Route>

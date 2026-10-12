@@ -1,0 +1,228 @@
+name: psf-requests
+description: Ground-truth benchmark questions for psf/requests v2.32.3
+repo:
+  type: github
+  url: https://github.com/psf/requests
+  ref: v2.32.3
+questions:
+  - id: q01
+    question: Where is the main request function defined that powers get, post, and other HTTP methods?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/api.py
+      - requests/api.py
+    expected_symbols:
+      - request
+    must_mention:
+      - request
+      - session
+    reference_answer: The top-level request function is defined in requests/api.py and delegates to sessions.Session.
+
+  - id: q02
+    question: Where is the Session class implemented?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/sessions.py
+      - requests/sessions.py
+    expected_symbols:
+      - Session
+    must_mention:
+      - Session
+    reference_answer: The Session class is implemented in requests/sessions.py to maintain state across requests.
+
+  - id: q03
+    question: Where is the PreparedRequest data structure created and configured?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/models.py
+      - requests/models.py
+    expected_symbols:
+      - PreparedRequest
+    must_mention:
+      - PreparedRequest
+    reference_answer: PreparedRequest is defined in requests/models.py for sending through HTTP adapters.
+
+  - id: q04
+    question: Where is HTTPAdapter and transport adapter logic defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/adapters.py
+      - requests/adapters.py
+    expected_symbols:
+      - HTTPAdapter
+    must_mention:
+      - HTTPAdapter
+      - urllib3
+    reference_answer: HTTPAdapter is defined in requests/adapters.py wrapping urllib3 PoolManager.
+
+  - id: q05
+    question: Where is basic authentication implemented in requests?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/auth.py
+      - requests/auth.py
+    expected_symbols:
+      - HTTPBasicAuth
+    must_mention:
+      - HTTPBasicAuth
+      - auth
+    reference_answer: Basic authentication is implemented in requests/auth.py in the HTTPBasicAuth handler class.
+
+  - id: q06
+    question: Where are custom exceptions like RequestException, ConnectionError, and Timeout defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/exceptions.py
+      - requests/exceptions.py
+    expected_symbols:
+      - RequestException
+    must_mention:
+      - RequestException
+    reference_answer: Custom exceptions inherit from RequestException defined in requests/exceptions.py.
+
+  - id: q07
+    question: Where is CaseInsensitiveDict implemented for HTTP headers?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/structures.py
+      - requests/structures.py
+    expected_symbols:
+      - CaseInsensitiveDict
+    must_mention:
+      - CaseInsensitiveDict
+    reference_answer: CaseInsensitiveDict is implemented in requests/structures.py for managing header keys case-insensitively.
+
+  - id: q08
+    question: How does requests handle cookie persistence and cookie jars?
+    category: explain
+    expected_intent: explain
+    expected_files:
+      - src/requests/cookies.py
+      - requests/cookies.py
+    expected_symbols:
+      - RequestsCookieJar
+    must_mention:
+      - RequestsCookieJar
+      - cookie
+    reference_answer: Requests uses RequestsCookieJar in requests/cookies.py to handle cookie compatibility with cookielib/http.cookiejar.
+
+  - id: q09
+    question: How does a requests.get call flow through Session, PreparedRequest, and HTTPAdapter to return a Response?
+    category: flow
+    expected_intent: flow
+    expected_files:
+      - src/requests/api.py
+      - src/requests/sessions.py
+      - src/requests/adapters.py
+      - src/requests/models.py
+      - requests/api.py
+      - requests/sessions.py
+      - requests/adapters.py
+      - requests/models.py
+    expected_symbols:
+      - request
+      - send
+    must_mention:
+      - Session
+      - PreparedRequest
+      - HTTPAdapter
+      - Response
+    reference_answer: requests.get calls api.request, which creates a Session, prepares a Request into a PreparedRequest, routes it to an HTTPAdapter, and wraps the raw urllib3 response in a Response.
+
+  - id: q10
+    question: What is the high-level architecture of requests and how are responsibilities divided?
+    category: architecture
+    expected_intent: architecture
+    expected_files:
+      - src/requests/api.py
+      - src/requests/sessions.py
+      - src/requests/adapters.py
+      - requests/api.py
+      - requests/sessions.py
+      - requests/adapters.py
+    expected_symbols:
+      - Session
+      - HTTPAdapter
+    must_mention:
+      - api
+      - sessions
+      - adapters
+      - models
+    reference_answer: Requests is structured into high-level API functions (api.py), session state management (sessions.py), data models (models.py), and transport adapters (adapters.py) over urllib3.
+
+  - id: q11
+    question: What external packages does requests depend on according to pyproject.toml or setup.py?
+    category: dependency
+    expected_intent: dependency
+    expected_files:
+      - pyproject.toml
+      - setup.py
+    expected_symbols: []
+    must_mention:
+      - urllib3
+      - charset-normalizer
+      - idna
+      - certifi
+    reference_answer: Requests depends on urllib3, certifi, idna, and charset_normalizer/chardet.
+
+  - id: q12
+    question: How does requests find netrc authentication credentials?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/utils.py
+      - requests/utils.py
+    expected_symbols:
+      - get_netrc_auth
+    must_mention:
+      - netrc
+    reference_answer: get_netrc_auth in requests/utils.py searches the system netrc file for stored machine credentials.
+
+  - id: q13
+    question: Where are event hooks defined and dispatched during request execution?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/hooks.py
+      - requests/hooks.py
+    expected_symbols:
+      - dispatch_hook
+    must_mention:
+      - hook
+      - response
+    reference_answer: Event hooks like response callbacks are defined in requests/hooks.py and dispatched using dispatch_hook.
+
+  - id: q14
+    question: Where are HTTP status code aliases such as codes.ok and codes.not_found defined?
+    category: locate
+    expected_intent: locate
+    expected_files:
+      - src/requests/status_codes.py
+      - requests/status_codes.py
+    expected_symbols:
+      - _codes
+    must_mention:
+      - codes
+      - status
+    reference_answer: Status code aliases and lookup dicts are defined in requests/status_codes.py under the codes object.
+
+  - id: q15
+    question: How do I install requests in development mode with test dependencies?
+    category: config
+    expected_intent: config
+    expected_files:
+      - README.md
+      - pyproject.toml
+      - setup.py
+    expected_symbols: []
+    must_mention:
+      - pip
+      - install
+    reference_answer: Install with pip install -e . or pip install -e .[tests] from the repository root.
