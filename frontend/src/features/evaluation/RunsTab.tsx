@@ -158,28 +158,28 @@ export const RunsTab: React.FC<RunsTabProps> = ({
       case "completed":
         return (
           <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            <CheckCircle2 className="w-3.5 h-3.5" />
+            <CheckCircle2 className="size-3.5" />
             Completed
           </span>
         );
       case "running":
         return (
-          <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 animate-pulse">
-            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
+            <Loader2 className="size-3.5 animate-spin" />
             Running
           </span>
         );
       case "failed":
         return (
           <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
-            <AlertCircle className="w-3.5 h-3.5" />
+            <AlertCircle className="size-3.5" />
             Failed
           </span>
         );
       default:
         return (
           <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-800 text-zinc-400 border border-zinc-700">
-            <Clock className="w-3.5 h-3.5" />
+            <Clock className="size-3.5" />
             Pending
           </span>
         );
@@ -191,17 +191,17 @@ export const RunsTab: React.FC<RunsTabProps> = ({
       {/* Action Bar */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-base font-semibold text-white">Evaluation Runs</h2>
-          <p className="text-xs text-zinc-400">
+          <h2 className="text-base font-semibold text-white text-balance">Evaluation Runs</h2>
+          <p className="text-xs text-zinc-400 text-pretty">
             Inspect quantitative retrieval metrics, confidence reliability diagrams, and question traces.
           </p>
         </div>
 
         <button
           onClick={() => setIsNewRunOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-indigo-600/30"
+          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-emerald-600/30 cursor-pointer"
         >
-          <Play className="w-4 h-4 fill-current" />
+          <Play className="size-4 fill-current" />
           New Evaluation Run
         </button>
       </div>
@@ -211,14 +211,14 @@ export const RunsTab: React.FC<RunsTabProps> = ({
         <div className="py-16 text-center text-zinc-400">Loading evaluation runs...</div>
       ) : runs.length === 0 ? (
         <div className="py-16 text-center border border-dashed border-[#27272a] rounded-xl bg-[#111113]">
-          <TrendingUp className="w-10 h-10 text-zinc-500 mx-auto mb-3" />
+          <TrendingUp className="size-10 text-zinc-500 mx-auto mb-3" />
           <p className="text-zinc-300 font-medium">No evaluation runs recorded yet</p>
-          <p className="text-xs text-zinc-500 mt-1 mb-4">
+          <p className="text-xs text-zinc-500 mt-1 mb-4 text-pretty">
             Launch your first multi-strategy run against a built-in or custom benchmark.
           </p>
           <button
             onClick={() => setIsNewRunOpen(true)}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium transition-colors"
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-medium transition-colors cursor-pointer"
           >
             Launch Run Now
           </button>
@@ -227,7 +227,7 @@ export const RunsTab: React.FC<RunsTabProps> = ({
         <div className="border border-[#27272a] rounded-xl bg-[#111113] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#18181b] border-b border-[#27272a] text-zinc-400 uppercase font-mono tracking-wider text-[11px]">
+              <thead className="bg-[#18181b] border-b border-[#27272a] text-zinc-400 uppercase font-mono text-[11px]">
                 <tr>
                   <th className="py-3 px-4">Run Details</th>
                   <th className="py-3 px-4">Strategies</th>
@@ -273,23 +273,23 @@ export const RunsTab: React.FC<RunsTabProps> = ({
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <span className="font-semibold text-emerald-400">
+                        <span className="font-semibold text-emerald-400 tabular-nums">
                           {bestMetrics ? `${(bestMetrics.hit_5 * 100).toFixed(1)}%` : "—"}
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <span className="font-mono text-zinc-200">
+                        <span className="font-mono text-zinc-200 tabular-nums">
                           {bestMetrics ? bestMetrics.mrr.toFixed(3) : "—"}
                         </span>
                       </td>
                       <td className="py-3 px-4">
-                        <span className="text-zinc-200">
+                        <span className="text-zinc-200 tabular-nums">
                           {bestMetrics && r.generate_answers
                             ? `${(bestMetrics.answer_correctness * 100).toFixed(1)}%`
                             : "—"}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-zinc-400 font-mono">
+                      <td className="py-3 px-4 text-zinc-400 font-mono tabular-nums">
                         {r.duration_seconds > 0 ? `${r.duration_seconds.toFixed(1)}s` : "—"}
                       </td>
                       <td className="py-3 px-4">{getStatusBadge(r.status)}</td>
@@ -299,9 +299,10 @@ export const RunsTab: React.FC<RunsTabProps> = ({
                             e.stopPropagation();
                             onSelectRun(r.id);
                           }}
-                          className="p-1 rounded hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors"
+                          aria-label="View run details"
+                          className="p-1 rounded hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors cursor-pointer"
                         >
-                          <ChevronRight className="w-4 h-4" />
+                          <ChevronRight className="size-4" />
                         </button>
                       </td>
                     </tr>
@@ -325,13 +326,15 @@ export const RunsTab: React.FC<RunsTabProps> = ({
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => {
                   setIsNewRunOpen(false);
                   if (onClearPresetBenchmark) onClearPresetBenchmark();
                 }}
-                className="text-zinc-400 hover:text-white"
+                aria-label="Close dialog"
+                className="text-zinc-400 hover:text-white cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="size-5" />
               </button>
             </div>
 
@@ -344,7 +347,7 @@ export const RunsTab: React.FC<RunsTabProps> = ({
                 <select
                   value={selectedBenchmarkId}
                   onChange={(e) => setSelectedBenchmarkId(e.target.value)}
-                  className="w-full bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-emerald-500"
                 >
                   {benchmarks.map((b) => (
                     <option key={b.id} value={b.id}>
@@ -368,7 +371,7 @@ export const RunsTab: React.FC<RunsTabProps> = ({
                         onClick={() => handleToggleStrategy(strat.id)}
                         className={`flex items-start gap-3 p-2.5 rounded-lg border cursor-pointer transition-colors ${
                           checked
-                            ? "bg-indigo-500/10 border-indigo-500/40 text-white"
+                            ? "bg-emerald-500/10 border-emerald-500/40 text-white"
                             : "bg-[#18181b] border-[#27272a] text-zinc-400 hover:border-zinc-700"
                         }`}
                       >
@@ -376,7 +379,7 @@ export const RunsTab: React.FC<RunsTabProps> = ({
                           type="checkbox"
                           checked={checked}
                           onChange={() => {}}
-                          className="mt-0.5 accent-indigo-600 rounded cursor-pointer"
+                          className="mt-0.5 accent-emerald-600 rounded cursor-pointer"
                         />
                         <div>
                           <div className="text-xs font-semibold text-zinc-100">{strat.label}</div>
@@ -392,7 +395,7 @@ export const RunsTab: React.FC<RunsTabProps> = ({
               <div className="flex items-center justify-between p-3 rounded-lg border border-[#27272a] bg-[#18181b]">
                 <div>
                   <div className="text-xs font-medium text-white flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                    <Sparkles className="size-3.5 text-emerald-400" />
                     Generate & Score LLM Answers
                   </div>
                   <div className="text-[11px] text-zinc-400">
@@ -403,43 +406,43 @@ export const RunsTab: React.FC<RunsTabProps> = ({
                   type="checkbox"
                   checked={generateAnswers}
                   onChange={(e) => setGenerateAnswers(e.target.checked)}
-                  className="w-4 h-4 accent-indigo-600 rounded cursor-pointer"
+                  className="size-4 accent-emerald-600 rounded cursor-pointer"
                 />
               </div>
 
               {/* Pre-Flight Estimate Card (§14.3) */}
-              <div className="p-3.5 rounded-xl border border-indigo-500/20 bg-indigo-950/20 space-y-2.5">
+              <div className="p-3.5 rounded-xl border border-emerald-500/20 bg-emerald-950/20 space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-indigo-300 flex items-center gap-1.5">
-                    <Cpu className="w-3.5 h-3.5" />
+                  <span className="text-xs font-semibold text-emerald-300 flex items-center gap-1.5">
+                    <Cpu className="size-3.5" />
                     Pre-Flight Run Estimate
                   </span>
-                  {isEstimating && <Loader2 className="w-3.5 h-3.5 text-indigo-400 animate-spin" />}
+                  {isEstimating && <Loader2 className="size-3.5 text-emerald-400 animate-spin" />}
                 </div>
 
                 {estimate ? (
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
                     <div className="p-2 rounded bg-[#111113]/80 border border-[#27272a]">
                       <div className="text-[10px] text-zinc-400 uppercase font-mono">LLM Calls</div>
-                      <div className="text-sm font-bold text-white mt-0.5">
+                      <div className="text-sm font-bold text-white mt-0.5 tabular-nums">
                         {estimate.estimated_llm_calls}
                       </div>
                     </div>
                     <div className="p-2 rounded bg-[#111113]/80 border border-[#27272a]">
                       <div className="text-[10px] text-zinc-400 uppercase font-mono">Est. Tokens</div>
-                      <div className="text-sm font-bold text-white mt-0.5">
+                      <div className="text-sm font-bold text-white mt-0.5 tabular-nums">
                         {estimate.estimated_tokens.toLocaleString()}
                       </div>
                     </div>
                     <div className="p-2 rounded bg-[#111113]/80 border border-[#27272a]">
                       <div className="text-[10px] text-zinc-400 uppercase font-mono">Est. Cost</div>
-                      <div className="text-sm font-bold text-emerald-400 mt-0.5">
+                      <div className="text-sm font-bold text-emerald-400 mt-0.5 tabular-nums">
                         ${estimate.estimated_cost_usd.toFixed(4)}
                       </div>
                     </div>
                     <div className="p-2 rounded bg-[#111113]/80 border border-[#27272a]">
                       <div className="text-[10px] text-zinc-400 uppercase font-mono">Est. Time</div>
-                      <div className="text-sm font-bold text-indigo-400 mt-0.5">
+                      <div className="text-sm font-bold text-emerald-400 mt-0.5 tabular-nums">
                         ~{estimate.estimated_duration_seconds}s
                       </div>
                     </div>
@@ -459,7 +462,7 @@ export const RunsTab: React.FC<RunsTabProps> = ({
                   setIsNewRunOpen(false);
                   if (onClearPresetBenchmark) onClearPresetBenchmark();
                 }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-white"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-white cursor-pointer"
               >
                 Cancel
               </button>
@@ -467,16 +470,16 @@ export const RunsTab: React.FC<RunsTabProps> = ({
                 type="button"
                 onClick={handleStartRun}
                 disabled={isStarting || selectedStrategies.length === 0}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-indigo-600/30"
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-emerald-600/30 cursor-pointer"
               >
                 {isStarting ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="size-4 animate-spin" />
                     Launching...
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4 fill-current" />
+                    <Play className="size-4 fill-current" />
                     Start Evaluation Run
                   </>
                 )}

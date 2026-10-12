@@ -154,7 +154,7 @@ export const ExplorerPage: React.FC = () => {
     return (
       <div className="flex flex-1 min-h-0 items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-zinc-400">
-          <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
+          <Loader2 className="size-6 animate-spin text-emerald-400" />
           <span className="text-sm">Loading repository tree...</span>
         </div>
       </div>
@@ -164,8 +164,8 @@ export const ExplorerPage: React.FC = () => {
   if (filesError) {
     return (
       <div className="flex flex-1 min-h-0 items-center justify-center p-6">
-        <div className="flex items-center gap-2 p-4 bg-red-950/40 border border-red-800 text-red-300 rounded text-sm">
-          <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
+        <div className="flex items-center gap-2 p-4 bg-red-950/40 border border-red-800 text-red-300 rounded text-sm text-pretty">
+          <AlertCircle className="size-5 text-red-400 shrink-0" />
           <span>Failed to load repository files. Please try again or check ingestion status.</span>
         </div>
       </div>
@@ -209,12 +209,12 @@ export const ExplorerPage: React.FC = () => {
           </>
         ) : detailLoading ? (
           <div className="flex-1 flex items-center justify-center">
-            <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
+            <Loader2 className="size-6 animate-spin text-emerald-400" />
           </div>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-zinc-500 gap-2">
-            <FileCode className="w-8 h-8 text-zinc-600" />
-            <p className="text-xs">Select a file from the explorer tree to view its content</p>
+            <FileCode className="size-8 text-zinc-600" />
+            <p className="text-xs text-pretty">Select a file from the explorer tree to view its content</p>
           </div>
         )}
       </div>

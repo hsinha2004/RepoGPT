@@ -6,7 +6,6 @@ import {
   ShieldAlert,
   AlertTriangle,
   CheckCircle2,
-  FileCode,
   ExternalLink,
   Upload,
   RefreshCw,
@@ -16,8 +15,6 @@ import {
   X,
   Edit2,
   ChevronRight,
-  MessageSquare,
-  Layers,
   Sparkles,
   ArrowLeft,
   Send,
@@ -141,7 +138,7 @@ export const ReviewsPage: React.FC = () => {
   const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
 
   // 1. Fetch Repo Details
-  const { data: repo } = useQuery({
+  useQuery({
     queryKey: ["repo", repoId],
     queryFn: async () => {
       const res = await apiClient.GET("/api/v1/repos/{repo_id}", {
@@ -371,14 +368,14 @@ export const ReviewsPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-[#27272a] pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-[#6366f1]/10 border border-[#6366f1]/25 flex items-center justify-center text-[#818cf8]">
-            <GitPullRequest className="w-4 h-4" />
+          <div className="size-9 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400">
+            <GitPullRequest className="size-4" />
           </div>
           <div>
-            <h1 className="text-base font-semibold tracking-tight text-white">
+            <h1 className="text-base font-semibold text-white text-balance">
               Pull Request & Code Reviews
             </h1>
-            <p className="text-xs text-[#71717a]">
+            <p className="text-xs text-[#71717a] text-pretty">
               Context-aware pull request review, bug & security finding verification, and GitHub publishing.
             </p>
           </div>
@@ -392,11 +389,11 @@ export const ReviewsPage: React.FC = () => {
           <div className="p-6 rounded-2xl bg-[#111113] border border-[#27272a] space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#27272a] pb-4">
               <div>
-                <h2 className="text-base font-semibold text-white flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-indigo-400" />
+                <h2 className="text-base font-semibold text-white flex items-center gap-2 text-balance">
+                  <Sparkles className="size-4 text-emerald-400" />
                   Trigger Automated Pull Request Review
                 </h2>
-                <p className="text-xs text-zinc-400">
+                <p className="text-xs text-zinc-400 text-pretty">
                   Analyze pull request changes against symbol graph, callers, and test conventions.
                 </p>
               </div>
@@ -406,9 +403,9 @@ export const ReviewsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setTriggerTab("github")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                     triggerTab === "github"
-                      ? "bg-[#6366f1] text-white shadow-sm"
+                      ? "bg-emerald-600 text-white shadow-xs"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
@@ -417,9 +414,9 @@ export const ReviewsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setTriggerTab("upload")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                     triggerTab === "upload"
-                      ? "bg-[#6366f1] text-white shadow-sm"
+                      ? "bg-emerald-600 text-white shadow-xs"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
@@ -770,11 +767,11 @@ export const ReviewsPage: React.FC = () => {
                   {/* Badges and KPI stats */}
                   <div className="flex items-center gap-3">
                     <div className="text-right">
-                      <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">
+                      <div className="text-[10px] text-zinc-500 uppercase font-bold font-mono">
                         Risk Level
                       </div>
                       <span
-                        className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase border ${severityBadge(
+                        className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase border font-mono ${severityBadge(
                           review.risk_level
                         )}`}
                       >
@@ -785,10 +782,10 @@ export const ReviewsPage: React.FC = () => {
                     <div className="h-8 w-px bg-[#27272a]" />
 
                     <div className="text-right">
-                      <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">
+                      <div className="text-[10px] text-zinc-500 uppercase font-bold font-mono">
                         Acceptance
                       </div>
-                      <div className="text-xs font-semibold text-emerald-400">
+                      <div className="text-xs font-semibold text-emerald-400 tabular-nums font-mono">
                         {review.stats.accepted_count} / {review.stats.findings_count}
                       </div>
                     </div>
@@ -798,10 +795,10 @@ export const ReviewsPage: React.FC = () => {
                 {/* AI Summary */}
                 {review.summary && (
                   <div className="space-y-1.5">
-                    <h3 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+                    <h3 className="text-xs font-semibold text-zinc-300 uppercase font-mono text-balance">
                       Summary Narrative
                     </h3>
-                    <div className="p-3.5 rounded-xl bg-[#18181b] border border-[#27272a] text-xs text-zinc-300 leading-relaxed whitespace-pre-line">
+                    <div className="p-3.5 rounded-xl bg-[#18181b] border border-[#27272a] text-xs text-zinc-300 leading-relaxed whitespace-pre-line text-pretty">
                       {review.summary}
                     </div>
                   </div>
@@ -810,7 +807,7 @@ export const ReviewsPage: React.FC = () => {
                 {/* File Walkthrough */}
                 {review.file_walkthrough.length > 0 && (
                   <div className="space-y-1.5">
-                    <h3 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+                    <h3 className="text-xs font-semibold text-zinc-300 uppercase font-mono text-balance">
                       Changed Files Walkthrough ({review.file_walkthrough.length})
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
@@ -1137,8 +1134,8 @@ export const ReviewsPage: React.FC = () => {
               {/* General Comments (Unanchored issues) */}
               {review.general_comments.length > 0 && (
                 <div className="p-5 rounded-2xl bg-[#111113] border border-[#27272a] space-y-3">
-                  <h3 className="text-xs font-semibold text-zinc-300 uppercase tracking-wider flex items-center gap-2">
-                    <Info className="w-4 h-4 text-blue-400" />
+                  <h3 className="text-xs font-semibold text-zinc-300 uppercase font-mono flex items-center gap-2 text-balance">
+                    <Info className="size-4 text-teal-400" />
                     General PR Observations & Unanchored Comments ({review.general_comments.length})
                   </h3>
                   <div className="space-y-2">

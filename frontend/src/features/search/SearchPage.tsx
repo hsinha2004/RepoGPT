@@ -163,19 +163,19 @@ export const SearchPage: React.FC = () => {
         </div>
         <div className="flex items-center justify-between mt-2">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-              <Search className="h-6 w-6 text-purple-400" />
+            <h1 className="text-2xl font-bold text-white flex items-center gap-2 text-balance">
+              <Search className="size-6 text-emerald-400" />
               Retrieval & Router Playground
             </h1>
-            <p className="text-sm text-[#a1a1aa] mt-1">
+            <p className="text-sm text-[#a1a1aa] mt-1 text-pretty">
               Test multi-index retrieval (BM25 keyword, vector similarity, symbol lookup, graph expansion) and router classification.
             </p>
           </div>
           <Link
             to={`/app/repos/${repoId}/explorer`}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#27272a] text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#27272a] text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors"
           >
-            <Code2 className="h-4 w-4" />
+            <Code2 className="size-4" />
             Open Code Explorer
           </Link>
         </div>
@@ -186,13 +186,13 @@ export const SearchPage: React.FC = () => {
         <form onSubmit={handleSearch} className="space-y-3">
           <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-3 h-5 w-5 text-zinc-500" />
+              <Search className="absolute left-3.5 top-3 size-5 text-zinc-500" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Enter query or symbol name (e.g. 'Where is auth implemented?', 'AuthService.login')..."
-                className="w-full pl-11 pr-4 py-2.5 rounded-lg bg-[#09090b] border border-[#27272a] text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition"
+                className="w-full pl-11 pr-4 py-2.5 rounded-lg bg-[#09090b] border border-[#27272a] text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors font-mono"
               />
             </div>
 
@@ -201,7 +201,7 @@ export const SearchPage: React.FC = () => {
               <select
                 value={strategy}
                 onChange={(e) => setStrategy(e.target.value as StrategyOption)}
-                className="px-3 py-2.5 rounded-lg bg-[#09090b] border border-[#27272a] text-zinc-200 text-sm focus:outline-none focus:border-purple-500 transition"
+                className="px-3 py-2.5 rounded-lg bg-[#09090b] border border-[#27272a] text-zinc-200 text-sm focus:outline-none focus:border-emerald-500 transition-colors cursor-pointer"
               >
                 <option value="auto">Strategy: Auto (Router)</option>
                 <option value="hybrid_rerank">Hybrid + Rerank</option>
@@ -213,29 +213,30 @@ export const SearchPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className={`p-2.5 rounded-lg border transition ${
+                aria-label="Toggle query filters"
+                className={`p-2.5 rounded-lg border transition-colors cursor-pointer ${
                   showFilters
-                    ? "bg-purple-950/40 border-purple-500/50 text-purple-300"
+                    ? "bg-emerald-950/40 border-emerald-500/50 text-emerald-300"
                     : "bg-[#09090b] border-[#27272a] text-zinc-400 hover:text-white"
                 }`}
                 title="Toggle Filters"
               >
-                <Filter className="h-4 w-4" />
+                <Filter className="size-4" />
               </button>
 
               <button
                 type="submit"
                 disabled={searchMutation.isPending || !query.trim()}
-                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white font-medium text-sm transition shadow-lg shadow-emerald-950/20 flex items-center gap-2"
+                className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white font-medium text-sm transition-colors shadow-xs flex items-center gap-2 cursor-pointer"
               >
                 {searchMutation.isPending ? (
                   <>
-                    <div className="h-4 w-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    <div className="size-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                     Searching...
                   </>
                 ) : (
                   <>
-                    <Search className="h-4 w-4" />
+                    <Search className="size-4" />
                     Search
                   </>
                 )}
@@ -247,24 +248,24 @@ export const SearchPage: React.FC = () => {
           {showFilters && (
             <div className="pt-3 border-t border-[#27272a] flex flex-wrap gap-4 items-center text-xs">
               <div className="flex items-center gap-2">
-                <span className="text-zinc-400">File Pattern:</span>
+                <span className="text-zinc-400 font-mono">File Pattern:</span>
                 <input
                   type="text"
                   value={filePattern}
                   onChange={(e) => setFilePattern(e.target.value)}
                   placeholder="e.g. *.py, src/*"
-                  className="px-2.5 py-1.5 rounded bg-[#09090b] border border-[#27272a] text-white text-xs placeholder-zinc-600 focus:outline-none focus:border-purple-500"
+                  className="px-2.5 py-1.5 rounded bg-[#09090b] border border-[#27272a] text-white text-xs placeholder-zinc-600 focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-zinc-400">Language:</span>
+                <span className="text-zinc-400 font-mono">Language:</span>
                 <input
                   type="text"
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
                   placeholder="e.g. python, typescript"
-                  className="px-2.5 py-1.5 rounded bg-[#09090b] border border-[#27272a] text-white text-xs placeholder-zinc-600 focus:outline-none focus:border-purple-500"
+                  className="px-2.5 py-1.5 rounded bg-[#09090b] border border-[#27272a] text-white text-xs placeholder-zinc-600 focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
@@ -275,7 +276,7 @@ export const SearchPage: React.FC = () => {
                     setFilePattern("");
                     setLanguage("");
                   }}
-                  className="text-xs text-purple-400 hover:underline"
+                  className="text-xs text-emerald-400 hover:underline cursor-pointer"
                 >
                   Clear filters
                 </button>
@@ -288,7 +289,7 @@ export const SearchPage: React.FC = () => {
         {!data && (
           <div className="mt-4 pt-3 border-t border-[#27272a]/70">
             <div className="flex items-center gap-1.5 text-xs text-zinc-500 mb-2">
-              <Sparkles className="h-3.5 w-3.5 text-purple-400" />
+              <Sparkles className="size-3.5 text-emerald-400" />
               <span>Try sample queries:</span>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -297,7 +298,7 @@ export const SearchPage: React.FC = () => {
                   key={sq}
                   type="button"
                   onClick={() => handleSelectSample(sq)}
-                  className="px-2.5 py-1 rounded-md bg-[#09090b] hover:bg-purple-950/30 border border-[#27272a] hover:border-purple-500/40 text-xs text-zinc-300 hover:text-purple-300 transition"
+                  className="px-2.5 py-1 rounded-md bg-[#09090b] hover:bg-emerald-950/30 border border-[#27272a] hover:border-emerald-500/40 text-xs text-zinc-300 hover:text-emerald-300 transition-colors cursor-pointer"
                 >
                   {sq}
                 </button>
@@ -309,7 +310,7 @@ export const SearchPage: React.FC = () => {
 
       {/* Error Banner */}
       {searchMutation.isError && (
-        <div className="p-4 rounded-xl bg-red-950/30 border border-red-500/40 text-red-300 text-sm">
+        <div className="p-4 rounded-xl bg-red-950/30 border border-red-500/40 text-red-300 text-sm text-pretty">
           Failed to perform search. Ensure the repository has been indexed.
         </div>
       )}
@@ -321,24 +322,24 @@ export const SearchPage: React.FC = () => {
           <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-5 shadow-lg space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#27272a] pb-3">
               <div className="flex items-center gap-2">
-                <Compass className="h-5 w-5 text-purple-400" />
-                <h3 className="text-sm font-semibold text-white">Router Decision & Telemetry</h3>
+                <Compass className="size-5 text-emerald-400" />
+                <h3 className="text-sm font-semibold text-white text-balance">Router Decision &amp; Telemetry</h3>
               </div>
               <div className="flex items-center gap-2">
                 <span
-                  className={`px-2.5 py-0.5 rounded-full text-xs font-medium border uppercase tracking-wider ${getIntentBadgeColor(
+                  className={`px-2.5 py-0.5 rounded-full text-xs font-medium border uppercase font-mono ${getIntentBadgeColor(
                     data.route.intent
                   )}`}
                 >
                   {data.route.intent}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-950/40 text-purple-300 border border-purple-500/30">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-950/40 text-emerald-300 border border-emerald-500/30 font-mono">
                   {data.route.strategy}
                 </span>
               </div>
             </div>
 
-            <p className="text-sm text-zinc-300 italic">
+            <p className="text-sm text-zinc-300 italic text-pretty">
               &ldquo;{data.route.reason}&rdquo;
             </p>
 
@@ -351,7 +352,7 @@ export const SearchPage: React.FC = () => {
                     data.route.identifiers.map((ident) => (
                       <span
                         key={ident}
-                        className="px-2 py-0.5 rounded bg-[#09090b] border border-purple-500/20 text-purple-300 font-mono text-[11px]"
+                        className="px-2 py-0.5 rounded bg-[#09090b] border border-emerald-500/20 text-emerald-300 font-mono text-[11px]"
                       >
                         {ident}
                       </span>
@@ -364,15 +365,15 @@ export const SearchPage: React.FC = () => {
 
               {/* Enrichments & Weights */}
               <div className="space-y-1.5">
-                <span className="text-zinc-500 font-medium">Enrichments & Weights:</span>
-                <div className="flex flex-wrap gap-1.5 text-[11px]">
+                <span className="text-zinc-500 font-medium">Enrichments &amp; Weights:</span>
+                <div className="flex flex-wrap gap-1.5 text-[11px] tabular-nums">
                   {data.route.enrich.symbol_lookup && (
                     <span className="px-1.5 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-300">
                       Symbol Lookup
                     </span>
                   )}
                   {data.route.enrich.graph_expand && (
-                    <span className="px-1.5 py-0.5 rounded bg-purple-950/40 border border-purple-500/30 text-purple-300">
+                    <span className="px-1.5 py-0.5 rounded bg-teal-950/40 border border-teal-500/30 text-teal-300">
                       Graph Expand
                     </span>
                   )}
@@ -381,7 +382,7 @@ export const SearchPage: React.FC = () => {
                       Summary Scope
                     </span>
                   )}
-                  <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
+                  <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">
                     BM25: {Math.round(data.route.weights.bm25 * 100)}% / Vector:{" "}
                     {Math.round(data.route.weights.vector * 100)}%
                   </span>
@@ -391,10 +392,10 @@ export const SearchPage: React.FC = () => {
               {/* Latency Telemetry */}
               <div className="space-y-1.5">
                 <span className="text-zinc-500 font-medium flex items-center gap-1">
-                  <Clock className="h-3.5 w-3.5 text-zinc-400" />
+                  <Clock className="size-3.5 text-zinc-400" />
                   Latency Breakdown:
                 </span>
-                <div className="flex flex-wrap gap-1.5 text-[11px] text-zinc-300 font-mono">
+                <div className="flex flex-wrap gap-1.5 text-[11px] text-zinc-300 font-mono tabular-nums">
                   {Object.entries(data.latency_ms).map(([k, v]) => (
                     <span key={k} className="px-1.5 py-0.5 rounded bg-[#09090b] border border-[#27272a]">
                       {k}: {v}ms
@@ -411,9 +412,9 @@ export const SearchPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab("results")}
-                className={`pb-2 text-sm font-medium transition relative ${
+                className={`pb-2 text-sm font-medium transition-colors relative cursor-pointer ${
                   activeTab === "results"
-                    ? "text-white border-b-2 border-purple-500"
+                    ? "text-white border-b-2 border-emerald-500"
                     : "text-zinc-400 hover:text-white"
                 }`}
               >
@@ -422,16 +423,16 @@ export const SearchPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab("context")}
-                className={`pb-2 text-sm font-medium transition relative ${
+                className={`pb-2 text-sm font-medium transition-colors relative cursor-pointer ${
                   activeTab === "context"
-                    ? "text-white border-b-2 border-purple-500"
+                    ? "text-white border-b-2 border-emerald-500"
                     : "text-zinc-400 hover:text-white"
                 }`}
               >
                 Formatted LLM Context (XML)
               </button>
             </div>
-            <span className="text-xs text-zinc-500">
+            <span className="text-xs text-zinc-500 font-mono tabular-nums">
               Total candidate pool: {data.total_candidates} chunks
             </span>
           </div>
@@ -440,27 +441,27 @@ export const SearchPage: React.FC = () => {
           {activeTab === "results" && (
             <div className="space-y-4">
               {data.results.length === 0 ? (
-                <div className="p-12 text-center text-zinc-500 border border-dashed border-[#27272a] rounded-xl">
+                <div className="p-12 text-center text-zinc-500 border border-dashed border-[#27272a] rounded-xl text-pretty">
                   No matching chunks retrieved for this query.
                 </div>
               ) : (
                 data.results.map((chunk, idx) => (
                   <div
                     key={chunk.chunk_id}
-                    className="bg-[#18181b] border border-[#27272a] hover:border-zinc-700 rounded-xl p-4 transition shadow-md space-y-3"
+                    className="bg-[#18181b] border border-[#27272a] hover:border-zinc-700 rounded-xl p-4 transition-colors shadow-xs space-y-3"
                   >
                     {/* Header */}
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded bg-purple-950/60 text-purple-300 font-mono text-xs font-semibold">
+                        <span className="px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 font-mono text-xs font-semibold tabular-nums">
                           #{idx + 1}
                         </span>
-                        <FileCode className="h-4 w-4 text-zinc-400" />
+                        <FileCode className="size-4 text-zinc-400" />
                         <span className="font-mono text-xs text-white font-medium">
                           {chunk.path}:{chunk.start_line}-{chunk.end_line}
                         </span>
                         {chunk.symbol_name && (
-                          <span className="px-2 py-0.5 rounded bg-blue-950/40 border border-blue-500/30 text-blue-300 font-mono text-[11px]">
+                          <span className="px-2 py-0.5 rounded bg-teal-950/40 border border-teal-500/30 text-teal-300 font-mono text-[11px]">
                             {chunk.symbol_name}
                             {chunk.symbol_kind ? ` (${chunk.symbol_kind})` : ""}
                           </span>
@@ -475,39 +476,39 @@ export const SearchPage: React.FC = () => {
                         to={`/app/repos/${repoId}/explorer?file=${encodeURIComponent(
                           chunk.path
                         )}#L${chunk.start_line}-L${chunk.end_line}`}
-                        className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 transition"
+                        className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
                       >
                         <span>Open in Explorer</span>
-                        <ExternalLink className="h-3 w-3" />
+                        <ExternalLink className="size-3" />
                       </Link>
                     </div>
 
                     {/* Rank pills & Scores */}
                     <div className="flex flex-wrap items-center gap-2 text-xs">
                       <span className="text-zinc-500 font-medium">Score:</span>
-                      <span className="px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 font-mono font-medium">
+                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 font-mono font-medium tabular-nums">
                         {chunk.rerank_score !== null && chunk.rerank_score !== undefined
                           ? `Rerank: ${chunk.rerank_score.toFixed(4)}`
                           : `RRF: ${chunk.score.toFixed(4)}`}
                       </span>
 
                       {chunk.ranks.bm25 && (
-                        <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono text-[11px]">
+                        <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono text-[11px] tabular-nums">
                           BM25 #{chunk.ranks.bm25}
                         </span>
                       )}
                       {chunk.ranks.vector && (
-                        <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono text-[11px]">
+                        <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono text-[11px] tabular-nums">
                           Vector #{chunk.ranks.vector}
                         </span>
                       )}
                       {chunk.ranks.symbol && (
-                        <span className="px-1.5 py-0.5 rounded bg-emerald-950/40 text-emerald-300 font-mono text-[11px]">
+                        <span className="px-1.5 py-0.5 rounded bg-emerald-950/40 text-emerald-300 font-mono text-[11px] tabular-nums">
                           Symbol #{chunk.ranks.symbol}
                         </span>
                       )}
                       {chunk.ranks.graph && (
-                        <span className="px-1.5 py-0.5 rounded bg-indigo-950/40 text-indigo-300 font-mono text-[11px]">
+                        <span className="px-1.5 py-0.5 rounded bg-teal-950/40 text-teal-300 font-mono text-[11px] tabular-nums">
                           Graph #{chunk.ranks.graph}
                         </span>
                       )}
@@ -520,7 +521,7 @@ export const SearchPage: React.FC = () => {
                           const lineNum = chunk.start_line + lIdx;
                           return (
                             <div key={lIdx} className="table-row">
-                              <span className="table-cell pr-4 text-zinc-600 select-none text-right">
+                              <span className="table-cell pr-4 text-zinc-600 select-none text-right tabular-nums">
                                 {lineNum}
                               </span>
                               <span className="table-cell">{line}</span>
@@ -539,22 +540,23 @@ export const SearchPage: React.FC = () => {
           {activeTab === "context" && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-zinc-400">
+                <span className="text-xs text-zinc-400 text-pretty">
                   Exact context packed with original line numbers for LLM prompts:
                 </span>
                 <button
                   type="button"
                   onClick={() => handleCopyContext(data.context)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#27272a] hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition"
+                  aria-label="Copy context XML"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#27272a] hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition-colors cursor-pointer"
                 >
                   {copiedContext ? (
                     <>
-                      <Check className="h-3.5 w-3.5 text-emerald-400" />
+                      <Check className="size-3.5 text-emerald-400" />
                       <span>Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="h-3.5 w-3.5" />
+                      <Copy className="size-3.5" />
                       <span>Copy Context</span>
                     </>
                   )}

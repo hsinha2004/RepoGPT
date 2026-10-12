@@ -220,28 +220,28 @@ export const AdminPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#27272a]">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold">
-              <ShieldAlert className="w-5 h-5" />
+            <div className="size-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold">
+              <ShieldAlert className="size-5" />
             </div>
-            <h1 className="text-xl font-bold text-white tracking-tight">Administration Panel</h1>
+            <h1 className="text-xl font-bold text-white text-balance">Administration Panel</h1>
           </div>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-zinc-400 mt-1 text-pretty">
             System administration, user access control, background jobs, and compliance audit logs (§11.15, §12).
           </p>
         </div>
 
         <button
           onClick={fetchActiveTabData}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18181b] hover:bg-zinc-800 border border-[#27272a] rounded-lg text-xs font-medium text-zinc-300 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18181b] hover:bg-zinc-800 border border-[#27272a] rounded-lg text-xs font-medium text-zinc-300 transition-colors cursor-pointer"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
           Refresh
         </button>
       </div>
 
       {successMessage && (
         <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-xs text-emerald-400 flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 shrink-0" />
+          <CheckCircle2 className="size-4 shrink-0" />
           <span>{successMessage}</span>
         </div>
       )}
@@ -250,49 +250,49 @@ export const AdminPage: React.FC = () => {
       <div className="flex items-center gap-1 border-b border-[#27272a]">
         <button
           onClick={() => setActiveTab("users")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "users"
-              ? "border-indigo-500 text-white"
+              ? "border-emerald-500 text-white"
               : "border-transparent text-zinc-400 hover:text-zinc-200"
           }`}
         >
-          <Users className="w-4 h-4" />
+          <Users className="size-4" />
           Users & Access
         </button>
 
         <button
           onClick={() => setActiveTab("jobs")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "jobs"
-              ? "border-indigo-500 text-white"
+              ? "border-emerald-500 text-white"
               : "border-transparent text-zinc-400 hover:text-zinc-200"
           }`}
         >
-          <Activity className="w-4 h-4" />
+          <Activity className="size-4" />
           Background Jobs
         </button>
 
         <button
           onClick={() => setActiveTab("stats")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "stats"
-              ? "border-indigo-500 text-white"
+              ? "border-emerald-500 text-white"
               : "border-transparent text-zinc-400 hover:text-zinc-200"
           }`}
         >
-          <Server className="w-4 h-4" />
+          <Server className="size-4" />
           System Telemetry
         </button>
 
         <button
           onClick={() => setActiveTab("audit")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "audit"
-              ? "border-indigo-500 text-white"
+              ? "border-emerald-500 text-white"
               : "border-transparent text-zinc-400 hover:text-zinc-200"
           }`}
         >
-          <FileText className="w-4 h-4" />
+          <FileText className="size-4" />
           Security Audit Logs
         </button>
       </div>
@@ -302,16 +302,16 @@ export const AdminPage: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="relative w-72">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+              <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
               <input
                 type="text"
                 placeholder="Search by name or email..."
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
-                className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500"
               />
             </div>
-            <span className="text-xs text-zinc-400">{filteredUsers.length} registered accounts</span>
+            <span className="text-xs text-zinc-400 tabular-nums">{filteredUsers.length} registered accounts</span>
           </div>
 
           <div className="border border-[#27272a] rounded-xl bg-[#111113] overflow-hidden">
@@ -336,10 +336,10 @@ export const AdminPage: React.FC = () => {
                       <button
                         onClick={() => handleToggleUserRole(u)}
                         title="Click to toggle role"
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold border ${
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold border cursor-pointer ${
                           u.role === "admin"
                             ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                            : "bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
+                            : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                         }`}
                       >
                         {u.role}
@@ -349,7 +349,7 @@ export const AdminPage: React.FC = () => {
                       <button
                         onClick={() => handleToggleUserActive(u)}
                         title="Click to toggle status"
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border cursor-pointer ${
                           u.is_active
                             ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
                             : "bg-zinc-800 text-zinc-500 border-zinc-700"
@@ -358,7 +358,7 @@ export const AdminPage: React.FC = () => {
                         {u.is_active ? "Active" : "Disabled"}
                       </button>
                     </td>
-                    <td className="py-2.5 px-4 font-mono text-zinc-400">
+                    <td className="py-2.5 px-4 font-mono text-zinc-400 tabular-nums">
                       {new Date(u.created_at).toLocaleDateString()}
                     </td>
                     <td className="py-2.5 px-4 text-right space-x-2">
@@ -367,9 +367,9 @@ export const AdminPage: React.FC = () => {
                           setResetPasswordUserId(u.id);
                           setNewPassword("");
                         }}
-                        className="p-1 rounded bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-[#27272a] text-xs inline-flex items-center gap-1 px-2 py-1"
+                        className="p-1 rounded bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-[#27272a] text-xs inline-flex items-center gap-1 px-2 py-1 cursor-pointer"
                       >
-                        <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+                        <KeyRound className="size-3.5 text-amber-400" />
                         Reset Pass
                       </button>
                     </td>
@@ -388,7 +388,7 @@ export const AdminPage: React.FC = () => {
             <select
               value={jobStatusFilter}
               onChange={(e) => setJobStatusFilter(e.target.value)}
-              className="bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none"
+              className="bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
             >
               <option value="all">All Job Statuses</option>
               <option value="queued">Queued</option>
@@ -396,7 +396,7 @@ export const AdminPage: React.FC = () => {
               <option value="completed">Completed</option>
               <option value="failed">Failed</option>
             </select>
-            <span className="text-xs text-zinc-400">{filteredJobs.length} jobs</span>
+            <span className="text-xs text-zinc-400 tabular-nums">{filteredJobs.length} jobs</span>
           </div>
 
           <div className="border border-[#27272a] rounded-xl bg-[#111113] overflow-hidden">
@@ -420,7 +420,7 @@ export const AdminPage: React.FC = () => {
                           j.status === "completed"
                             ? "bg-emerald-500/10 text-emerald-400"
                             : j.status === "running"
-                            ? "bg-indigo-500/10 text-indigo-400 animate-pulse"
+                            ? "bg-emerald-500/10 text-emerald-400 animate-pulse"
                             : j.status === "failed"
                             ? "bg-red-500/10 text-red-400"
                             : "bg-zinc-800 text-zinc-400"
@@ -429,7 +429,7 @@ export const AdminPage: React.FC = () => {
                         {j.status}
                       </span>
                     </td>
-                    <td className="py-2.5 px-4 font-mono text-zinc-300">
+                    <td className="py-2.5 px-4 font-mono text-zinc-300 tabular-nums">
                       {j.progress}% • {j.stage}
                     </td>
                     <td className="py-2.5 px-4 text-zinc-400 max-w-xs truncate">{j.message}</td>
@@ -437,9 +437,9 @@ export const AdminPage: React.FC = () => {
                       {j.status === "failed" && (
                         <button
                           onClick={() => handleRetryJob(j.id)}
-                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-[#27272a] text-xs"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-[#27272a] text-xs cursor-pointer"
                         >
-                          <RotateCcw className="w-3.5 h-3.5 text-indigo-400" />
+                          <RotateCcw className="size-3.5 text-emerald-400" />
                           Retry
                         </button>
                       )}
@@ -458,27 +458,27 @@ export const AdminPage: React.FC = () => {
           <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-2">
             <div className="text-xs text-zinc-400 flex items-center justify-between">
               <span>Total Accounts</span>
-              <Users className="w-4 h-4 text-indigo-400" />
+              <Users className="size-4 text-emerald-400" />
             </div>
-            <div className="text-3xl font-bold text-white">{stats.total_users}</div>
+            <div className="text-3xl font-bold text-white tabular-nums">{stats.total_users}</div>
             <p className="text-[11px] text-zinc-500">Registered users in database</p>
           </div>
 
           <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-2">
             <div className="text-xs text-zinc-400 flex items-center justify-between">
               <span>Repositories</span>
-              <FolderGit2 className="w-4 h-4 text-emerald-400" />
+              <FolderGit2 className="size-4 text-emerald-400" />
             </div>
-            <div className="text-3xl font-bold text-white">{stats.total_repositories}</div>
+            <div className="text-3xl font-bold text-white tabular-nums">{stats.total_repositories}</div>
             <p className="text-[11px] text-zinc-500">Indexed codebases</p>
           </div>
 
           <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-2">
             <div className="text-xs text-zinc-400 flex items-center justify-between">
               <span>Background Tasks</span>
-              <Cpu className="w-4 h-4 text-amber-400" />
+              <Cpu className="size-4 text-amber-400" />
             </div>
-            <div className="text-3xl font-bold text-white">{stats.total_jobs}</div>
+            <div className="text-3xl font-bold text-white tabular-nums">{stats.total_jobs}</div>
             <p className="text-[11px] text-zinc-500">Ingestion and sync jobs</p>
           </div>
         </div>
@@ -491,14 +491,14 @@ export const AdminPage: React.FC = () => {
             <select
               value={auditActionFilter}
               onChange={(e) => setAuditActionFilter(e.target.value)}
-              className="bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none"
+              className="bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
             >
               <option value="all">All Audit Actions</option>
               <option value="login">Login</option>
               <option value="admin">Admin Operations</option>
               <option value="repo">Repo Lifecycle</option>
             </select>
-            <span className="text-xs text-zinc-400">{filteredAuditLogs.length} audit entries</span>
+            <span className="text-xs text-zinc-400 tabular-nums">{filteredAuditLogs.length} audit entries</span>
           </div>
 
           <div className="border border-[#27272a] rounded-xl bg-[#111113] overflow-hidden">
@@ -514,14 +514,14 @@ export const AdminPage: React.FC = () => {
               <tbody className="divide-y divide-[#27272a]">
                 {filteredAuditLogs.map((log) => (
                   <tr key={log._id} className="hover:bg-zinc-800/30">
-                    <td className="py-2.5 px-4 font-mono font-semibold text-indigo-400">
+                    <td className="py-2.5 px-4 font-mono font-semibold text-emerald-400">
                       {log.action}
                     </td>
                     <td className="py-2.5 px-4 font-mono text-zinc-300">{log.actor_id}</td>
                     <td className="py-2.5 px-4 font-mono text-zinc-400">
                       {log.target_type}:{log.target_id}
                     </td>
-                    <td className="py-2.5 px-4 font-mono text-zinc-500">
+                    <td className="py-2.5 px-4 font-mono text-zinc-500 tabular-nums">
                       {new Date(log.created_at).toLocaleString()}
                     </td>
                   </tr>
@@ -539,10 +539,12 @@ export const AdminPage: React.FC = () => {
             <div className="flex items-center justify-between pb-2 border-b border-[#27272a]">
               <h3 className="text-sm font-semibold text-white">Reset Account Password</h3>
               <button
+                type="button"
                 onClick={() => setResetPasswordUserId(null)}
-                className="text-zinc-400 hover:text-white"
+                aria-label="Close dialog"
+                className="text-zinc-400 hover:text-white cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="size-4" />
               </button>
             </div>
             <form onSubmit={handleResetPassword} className="space-y-3">
@@ -557,21 +559,21 @@ export const AdminPage: React.FC = () => {
                   minLength={8}
                   required
                   placeholder="Enter temporary password..."
-                  className="w-full bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-emerald-500"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setResetPasswordUserId(null)}
-                  className="px-3 py-1.5 text-xs text-zinc-400 hover:text-white"
+                  className="px-3 py-1.5 text-xs text-zinc-400 hover:text-white cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isResetting || newPassword.length < 8}
-                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-xs font-medium transition-colors"
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-xs font-medium transition-colors cursor-pointer"
                 >
                   {isResetting ? "Resetting..." : "Save Password"}
                 </button>

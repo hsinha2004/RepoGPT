@@ -67,20 +67,20 @@ export const LiveMetricsTab: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-[#27272a]">
         <div>
-          <h2 className="text-base font-semibold text-white flex items-center gap-2">
-            <Activity className="w-4 h-4 text-emerald-400" />
+          <h2 className="text-base font-semibold text-white flex items-center gap-2 text-balance">
+            <Activity className="size-4 text-emerald-400" />
             Live Chat Telemetry & Production Monitoring
           </h2>
-          <p className="text-xs text-zinc-400">
+          <p className="text-xs text-zinc-400 text-pretty">
             Real-time evaluation signals collected from user chat sessions over the past 7 days (§14.4).
           </p>
         </div>
 
         <button
           onClick={fetchLiveMetrics}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18181b] hover:bg-zinc-800 border border-[#27272a] rounded-lg text-xs font-medium text-zinc-300 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18181b] hover:bg-zinc-800 border border-[#27272a] rounded-lg text-xs font-medium text-zinc-300 transition-colors cursor-pointer"
         >
-          <RefreshCw className="w-3.5 h-3.5" />
+          <RefreshCw className="size-3.5" />
           Refresh Telemetry
         </button>
       </div>
@@ -90,12 +90,12 @@ export const LiveMetricsTab: React.FC = () => {
         <div className="bg-[#111113] border border-[#27272a] rounded-xl p-4">
           <div className="flex items-center justify-between text-zinc-400 text-xs">
             <span className="font-mono uppercase">User Satisfaction</span>
-            <ThumbsUp className="w-4 h-4 text-emerald-400" />
+            <ThumbsUp className="size-4 text-emerald-400" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-white mt-2 tabular-nums">
             {satisfactionPct}% Positive
           </div>
-          <div className="text-[11px] text-zinc-500 mt-1">
+          <div className="text-[11px] text-zinc-500 mt-1 tabular-nums">
             {metrics.satisfaction_gauge.positive_ratings} 👍 /{" "}
             {metrics.satisfaction_gauge.negative_ratings} 👎 ratings
           </div>
@@ -104,12 +104,12 @@ export const LiveMetricsTab: React.FC = () => {
         <div className="bg-[#111113] border border-[#27272a] rounded-xl p-4">
           <div className="flex items-center justify-between text-zinc-400 text-xs">
             <span className="font-mono uppercase">Total Queries (7d)</span>
-            <TrendingUp className="w-4 h-4 text-indigo-400" />
+            <TrendingUp className="size-4 text-emerald-400" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-white mt-2 tabular-nums">
             {metrics.questions_per_day.reduce((acc, cur) => acc + cur.count, 0)}
           </div>
-          <div className="text-[11px] text-zinc-500 mt-1">
+          <div className="text-[11px] text-zinc-500 mt-1 tabular-nums">
             Avg ~
             {(
               metrics.questions_per_day.reduce((acc, cur) => acc + cur.count, 0) / 7
@@ -121,9 +121,9 @@ export const LiveMetricsTab: React.FC = () => {
         <div className="bg-[#111113] border border-[#27272a] rounded-xl p-4">
           <div className="flex items-center justify-between text-zinc-400 text-xs">
             <span className="font-mono uppercase">Total LLM Tokens</span>
-            <Cpu className="w-4 h-4 text-amber-400" />
+            <Cpu className="size-4 text-amber-400" />
           </div>
-          <div className="text-2xl font-bold text-white mt-2">
+          <div className="text-2xl font-bold text-white mt-2 tabular-nums">
             {metrics.tokens_and_cost
               .reduce((acc, cur) => acc + cur.tokens, 0)
               .toLocaleString()}
@@ -134,9 +134,9 @@ export const LiveMetricsTab: React.FC = () => {
         <div className="bg-[#111113] border border-[#27272a] rounded-xl p-4">
           <div className="flex items-center justify-between text-zinc-400 text-xs">
             <span className="font-mono uppercase">Estimated Cost (7d)</span>
-            <DollarSign className="w-4 h-4 text-emerald-400" />
+            <DollarSign className="size-4 text-emerald-400" />
           </div>
-          <div className="text-2xl font-bold text-emerald-400 mt-2">
+          <div className="text-2xl font-bold text-emerald-400 mt-2 tabular-nums">
             $
             {metrics.tokens_and_cost
               .reduce((acc, cur) => acc + cur.cost_usd, 0)
@@ -229,14 +229,14 @@ export const LiveMetricsTab: React.FC = () => {
         <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-4 lg:col-span-2">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-white">
+              <h3 className="text-sm font-semibold text-white text-balance">
                 Live Confidence Distribution (10 Bins)
               </h3>
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-zinc-400 text-pretty">
                 Calibrated confidence histogram across live user chat responses.
               </p>
             </div>
-            <BarChart2 className="w-4 h-4 text-zinc-500" />
+            <BarChart2 className="size-4 text-zinc-500" />
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">

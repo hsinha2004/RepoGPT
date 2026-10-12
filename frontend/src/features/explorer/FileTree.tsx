@@ -38,18 +38,18 @@ interface FileTreeProps {
 }
 
 function getFileIcon(lang?: string, isSkipped?: boolean) {
-  if (isSkipped) return <AlertCircle className="w-4 h-4 text-amber-500/80 shrink-0" />;
+  if (isSkipped) return <AlertCircle className="size-4 text-amber-500/80 shrink-0" />;
   const l = (lang || "").toLowerCase();
   if (["python", "javascript", "typescript", "java", "go", "code"].includes(l)) {
-    return <FileCode className="w-4 h-4 text-indigo-400 shrink-0" />;
+    return <FileCode className="size-4 text-emerald-400 shrink-0" />;
   }
   if (["markdown", "doc", "docs"].includes(l)) {
-    return <FileText className="w-4 h-4 text-emerald-400 shrink-0" />;
+    return <FileText className="size-4 text-teal-400 shrink-0" />;
   }
   if (["config", "json", "yaml"].includes(l)) {
-    return <FileCog className="w-4 h-4 text-purple-400 shrink-0" />;
+    return <FileCog className="size-4 text-zinc-400 shrink-0" />;
   }
-  return <FileQuestion className="w-4 h-4 text-zinc-400 shrink-0" />;
+  return <FileQuestion className="size-4 text-zinc-400 shrink-0" />;
 }
 
 export const FileTree: React.FC<FileTreeProps> = ({
@@ -138,14 +138,14 @@ export const FileTree: React.FC<FileTreeProps> = ({
               style={{ paddingLeft: `${depth * 12 + 8}px` }}
             >
               {isExpanded ? (
-                <ChevronDown className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                <ChevronDown className="size-3.5 text-zinc-400 shrink-0" />
               ) : (
-                <ChevronRight className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                <ChevronRight className="size-3.5 text-zinc-400 shrink-0" />
               )}
               {isExpanded ? (
-                <FolderOpen className="w-4 h-4 text-amber-400/90 shrink-0" />
+                <FolderOpen className="size-4 text-amber-400/90 shrink-0" />
               ) : (
-                <Folder className="w-4 h-4 text-amber-400/90 shrink-0" />
+                <Folder className="size-4 text-amber-400/90 shrink-0" />
               )}
               <span className="truncate">{node.name}</span>
             </button>
@@ -172,7 +172,7 @@ export const FileTree: React.FC<FileTreeProps> = ({
           isSkipped
             ? "opacity-50 cursor-not-allowed text-zinc-500"
             : isSelected
-              ? "bg-indigo-950/60 text-indigo-300 font-medium border-l-2 border-indigo-500"
+              ? "bg-emerald-950/50 text-emerald-300 font-medium border-l-2 border-emerald-500"
               : "hover:bg-zinc-800/40 text-zinc-400 hover:text-zinc-200"
         }`}
         style={{ paddingLeft: `${depth * 12 + 20}px` }}
@@ -180,7 +180,7 @@ export const FileTree: React.FC<FileTreeProps> = ({
         {getFileIcon(node.fileItem?.language, isSkipped)}
         <span className="truncate flex-1">{node.name}</span>
         {node.fileItem?.loc ? (
-          <span className="text-[10px] text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="text-[10px] text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity tabular-nums">
             {node.fileItem.loc}L
           </span>
         ) : null}
@@ -193,22 +193,22 @@ export const FileTree: React.FC<FileTreeProps> = ({
       {/* Search Header */}
       <div className="p-2.5 border-b border-zinc-800/80 space-y-2">
         <div className="relative">
-          <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-zinc-400 pointer-events-none" />
+          <Search className="size-3.5 absolute left-2.5 top-2.5 text-zinc-400 pointer-events-none" />
           <input
             type="text"
             placeholder="Search files..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#18181b] border border-zinc-800 text-zinc-200 text-xs rounded pl-8 pr-2.5 py-1.5 focus:outline-none focus:border-indigo-500 transition-colors font-mono"
+            className="w-full bg-[#18181b] border border-zinc-800 text-zinc-200 text-xs rounded pl-8 pr-2.5 py-1.5 focus:outline-none focus:border-emerald-500 transition-colors font-mono"
           />
         </div>
 
         {skippedFiles.length > 0 && (
           <div className="flex items-center justify-between text-[11px] px-1 text-zinc-400">
-            <span>{files.length} indexed files</span>
+            <span className="tabular-nums font-mono">{files.length} indexed files</span>
             <button
               onClick={() => setShowSkipped(!showSkipped)}
-              className="hover:text-amber-400 transition-colors text-[10px] underline underline-offset-2"
+              className="hover:text-amber-400 transition-colors text-[10px] underline underline-offset-2 tabular-nums font-mono"
             >
               {showSkipped ? "Hide skipped" : `+${skippedFiles.length} skipped`}
             </button>

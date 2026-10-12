@@ -36,15 +36,15 @@ export const FileInfoHeader: React.FC<FileInfoHeaderProps> = ({
     <div className="flex flex-col gap-2 p-3 bg-[#141416] border-b border-zinc-800">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <FileCode className="w-4 h-4 text-indigo-400" />
-          <h2 className="font-mono text-sm font-semibold text-zinc-100">{path}</h2>
+          <FileCode className="size-4 text-emerald-400" />
+          <h2 className="font-mono text-sm font-semibold text-zinc-100 text-balance">{path}</h2>
         </div>
 
         <button
           onClick={handleAskAboutFile}
-          className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs transition-colors font-medium"
+          className="flex items-center gap-1.5 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs transition-colors font-medium cursor-pointer"
         >
-          <MessageSquare className="w-3.5 h-3.5" />
+          <MessageSquare className="size-3.5" />
           <span>Ask about this file</span>
         </button>
       </div>
@@ -54,19 +54,19 @@ export const FileInfoHeader: React.FC<FileInfoHeaderProps> = ({
           {language}
         </span>
         <span>·</span>
-        <span>{loc.toLocaleString()} LOC</span>
+        <span className="tabular-nums font-mono">{loc.toLocaleString()} LOC</span>
         <span>·</span>
-        <span>{(sizeBytes / 1024).toFixed(1)} KB</span>
+        <span className="tabular-nums font-mono">{(sizeBytes / 1024).toFixed(1)} KB</span>
 
         <span>·</span>
         {redactionCount > 0 ? (
-          <span className="flex items-center gap-1 px-2 py-0.5 bg-amber-950/60 text-amber-300 border border-amber-800/60 rounded text-[11px]">
-            <ShieldAlert className="w-3 h-3 text-amber-400" />
+          <span className="flex items-center gap-1 px-2 py-0.5 bg-amber-950/60 text-amber-300 border border-amber-800/60 rounded text-[11px] tabular-nums font-mono">
+            <ShieldAlert className="size-3 text-amber-400" />
             <span>{redactionCount} secret{redactionCount === 1 ? "" : "s"} redacted</span>
           </span>
         ) : (
           <span className="flex items-center gap-1 text-[11px] text-zinc-500">
-            <ShieldCheck className="w-3 h-3 text-emerald-500" />
+            <ShieldCheck className="size-3 text-emerald-500" />
             <span>0 secrets redacted</span>
           </span>
         )}

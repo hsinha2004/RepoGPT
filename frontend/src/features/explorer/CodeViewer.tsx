@@ -79,11 +79,11 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
       {/* Code Viewer Toolbar */}
       <div className="flex items-center justify-between px-4 py-2 bg-[#141416] border-b border-zinc-800 text-zinc-400">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-zinc-400 font-sans">
+          <span className="text-[11px] text-zinc-400 font-sans tabular-nums">
             {lines.length} lines · {content.length.toLocaleString()} bytes
           </span>
           {highlightRange && (
-            <span className="text-[11px] text-indigo-400 font-sans bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-800/60">
+            <span className="text-[11px] text-emerald-300 font-sans bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60 tabular-nums">
               Lines {highlightRange.start}
               {highlightRange.end !== highlightRange.start && `–${highlightRange.end}`} selected
             </span>
@@ -96,9 +96,9 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
               onClick={() =>
                 onAskAboutSelection(highlightRange.start, highlightRange.end)
               }
-              className="flex items-center gap-1 px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs transition-colors font-sans"
+              className="flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs transition-colors font-sans cursor-pointer"
             >
-              <MessageSquareCode className="w-3.5 h-3.5" />
+              <MessageSquareCode className="size-3.5" />
               <span>Ask about selection</span>
             </button>
           )}
@@ -106,21 +106,23 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
           <button
             onClick={copyPermalink}
             title="Copy deep-link permalink"
-            className="flex items-center gap-1 px-2 py-1 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 rounded text-xs transition-colors font-sans"
+            aria-label="Copy deep-link permalink"
+            className="flex items-center gap-1 px-2 py-1 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 rounded text-xs transition-colors font-sans cursor-pointer"
           >
-            <Link2 className="w-3.5 h-3.5" />
+            <Link2 className="size-3.5" />
             <span>Permalink</span>
           </button>
 
           <button
             onClick={copyCode}
             title="Copy content"
-            className="flex items-center gap-1 px-2 py-1 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 rounded text-xs transition-colors font-sans"
+            aria-label="Copy code content"
+            className="flex items-center gap-1 px-2 py-1 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 rounded text-xs transition-colors font-sans cursor-pointer"
           >
             {copied ? (
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <Check className="size-3.5 text-emerald-400" />
             ) : (
-              <Copy className="w-3.5 h-3.5" />
+              <Copy className="size-3.5" />
             )}
             <span>{copied ? "Copied" : "Copy"}</span>
           </button>
@@ -146,16 +148,16 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
                   }}
                   className={`group transition-colors ${
                     isHighlighted
-                      ? "bg-indigo-950/40 text-indigo-100"
+                      ? "bg-emerald-950/30 text-emerald-100"
                       : "hover:bg-zinc-800/30 text-zinc-300"
                   }`}
                 >
                   {/* Line Number */}
                   <td
                     onClick={(e) => handleLineClick(lineNum, e)}
-                    className={`py-0.5 px-3 select-none text-right cursor-pointer w-12 border-r border-zinc-800/60 text-[11px] font-mono ${
+                    className={`py-0.5 px-3 select-none text-right cursor-pointer w-12 border-r border-zinc-800/60 text-[11px] font-mono tabular-nums ${
                       isHighlighted
-                        ? "text-indigo-400 font-semibold bg-indigo-950/60"
+                        ? "text-emerald-400 font-semibold bg-emerald-950/50"
                         : "text-zinc-600 group-hover:text-zinc-400"
                     }`}
                   >

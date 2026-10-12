@@ -115,11 +115,11 @@ export const EvaluationPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <BarChart3 className="w-6 h-6 text-indigo-400" />
+          <h1 className="text-2xl font-bold text-white text-balance flex items-center gap-2.5">
+            <BarChart3 className="size-6 text-emerald-400" />
             Evaluation Dashboard
           </h1>
-          <p className="text-sm text-zinc-400 mt-1">
+          <p className="text-sm text-zinc-400 mt-1 text-pretty">
             Empirical benchmark evaluation (§14): multi-strategy comparison, confidence reliability
             diagrams, and live chat telemetry.
           </p>
@@ -127,9 +127,9 @@ export const EvaluationPage: React.FC = () => {
 
         <button
           onClick={fetchData}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18181b] hover:bg-zinc-800 border border-[#27272a] rounded-lg text-xs font-medium text-zinc-300 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18181b] hover:bg-zinc-800 border border-[#27272a] rounded-lg text-xs font-medium text-zinc-300 transition-colors cursor-pointer"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
           Refresh Data
         </button>
       </div>
@@ -138,16 +138,16 @@ export const EvaluationPage: React.FC = () => {
       <div className="flex items-center gap-1 border-b border-[#27272a]">
         <button
           onClick={() => setActiveTab("runs")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "runs"
-              ? "border-indigo-500 text-white"
+              ? "border-emerald-500 text-white"
               : "border-transparent text-zinc-400 hover:text-zinc-200"
           }`}
         >
-          <BarChart3 className="w-4 h-4" />
+          <BarChart3 className="size-4" />
           Evaluation Runs
           {runs.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-zinc-800 text-zinc-400">
+            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-zinc-800 text-zinc-400 tabular-nums">
               {runs.length}
             </span>
           )}
@@ -155,16 +155,16 @@ export const EvaluationPage: React.FC = () => {
 
         <button
           onClick={() => setActiveTab("benchmarks")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "benchmarks"
-              ? "border-indigo-500 text-white"
+              ? "border-emerald-500 text-white"
               : "border-transparent text-zinc-400 hover:text-zinc-200"
           }`}
         >
-          <BookOpen className="w-4 h-4" />
+          <BookOpen className="size-4" />
           Benchmark Suites
           {benchmarks.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-zinc-800 text-zinc-400">
+            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-zinc-800 text-zinc-400 tabular-nums">
               {benchmarks.length}
             </span>
           )}
@@ -172,25 +172,25 @@ export const EvaluationPage: React.FC = () => {
 
         <button
           onClick={() => setActiveTab("live")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "live"
-              ? "border-indigo-500 text-white"
+              ? "border-emerald-500 text-white"
               : "border-transparent text-zinc-400 hover:text-zinc-200"
           }`}
         >
-          <Activity className="w-4 h-4" />
+          <Activity className="size-4" />
           Live Chat Metrics
         </button>
 
         <button
           onClick={() => setActiveTab("review")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "review"
-              ? "border-indigo-500 text-white"
+              ? "border-emerald-500 text-white"
               : "border-transparent text-zinc-400 hover:text-zinc-200"
           }`}
         >
-          <GitPullRequest className="w-4 h-4" />
+          <GitPullRequest className="size-4" />
           Code Review
           <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
             Phase 2

@@ -213,20 +213,20 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
         <div>
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors mb-2"
+            className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors mb-2 cursor-pointer"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
+            <ArrowLeft className="size-3.5" />
             Back to Evaluation Runs
           </button>
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-white tracking-tight">
+            <h1 className="text-xl font-bold text-white text-balance">
               {run.benchmark_name}
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               {run.status}
             </span>
           </div>
-          <p className="text-xs text-zinc-400 mt-1 font-mono">
+          <p className="text-xs text-zinc-400 mt-1 font-mono tabular-nums">
             Run ID: {run.id} • Completed in {run.duration_seconds.toFixed(1)}s •{" "}
             {new Date(run.created_at).toLocaleString()}
           </p>
@@ -236,7 +236,7 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           {/* Comparison Run Selector */}
           <div className="flex items-center gap-2 bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs">
-            <GitCompare className="w-3.5 h-3.5 text-zinc-400" />
+            <GitCompare className="size-3.5 text-zinc-400" />
             <select
               value={compareRunId}
               onChange={(e) => setCompareRunId(e.target.value)}
@@ -258,32 +258,32 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
             <button
               onClick={() => handleExport("csv")}
               title="Export CSV"
-              className="px-2.5 py-1 rounded text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-1"
+              className="px-2.5 py-1 rounded text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-1 cursor-pointer"
             >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+              <FileSpreadsheet className="size-3.5 text-emerald-400" />
               CSV
             </button>
             <button
               onClick={() => handleExport("markdown")}
               title="Export Markdown Report"
-              className="px-2.5 py-1 rounded text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-1"
+              className="px-2.5 py-1 rounded text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-1 cursor-pointer"
             >
-              <FileText className="w-3.5 h-3.5 text-blue-400" />
+              <FileText className="size-3.5 text-blue-400" />
               MD
             </button>
             <button
               onClick={() => handleExport("json")}
               title="Export JSON"
-              className="px-2.5 py-1 rounded text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-1"
+              className="px-2.5 py-1 rounded text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-1 cursor-pointer"
             >
-              <FileCode className="w-3.5 h-3.5 text-amber-400" />
+              <FileCode className="size-3.5 text-amber-400" />
               JSON
             </button>
           </div>
 
           <button
             onClick={() => onRerun(run.benchmark_id, run.strategies)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-medium transition-colors cursor-pointer"
           >
             Rerun Benchmark
           </button>
@@ -292,14 +292,14 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
 
       {/* Strategy Pills Selector */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
-        <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider font-mono mr-1">
+        <span className="text-xs font-semibold text-zinc-400 uppercase font-mono mr-1">
           Strategy:
         </span>
         <button
           onClick={() => setSelectedStrategy("all")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
             selectedStrategy === "all"
-              ? "bg-indigo-600 text-white shadow-sm"
+              ? "bg-emerald-600 text-white shadow-sm"
               : "bg-[#18181b] border border-[#27272a] text-zinc-400 hover:text-white"
           }`}
         >
@@ -309,9 +309,9 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
           <button
             key={strat}
             onClick={() => setSelectedStrategy(strat)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
               selectedStrategy === strat
-                ? "bg-indigo-600 text-white shadow-sm"
+                ? "bg-emerald-600 text-white shadow-sm"
                 : "bg-[#18181b] border border-[#27272a] text-zinc-400 hover:text-white"
             }`}
           >
@@ -406,15 +406,15 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
 
       {/* Comparison Delta View (when comparison run is picked) */}
       {compareRun && (
-        <div className="p-4 bg-indigo-950/20 border border-indigo-500/30 rounded-xl space-y-3">
+        <div className="p-4 bg-emerald-950/20 border border-emerald-500/30 rounded-xl space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-indigo-300 flex items-center gap-1.5 uppercase tracking-wider font-mono">
-              <GitCompare className="w-3.5 h-3.5" />
+            <h3 className="text-xs font-semibold text-emerald-300 flex items-center gap-1.5 uppercase font-mono">
+              <GitCompare className="size-3.5" />
               Run Delta: {run.benchmark_name} vs {compareRun.benchmark_name}
             </h3>
             <button
               onClick={() => setCompareRunId("")}
-              className="text-xs text-zinc-400 hover:text-white"
+              className="text-xs text-zinc-400 hover:text-white cursor-pointer"
             >
               Clear Comparison
             </button>
@@ -647,13 +647,13 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
               {Object.entries(categorySummary).map(([cat, stats]) => (
                 <tr key={cat} className="hover:bg-zinc-800/30">
                   <td className="py-2.5 px-4 font-medium text-white capitalize">{cat}</td>
-                  <td className="py-2.5 px-4 text-zinc-300 font-mono">{stats.count}</td>
-                  <td className="py-2.5 px-4 font-mono text-emerald-400">
+                  <td className="py-2.5 px-4 text-zinc-300 font-mono tabular-nums">{stats.count}</td>
+                  <td className="py-2.5 px-4 font-mono text-emerald-400 tabular-nums">
                     {stats.count > 0
                       ? `${((stats.hit5Count / stats.count) * 100).toFixed(1)}%`
                       : "—"}
                   </td>
-                  <td className="py-2.5 px-4 font-mono text-indigo-300">
+                  <td className="py-2.5 px-4 font-mono text-emerald-400 tabular-nums">
                     {stats.count > 0
                       ? `${((stats.correctCount / stats.count) * 100).toFixed(1)}%`
                       : "—"}
@@ -669,28 +669,28 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
       <div className="bg-[#111113] border border-[#27272a] rounded-xl overflow-hidden space-y-0">
         <div className="p-4 border-b border-[#27272a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-sm font-semibold text-white">Question-Level Drill-Down</h3>
-            <p className="text-xs text-zinc-400">
+            <h3 className="text-sm font-semibold text-white text-balance">Question-Level Drill-Down</h3>
+            <p className="text-xs text-zinc-400 text-pretty">
               Inspect retrieval results, citations, and answers for each benchmark question.
             </p>
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <div className="relative flex-1 sm:w-56">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+              <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
               <input
                 type="text"
                 placeholder="Search questions..."
                 value={searchQuestion}
                 onChange={(e) => setSearchQuestion(e.target.value)}
-                className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500"
               />
             </div>
 
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none"
+              className="bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
             >
               <option value="all">All Categories</option>
               {Object.keys(categorySummary).map((c) => (
@@ -729,7 +729,7 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                       }
                       className="hover:bg-zinc-800/40 cursor-pointer transition-colors"
                     >
-                      <td className="py-2.5 px-4 font-mono text-zinc-400">{q.question_id}</td>
+                      <td className="py-2.5 px-4 font-mono text-zinc-400 tabular-nums">{q.question_id}</td>
                       <td className="py-2.5 px-4">
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-300 border border-zinc-700">
                           {q.category}
@@ -748,7 +748,7 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                       </td>
                       <td className="py-2.5 px-4 font-mono">
                         {q.citations?.length > 0 ? (
-                          <span className="text-cyan-400">{q.citations.length} cited</span>
+                          <span className="text-cyan-400 tabular-nums">{q.citations.length} cited</span>
                         ) : (
                           <span className="text-zinc-500">None</span>
                         )}
@@ -756,25 +756,25 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                       <td className="py-2.5 px-4">
                         {q.is_correct ? (
                           <span className="flex items-center gap-1 text-emerald-400">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> Correct
+                            <CheckCircle2 className="size-3.5" /> Correct
                           </span>
                         ) : (
                           <span className="flex items-center gap-1 text-zinc-500">
-                            <XCircle className="w-3.5 h-3.5" /> Incorrect
+                            <XCircle className="size-3.5" /> Incorrect
                           </span>
                         )}
                       </td>
-                      <td className="py-2.5 px-4 font-mono text-zinc-300">
+                      <td className="py-2.5 px-4 font-mono text-zinc-300 tabular-nums">
                         {(q.confidence_score * 100).toFixed(0)}%
                       </td>
-                      <td className="py-2.5 px-4 font-mono text-zinc-400">
+                      <td className="py-2.5 px-4 font-mono text-zinc-400 tabular-nums">
                         {q.latency_ms.toFixed(0)}ms
                       </td>
                       <td className="py-2.5 px-4 text-right">
                         {isExpanded ? (
-                          <ChevronUp className="w-4 h-4 text-zinc-400 inline" />
+                          <ChevronUp className="size-4 text-zinc-400 inline" />
                         ) : (
-                          <ChevronDown className="w-4 h-4 text-zinc-400 inline" />
+                          <ChevronDown className="size-4 text-zinc-400 inline" />
                         )}
                       </td>
                     </tr>

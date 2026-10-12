@@ -12,13 +12,13 @@ import {
 
 export const LandingPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#09090b] text-[#fafafa] flex flex-col font-sans selection:bg-[#6366f1] selection:text-white">
+    <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex flex-col font-sans selection:bg-[#6366f1] selection:text-white">
       {/* Top Navigation */}
       <header className="border-b border-[#27272a] bg-[#111113]/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-lg shadow-[#6366f1]/20">
-              <Code2 className="w-5 h-5" />
+            <div className="size-9 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-lg shadow-[#6366f1]/20">
+              <Code2 className="size-5" />
             </div>
             <span className="font-bold text-xl tracking-tight">RepoGPT</span>
           </div>
@@ -58,18 +58,18 @@ export const LandingPage: React.FC = () => {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[320px] bg-gradient-to-b from-emerald-500/15 via-teal-500/5 to-transparent blur-3xl pointer-events-none -z-10" />
 
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#27272a] bg-[#111113] text-xs text-[#a1a1aa] mb-8">
-          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+          <Sparkles className="size-3.5 text-emerald-400" />
           <span>Agentic AI System for Codebase Understanding & Review</span>
         </div>
 
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight max-w-4xl leading-tight">
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight max-w-4xl leading-tight text-balance">
           Understand Any Complex Codebase in Seconds,{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400">
             With Exact Citations
           </span>
         </h1>
 
-        <p className="mt-6 text-lg text-[#a1a1aa] max-w-2xl">
+        <p className="mt-6 text-lg text-[#a1a1aa] max-w-2xl text-pretty">
           RepoGPT parses your repository with tree-sitter AST, constructs hybrid vector + BM25 +
           dependency graph indices, and explains architecture, logic, and call chains with verifiable
           inline citations.

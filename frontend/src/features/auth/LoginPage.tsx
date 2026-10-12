@@ -52,17 +52,17 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-[#fafafa] flex flex-col justify-center items-center px-4 font-sans">
+    <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex flex-col justify-center items-center px-4 font-sans">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-lg shadow-[#6366f1]/20">
-              <Code2 className="w-6 h-6" />
+            <div className="size-10 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-lg shadow-[#6366f1]/20">
+              <Code2 className="size-6" />
             </div>
             <span className="font-bold text-2xl tracking-tight text-white">RepoGPT</span>
           </Link>
-          <h2 className="text-xl font-bold tracking-tight">Sign in to your account</h2>
-          <p className="text-sm text-[#a1a1aa] mt-1">
+          <h2 className="text-xl font-bold tracking-tight text-balance">Sign in to your account</h2>
+          <p className="text-sm text-[#a1a1aa] mt-1 text-pretty">
             Access your indexed codebases and reviews
           </p>
         </div>

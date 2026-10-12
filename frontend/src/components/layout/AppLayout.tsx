@@ -81,15 +81,15 @@ export const AppLayout: React.FC = () => {
     : [];
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-[#fafafa] flex font-sans antialiased">
+    <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex font-sans antialiased">
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex w-64 border-r border-[#27272a] bg-[#0c0c0e] flex-col justify-between shrink-0">
         <div>
           {/* Brand Logo Header */}
           <div className="h-16 border-b border-[#27272a] px-5 flex items-center justify-between">
             <Link to="/app" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-sm transition-transform group-hover:scale-105">
-                <Code2 className="w-4 h-4" />
+              <div className="size-8 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-sm transition-transform group-hover:scale-105">
+                <Code2 className="size-4" />
               </div>
               <div>
                 <span className="font-semibold text-base tracking-tight text-white block leading-tight">
@@ -119,7 +119,7 @@ export const AppLayout: React.FC = () => {
                       : "text-[#a1a1aa] hover:bg-[#141417] hover:text-white"
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? "text-[#818cf8]" : "text-[#71717a]"}`} />
+                  <Icon className={`size-4 ${isActive ? "text-[#818cf8]" : "text-[#71717a]"}`} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -131,7 +131,7 @@ export const AppLayout: React.FC = () => {
         <div className="p-3 border-t border-[#27272a] bg-[#09090b]">
           <div className="flex items-center justify-between p-2 rounded-lg bg-[#111113] border border-[#27272a]">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="w-7 h-7 rounded-full bg-[#27272a] border border-[#3f3f46] flex items-center justify-center text-xs font-semibold text-white shrink-0">
+              <div className="size-7 rounded-full bg-[#27272a] border border-[#3f3f46] flex items-center justify-center text-xs font-semibold text-white shrink-0">
                 {user?.name ? user.name[0].toUpperCase() : "U"}
               </div>
               <div className="truncate">
@@ -146,9 +146,10 @@ export const AppLayout: React.FC = () => {
             <button
               onClick={handleLogout}
               title="Sign Out"
+              aria-label="Sign out"
               className="p-1.5 rounded-md text-[#71717a] hover:text-white hover:bg-[#27272a] transition-colors cursor-pointer"
             >
-              <LogOut className="w-3.5 h-3.5" />
+              <LogOut className="size-3.5" />
             </button>
           </div>
         </div>
@@ -161,9 +162,10 @@ export const AppLayout: React.FC = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle mobile navigation"
               className="md:hidden p-2 rounded-lg text-[#a1a1aa] hover:text-white hover:bg-[#27272a]"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
 
             {/* Breadcrumb / Context */}
@@ -172,14 +174,14 @@ export const AppLayout: React.FC = () => {
                 <Link to="/app" className="text-[#71717a] hover:text-white transition-colors">
                   Repositories
                 </Link>
-                <ChevronRight className="w-3.5 h-3.5 text-[#52525b]" />
+                <ChevronRight className="size-3.5 text-[#52525b]" />
                 <span className="font-mono text-white font-medium truncate max-w-[200px] sm:max-w-none">
                   {currentRepoId}
                 </span>
               </div>
             ) : (
               <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#27272a] bg-[#111113] text-xs text-[#71717a]">
-                <Search className="w-3.5 h-3.5" />
+                <Search className="size-3.5" />
                 <span>Search repository, symbol, file...</span>
                 <kbd className="ml-2 font-mono bg-[#18181b] border border-[#27272a] px-1.5 py-0.5 rounded text-[10px] text-[#a1a1aa]">
                   Ctrl K
@@ -191,7 +193,7 @@ export const AppLayout: React.FC = () => {
           <div className="flex items-center gap-3">
             {/* Engine Status Indicator Pill */}
             <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#18181b] border border-[#27272a] text-xs text-[#a1a1aa]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span className="size-1.5 rounded-full bg-emerald-500" />
               <span className="font-mono text-[11px]">Verified AST &amp; BM25</span>
             </div>
 
@@ -200,8 +202,9 @@ export const AppLayout: React.FC = () => {
               onClick={toggleTheme}
               className="p-2 rounded-lg border border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:text-white hover:border-[#3f3f46] transition-colors cursor-pointer"
               title="Toggle Theme"
+              aria-label="Toggle color theme"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </button>
           </div>
         </header>
