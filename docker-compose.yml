@@ -16,6 +16,8 @@ services:
     volumes:
       - repo_data:/data
       - model_cache:/models
+    ports:
+      - "8000:8000"
     networks:
       - edge
       - data
@@ -46,6 +48,7 @@ services:
       - repo_data:/data
       - model_cache:/models
     networks:
+      - edge
       - data
     depends_on:
       mongo:
@@ -54,6 +57,12 @@ services:
         condition: service_healthy
       chroma:
         condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A app.jobs.celery_app inspect ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   mongo:
     image: mongo:8

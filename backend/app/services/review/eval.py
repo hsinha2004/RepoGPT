@@ -30,7 +30,13 @@ class ReviewEvaluator:
         """
         yaml_path = os.path.join(patches_dir, "expected.yaml")
         if not os.path.exists(yaml_path):
-            raise FileNotFoundError(f"Expected benchmark manifest not found at {yaml_path}")
+            alt_dir = os.path.join("..", patches_dir)
+            alt_yaml = os.path.join(alt_dir, "expected.yaml")
+            if os.path.exists(alt_yaml):
+                patches_dir = alt_dir
+                yaml_path = alt_yaml
+            else:
+                raise FileNotFoundError(f"Expected benchmark manifest not found at {yaml_path}")
 
         with open(yaml_path, encoding="utf-8") as yf:
             manifest = yaml.safe_load(yf)

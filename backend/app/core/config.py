@@ -3,8 +3,9 @@ Application Configuration and Settings (Pydantic Settings)
 """
 
 from functools import lru_cache
+from typing import Any
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,6 +16,26 @@ class Settings(BaseSettings):
         case_sensitive=True,
         extra="ignore",
     )
+
+    @model_validator(mode="before")
+    @classmethod
+    def clean_env_values(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            cleaned = {}
+            for k, v in data.items():
+                if isinstance(v, str):
+                    val = v.strip()
+                    # Strip inline comments (e.g. "value # comment" or " # comment")
+                    if " #" in val:
+                        val = val.split(" #", 1)[0].strip()
+                    if val.startswith("#") or val == "":
+                        # Omit empty or pure comment values so Pydantic defaults apply
+                        continue
+                    cleaned[k] = val
+                else:
+                    cleaned[k] = v
+            return cleaned
+        return data
 
     # ---------- General ----------
     ENVIRONMENT: str = Field(default="development")
@@ -146,8 +167,8 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
 
     def get_mongodb_uri(self) -> str:
-        if self.MONGODB_URI:
-            return self.MONGODB_URI
+        if self.MONGODB_URI and self.MONGODB_URI.strip() and not self.MONGODB_URI.strip().startswith("#"):
+            return self.MONGODB_URI.strip()
         if self.MONGO_APP_USER and self.MONGO_APP_PASSWORD:
             return (
                 f"mongodb://{self.MONGO_APP_USER}:{self.MONGO_APP_PASSWORD}"
@@ -156,9 +177,9 @@ class Settings(BaseSettings):
         return f"mongodb://{self.MONGO_HOST}:{self.MONGO_PORT}/{self.MONGODB_DB}"
 
     def get_redis_url(self, db: int = 0) -> str:
-        if self.REDIS_URL:
+        if self.REDIS_URL and self.REDIS_URL.strip() and not self.REDIS_URL.strip().startswith("#"):
             # If explicit URL provided, swap db index if requested
-            base = self.REDIS_URL.rstrip("/0123456789")
+            base = self.REDIS_URL.strip().rstrip("/0123456789")
             return f"{base}/{db}"
         auth = f":{self.REDIS_PASSWORD}@" if self.REDIS_PASSWORD else ""
         return f"redis://{auth}{self.REDIS_HOST}:{self.REDIS_PORT}/{db}"

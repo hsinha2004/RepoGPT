@@ -25,7 +25,6 @@ from app.db.repositories.overview import OverviewRepository
 from app.db.repositories.repos import RepositoryRepository
 from app.db.repositories.symbols import SymbolRepository
 from app.services.analysis.entry_points import EntryPointDetector
-from app.services.analysis.overview import OverviewService
 from app.services.analysis.reading_order import ReadingOrderGenerator
 from app.services.analysis.tech_stack import TechStackDetector
 from app.services.chunking.chunker import CodeChunker
@@ -448,6 +447,7 @@ class IncrementalSyncService:
             key=lambda f: file_metrics.get(f.get("path", ""), {}).get("pagerank", 0.0),
             reverse=True,
         )
+        from app.services.analysis.overview import OverviewService
         from app.services.llm.factory import get_llm_provider
 
         overview_data = await OverviewService(get_llm_provider()).generate_overview(
