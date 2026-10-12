@@ -41,6 +41,7 @@
     "cmdk": "^1.0.0",
     "elkjs": "^0.9.3",
     "lucide-react": "^0.453.0",
+    "motion": "^14.1.0",
     "openapi-fetch": "^0.13.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
