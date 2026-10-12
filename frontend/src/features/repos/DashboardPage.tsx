@@ -200,26 +200,21 @@ export const DashboardPage: React.FC = () => {
                     </span>
                   </div>
 
-                  {/* Stats Bar */}
-                  <div className="grid grid-cols-3 gap-2 mt-4 p-2 bg-[#09090b] rounded-lg border border-[#27272a] text-center">
-                    <div>
-                      <span className="text-[10px] text-[#71717a] uppercase tracking-wider block">Files</span>
-                      <span className="text-xs font-mono font-semibold text-white">
-                        {repo.stats?.files_indexed ?? 0}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-[#71717a] uppercase tracking-wider block">Lines</span>
-                      <span className="text-xs font-mono font-semibold text-white">
+                  {/* Inline Stats Summary */}
+                  <div className="flex items-center gap-3 mt-4 text-xs text-[#a1a1aa] font-mono">
+                    <span>
+                      <strong className="text-white font-semibold">{repo.stats?.files_indexed ?? 0}</strong> files
+                    </span>
+                    <span className="text-[#3f3f46]">·</span>
+                    <span>
+                      <strong className="text-white font-semibold">
                         {repo.stats?.loc ? repo.stats.loc.toLocaleString() : 0}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-[#71717a] uppercase tracking-wider block">Redactions</span>
-                      <span className="text-xs font-mono font-semibold text-white">
-                        {repo.stats?.redactions ?? 0}
-                      </span>
-                    </div>
+                      </strong> LOC
+                    </span>
+                    <span className="text-[#3f3f46]">·</span>
+                    <span className="text-emerald-400">
+                      {repo.stats?.redactions === 0 ? "0 secrets" : `${repo.stats?.redactions} redacted`}
+                    </span>
                   </div>
 
                   {/* Languages Tags */}
@@ -228,14 +223,14 @@ export const DashboardPage: React.FC = () => {
                       {languages.slice(0, 4).map((lang) => (
                         <span
                           key={lang}
-                          className="px-2 py-0.5 bg-[#27272a] rounded-full text-[10px] font-medium text-[#c7d2fe]"
+                          className="px-2 py-0.5 bg-[#18181b] border border-[#27272a] rounded-md text-[10px] font-mono text-[#d4d4d8]"
                         >
                           {lang}
                         </span>
                       ))}
                       {languages.length > 4 && (
-                        <span className="text-[10px] text-[#71717a] self-center">
-                          +{languages.length - 4} more
+                        <span className="text-[10px] text-[#71717a] font-mono self-center">
+                          +{languages.length - 4}
                         </span>
                       )}
                     </div>

@@ -12,7 +12,12 @@ import {
   LogOut,
   Menu,
   X,
-  AlertTriangle,
+  Layers,
+  MessageSquare,
+  FileCode,
+  Network,
+  GitPullRequest,
+  ChevronRight,
 } from "lucide-react";
 import { useAuthStore } from "../../stores/authStore";
 import { useThemeStore } from "../../stores/themeStore";
@@ -25,8 +30,12 @@ export const AppLayout: React.FC = () => {
   const { theme, setTheme } = useThemeStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Extract repoId if currently within a repository surface
+  const repoMatch = location.pathname.match(/\/app\/repos\/([^/]+)/);
+  const currentRepoId = repoMatch ? repoMatch[1] : null;
+
   useEffect(() => {
-    // If user is not yet loaded in Zustand, verify/restore session
+    // Restore session if user state is uninitialized
     if (!user) {
       authFetch("/api/v1/auth/me")
         .then(async (res) => {
@@ -38,9 +47,7 @@ export const AppLayout: React.FC = () => {
             navigate("/login");
           }
         })
-        .catch(() => {
-          // Network error or offline
-        });
+        .catch(() => {});
     }
   }, [user, setUser, logout, navigate]);
 
@@ -63,37 +70,56 @@ export const AppLayout: React.FC = () => {
     navItems.push({ label: "Administration", path: "/app/admin", icon: ShieldAlert });
   }
 
+  const repoNavTabs = currentRepoId
+    ? [
+        { label: "Overview", path: `/app/repos/${currentRepoId}/overview`, icon: Layers },
+        { label: "Chat", path: `/app/repos/${currentRepoId}/chat`, icon: MessageSquare },
+        { label: "Explorer", path: `/app/repos/${currentRepoId}/explorer`, icon: FileCode },
+        { label: "Graph", path: `/app/repos/${currentRepoId}/graph`, icon: Network },
+        { label: "Reviews", path: `/app/repos/${currentRepoId}/reviews`, icon: GitPullRequest },
+      ]
+    : [];
+
   return (
-    <div className="min-h-screen bg-[#09090b] text-[#fafafa] flex font-sans">
+    <div className="min-h-screen bg-[#09090b] text-[#fafafa] flex font-sans antialiased">
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex w-64 border-r border-[#27272a] bg-[#111113] flex-col justify-between shrink-0">
+      <aside className="hidden md:flex w-64 border-r border-[#27272a] bg-[#0c0c0e] flex-col justify-between shrink-0">
         <div>
-          {/* Logo & App Title */}
+          {/* Brand Logo Header */}
           <div className="h-16 border-b border-[#27272a] px-5 flex items-center justify-between">
-            <Link to="/app" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-md shadow-[#6366f1]/20">
-                <Code2 className="w-5 h-5" />
+            <Link to="/app" className="flex items-center gap-3 group">
+              <div className="w-8 h-8 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-sm transition-transform group-hover:scale-105">
+                <Code2 className="w-4 h-4" />
               </div>
-              <span className="font-bold text-lg tracking-tight text-white">RepoGPT</span>
+              <div>
+                <span className="font-semibold text-base tracking-tight text-white block leading-tight">
+                  RepoGPT
+                </span>
+                <span className="text-[10px] text-[#71717a] font-mono block">Code Intelligence</span>
+              </div>
             </Link>
           </div>
 
-          {/* Navigation Links */}
+          {/* Primary Navigation Links */}
           <nav className="p-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path || (item.path !== "/app" && location.pathname.startsWith(item.path));
+              const isActive =
+                item.path === "/app"
+                  ? location.pathname === "/app"
+                  : location.pathname.startsWith(item.path);
+
               return (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-[#6366f1]/15 text-[#818cf8] border border-[#6366f1]/30"
-                      : "text-[#a1a1aa] hover:bg-[#18181b] hover:text-white"
+                      ? "bg-[#18181b] text-white border border-[#27272a] shadow-xs"
+                      : "text-[#a1a1aa] hover:bg-[#141417] hover:text-white"
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className={`w-4 h-4 ${isActive ? "text-[#818cf8]" : "text-[#71717a]"}`} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -101,24 +127,28 @@ export const AppLayout: React.FC = () => {
           </nav>
         </div>
 
-        {/* User Card & Logout */}
-        <div className="p-4 border-t border-[#27272a] bg-[#0c0c0e]">
-          <div className="flex items-center justify-between">
+        {/* User Profile & Sign Out Footer */}
+        <div className="p-3 border-t border-[#27272a] bg-[#09090b]">
+          <div className="flex items-center justify-between p-2 rounded-lg bg-[#111113] border border-[#27272a]">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="w-8 h-8 rounded-full bg-[#27272a] flex items-center justify-center text-xs font-semibold text-white">
+              <div className="w-7 h-7 rounded-full bg-[#27272a] border border-[#3f3f46] flex items-center justify-center text-xs font-semibold text-white shrink-0">
                 {user?.name ? user.name[0].toUpperCase() : "U"}
               </div>
               <div className="truncate">
-                <p className="text-xs font-medium text-white truncate">{user?.name || "Developer"}</p>
-                <p className="text-[11px] text-[#71717a] truncate">{user?.email || "user@repogpt.local"}</p>
+                <p className="text-xs font-medium text-white truncate leading-tight">
+                  {user?.name || "Developer"}
+                </p>
+                <p className="text-[10px] text-[#71717a] truncate font-mono">
+                  {user?.email || "user@repogpt.local"}
+                </p>
               </div>
             </div>
             <button
               onClick={handleLogout}
               title="Sign Out"
-              className="p-1.5 rounded-lg text-[#a1a1aa] hover:text-white hover:bg-[#27272a] transition-colors"
+              className="p-1.5 rounded-md text-[#71717a] hover:text-white hover:bg-[#27272a] transition-colors cursor-pointer"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
@@ -127,7 +157,7 @@ export const AppLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="h-16 border-b border-[#27272a] bg-[#111113]/80 backdrop-blur px-6 flex items-center justify-between sticky top-0 z-40">
+        <header className="h-16 border-b border-[#27272a] bg-[#0c0c0e]/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -136,23 +166,39 @@ export const AppLayout: React.FC = () => {
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            {/* Quick Command Palette trigger */}
-            <button
-              onClick={() => {}}
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#27272a] bg-[#09090b] text-xs text-[#a1a1aa] hover:border-[#6366f1]/50 transition-all"
-            >
-              <Search className="w-3.5 h-3.5" />
-              <span>Search repository, symbol, file...</span>
-              <kbd className="ml-2 font-mono bg-[#18181b] border border-[#27272a] px-1.5 py-0.5 rounded text-[10px]">
-                Ctrl K
-              </kbd>
-            </button>
+            {/* Breadcrumb / Context */}
+            {currentRepoId ? (
+              <div className="flex items-center gap-2 text-xs">
+                <Link to="/app" className="text-[#71717a] hover:text-white transition-colors">
+                  Repositories
+                </Link>
+                <ChevronRight className="w-3.5 h-3.5 text-[#52525b]" />
+                <span className="font-mono text-white font-medium truncate max-w-[200px] sm:max-w-none">
+                  {currentRepoId}
+                </span>
+              </div>
+            ) : (
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#27272a] bg-[#111113] text-xs text-[#71717a]">
+                <Search className="w-3.5 h-3.5" />
+                <span>Search repository, symbol, file...</span>
+                <kbd className="ml-2 font-mono bg-[#18181b] border border-[#27272a] px-1.5 py-0.5 rounded text-[10px] text-[#a1a1aa]">
+                  Ctrl K
+                </kbd>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Engine Status Indicator Pill */}
+            <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#18181b] border border-[#27272a] text-xs text-[#a1a1aa]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span className="font-mono text-[11px]">Verified AST &amp; BM25</span>
+            </div>
+
+            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg border border-[#27272a] bg-[#09090b] text-[#a1a1aa] hover:text-white hover:border-[#6366f1]/50 transition-colors"
+              className="p-2 rounded-lg border border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:text-white hover:border-[#3f3f46] transition-colors cursor-pointer"
               title="Toggle Theme"
             >
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -160,17 +206,51 @@ export const AppLayout: React.FC = () => {
           </div>
         </header>
 
-        {/* Global Banner for Offline Mode if applicable */}
-        <div className="bg-[#f59e0b]/10 border-b border-[#f59e0b]/20 px-6 py-2 flex items-center justify-between text-xs text-[#f59e0b]">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 shrink-0" />
-            <span>Running in local extractive mode with verified AST &amp; BM25 indexing.</span>
+        {/* Repository Context Sub-Navigation Tabs */}
+        {currentRepoId && (
+          <div className="border-b border-[#27272a] bg-[#111113]/50 px-6 overflow-x-auto scrollbar-none flex gap-1">
+            {repoNavTabs.map((tab) => {
+              const TabIcon = tab.icon;
+              const isActive = location.pathname === tab.path;
+              return (
+                <Link
+                  key={tab.path}
+                  to={tab.path}
+                  className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-all whitespace-nowrap ${
+                    isActive
+                      ? "border-[#6366f1] text-white bg-[#18181b]/50"
+                      : "border-transparent text-[#a1a1aa] hover:text-white hover:border-[#3f3f46]"
+                  }`}
+                >
+                  <TabIcon className={`w-3.5 h-3.5 ${isActive ? "text-[#818cf8]" : "text-[#71717a]"}`} />
+                  <span>{tab.label}</span>
+                </Link>
+              );
+            })}
           </div>
-          <span className="font-mono text-[10px] bg-[#f59e0b]/20 px-1.5 py-0.5 rounded">v0.1.0</span>
-        </div>
+        )}
 
-        {/* Page Outlet */}
-        <main className="flex-1 p-6 overflow-y-auto">
+        {/* Mobile Navigation Drawer */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-b border-[#27272a] bg-[#111113] p-4 space-y-2">
+            <nav className="space-y-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#a1a1aa] hover:bg-[#18181b] hover:text-white"
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
+
+        {/* Main Content Area */}
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
           <Outlet />
         </main>
       </div>
