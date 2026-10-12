@@ -146,7 +146,8 @@ const authMiddleware: Middleware = {
 };
 
 export const apiClient = createFetchClient<paths>({
-  baseUrl: "/api/v1",
+  baseUrl: "",
+  credentials: "include",
 });
 
 apiClient.use(authMiddleware);
