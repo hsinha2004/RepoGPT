@@ -167,7 +167,11 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
 
     def get_mongodb_uri(self) -> str:
-        if self.MONGODB_URI and self.MONGODB_URI.strip() and not self.MONGODB_URI.strip().startswith("#"):
+        if (
+            self.MONGODB_URI
+            and self.MONGODB_URI.strip()
+            and not self.MONGODB_URI.strip().startswith("#")
+        ):
             return self.MONGODB_URI.strip()
         if self.MONGO_APP_USER and self.MONGO_APP_PASSWORD:
             return (

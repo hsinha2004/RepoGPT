@@ -16,6 +16,7 @@ services:
     volumes:
       - repo_data:/data
       - model_cache:/models
+      - ./backend/app:/app/app
     ports:
       - "8000:8000"
     networks:
@@ -47,6 +48,7 @@ services:
     volumes:
       - repo_data:/data
       - model_cache:/models
+      - ./backend/app:/app/app
     networks:
       - edge
       - data

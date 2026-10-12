@@ -61,9 +61,7 @@ def clear_auth_cookies(response: Response) -> None:
     response.delete_cookie(
         key="rg_refresh", path="/api/v1/auth", secure=settings.COOKIE_SECURE, samesite="lax"
     )
-    response.delete_cookie(
-        key="rg_csrf", path="/", secure=settings.COOKIE_SECURE, samesite="lax"
-    )
+    response.delete_cookie(key="rg_csrf", path="/", secure=settings.COOKIE_SECURE, samesite="lax")
 
 
 @router.post(

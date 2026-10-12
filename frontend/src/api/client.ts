@@ -23,12 +23,16 @@ export function setAccessToken(token: string | null): void {
     inMemoryAccessToken = token;
     try {
       localStorage.setItem("rg_access_token", token);
-    } catch {}
+    } catch {
+      // Ignore localStorage access errors
+    }
   } else {
     inMemoryAccessToken = null;
     try {
       localStorage.removeItem("rg_access_token");
-    } catch {}
+    } catch {
+      // Ignore localStorage access errors
+    }
   }
 }
 

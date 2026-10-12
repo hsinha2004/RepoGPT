@@ -39,6 +39,7 @@ class ParserRegistry:
             try:
                 import tree_sitter_language_pack as tslp
                 from tree_sitter_language_pack import PackConfig
+
                 tslp.configure(PackConfig(cache_dir=cache_dir))
             except Exception as e:
                 logger.warning("tslp_configure_failed", error=str(e))

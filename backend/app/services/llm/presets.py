@@ -14,8 +14,8 @@ PRESETS: dict[str, ProviderPreset] = {
     "gemini": ProviderPreset(
         name="gemini",
         default_base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-        default_model="gemini-2.0-flash",
-        default_fast_model="gemini-1.5-flash",
+        default_model="gemini-3.8-flash",
+        default_fast_model="gemini-3.8-flash",
     ),
     "anthropic": ProviderPreset(
         name="anthropic",

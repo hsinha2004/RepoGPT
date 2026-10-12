@@ -29,7 +29,7 @@ class FakeEmbeddingProvider(EmbeddingProvider):
             return vec
 
         for t in tokens:
-            h = int(hashlib.md5(t.encode("utf-8")).hexdigest(), 16)
+            h = int(hashlib.md5(t.encode("utf-8"), usedforsecurity=False).hexdigest(), 16)
             idx = h % self.dim
             vec[idx] += 1.0
 

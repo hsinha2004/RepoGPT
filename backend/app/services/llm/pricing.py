@@ -24,6 +24,8 @@ MODEL_PRICING: dict[str, tuple[float, float]] = {
     "gemini-1.5-flash-8b": (0.0375, 0.15),
     "gemini-2.0-flash": (0.10, 0.40),
     "gemini-2.0-flash-exp": (0.0, 0.0),
+    "gemini-3.8-flash": (0.10, 0.40),
+    "gemini-2.5-flash": (0.10, 0.40),
     # Groq (Llama models)
     "llama-3.3-70b-versatile": (0.59, 0.79),
     "llama-3.1-8b-instant": (0.05, 0.08),

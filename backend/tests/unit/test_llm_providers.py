@@ -140,5 +140,5 @@ def test_factory_offline_mode() -> None:
     assert isinstance(provider, FakeProvider)
 
     # Model resolution
-    assert resolve_model_name(settings, fast=False) == "gemini-2.0-flash"
-    assert resolve_model_name(settings, fast=True) == "gemini-1.5-flash"
+    assert resolve_model_name(settings, fast=False) == "gemini-3.8-flash"
+    assert resolve_model_name(settings, fast=True) == "gemini-3.8-flash"

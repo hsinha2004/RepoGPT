@@ -21,6 +21,7 @@ import {
 import { useAuthStore } from "../../stores/authStore";
 import { useThemeStore } from "../../stores/themeStore";
 import { authFetch } from "../../api/client";
+import { CommandPalette } from "./CommandPalette";
 
 export const AppLayout: React.FC = () => {
   const location = useLocation();
@@ -28,10 +29,23 @@ export const AppLayout: React.FC = () => {
   const { user, setUser, logout } = useAuthStore();
   const { theme, setTheme } = useThemeStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
 
   // Extract repoId if currently within a repository surface
   const repoMatch = location.pathname.match(/\/app\/repos\/([^/]+)/);
   const currentRepoId = repoMatch ? repoMatch[1] : null;
+
+  // Global Ctrl+K / Cmd+K Command Palette listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     // Restore session if user state is uninitialized
@@ -75,6 +89,7 @@ export const AppLayout: React.FC = () => {
         { label: "Chat", path: `/app/repos/${currentRepoId}/chat`, icon: MessageSquare },
         { label: "Explorer", path: `/app/repos/${currentRepoId}/explorer`, icon: FileCode },
         { label: "Graph", path: `/app/repos/${currentRepoId}/graph`, icon: Network },
+        { label: "Search", path: `/app/repos/${currentRepoId}/search`, icon: Search },
         { label: "Reviews", path: `/app/repos/${currentRepoId}/reviews`, icon: GitPullRequest },
       ]
     : [];
@@ -160,7 +175,7 @@ export const AppLayout: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
         <header className="h-16 border-b border-[#27272a] bg-[#0c0c0e]/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-40">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 min-w-0">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle mobile navigation"
@@ -170,34 +185,50 @@ export const AppLayout: React.FC = () => {
             </button>
 
             {/* Mobile Brand Logo */}
-            <Link to="/app" className="md:hidden flex items-center gap-2.5">
+            <Link to="/app" className="md:hidden flex items-center gap-2.5 shrink-0">
               <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-8 object-contain drop-shadow" />
               <span className="font-bold text-base text-white">RepoGPT</span>
             </Link>
 
             {/* Breadcrumb / Context */}
-            {currentRepoId ? (
-              <div className="flex items-center gap-2 text-xs">
+            {currentRepoId && (
+              <div className="flex items-center gap-2 text-xs shrink-0">
                 <Link to="/app" className="text-[#71717a] hover:text-white transition-colors">
                   Repositories
                 </Link>
                 <ChevronRight className="size-3.5 text-[#52525b]" />
-                <span className="font-mono text-white font-medium truncate max-w-[200px] sm:max-w-none">
+                <span className="font-mono text-white font-medium truncate max-w-[150px] sm:max-w-none">
                   {currentRepoId}
                 </span>
               </div>
-            ) : (
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#27272a] bg-[#111113] text-xs text-[#71717a]">
-                <Search className="size-3.5" />
-                <span>Search repository, symbol, file...</span>
-                <kbd className="ml-2 font-mono bg-[#18181b] border border-[#27272a] px-1.5 py-0.5 rounded text-[10px] text-[#a1a1aa]">
-                  Ctrl K
-                </kbd>
-              </div>
             )}
+
+            {/* Command Palette / Search Trigger Button */}
+            <button
+              type="button"
+              onClick={() => setCommandPaletteOpen(true)}
+              aria-label="Search repository, symbol, file (Ctrl K)"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#27272a] bg-[#111113] hover:bg-[#18181b] hover:border-[#3f3f46] text-xs text-[#71717a] hover:text-[#e4e4e7] transition-all cursor-pointer shadow-sm group"
+            >
+              <Search className="size-3.5 text-[#71717a] group-hover:text-emerald-400 transition-colors" />
+              <span>Search repository, symbol, file...</span>
+              <kbd className="ml-2 font-mono bg-[#18181b] group-hover:bg-[#27272a] border border-[#27272a] group-hover:border-[#3f3f46] px-1.5 py-0.5 rounded text-[10px] text-[#a1a1aa] transition-colors">
+                Ctrl K
+              </kbd>
+            </button>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Mobile Search Button */}
+            <button
+              type="button"
+              onClick={() => setCommandPaletteOpen(true)}
+              aria-label="Search repository, symbol, file"
+              className="sm:hidden p-2 rounded-lg border border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:text-white hover:border-[#3f3f46] transition-colors cursor-pointer"
+            >
+              <Search className="size-4" />
+            </button>
+
             {/* Engine Status Indicator Pill */}
             <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#18181b] border border-[#27272a] text-xs text-[#a1a1aa]">
               <span className="size-1.5 rounded-full bg-emerald-500" />
@@ -284,6 +315,13 @@ export const AppLayout: React.FC = () => {
             </main>
           );
         })()}
+
+        {/* Command Palette Modal */}
+        <CommandPalette
+          isOpen={commandPaletteOpen}
+          onClose={() => setCommandPaletteOpen(false)}
+          currentRepoId={currentRepoId}
+        />
       </div>
     </div>
   );

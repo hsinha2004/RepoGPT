@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useParams, Link } from "react-router";
+import React, { useState, useEffect } from "react";
+import { useParams, useSearchParams, Link } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "../../api/client";
 import {
@@ -74,8 +74,10 @@ const SAMPLE_QUERIES = [
 
 export const SearchPage: React.FC = () => {
   const { repoId } = useParams<{ repoId: string }>();
+  const [searchParams] = useSearchParams();
+  const qParam = searchParams.get("q") || "";
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(qParam);
   const [strategy, setStrategy] = useState<StrategyOption>("auto");
   const [filePattern, setFilePattern] = useState("");
   const [language, setLanguage] = useState("");
@@ -85,12 +87,13 @@ export const SearchPage: React.FC = () => {
 
   // Search Mutation
   const searchMutation = useMutation({
-    mutationFn: async () => {
-      if (!repoId || !query.trim()) return null;
+    mutationFn: async (overrideQuery?: string) => {
+      const activeQuery = overrideQuery !== undefined ? overrideQuery : query;
+      if (!repoId || !activeQuery.trim()) return null;
       const res = await apiClient.POST("/api/v1/repos/{repo_id}/search", {
         params: { path: { repo_id: repoId } },
         body: {
-          query: query.trim(),
+          query: activeQuery.trim(),
           strategy: strategy,
           top_k: 12,
           file_pattern: filePattern.trim() || undefined,
@@ -104,17 +107,22 @@ export const SearchPage: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    if (qParam && qParam.trim() && repoId) {
+      setQuery(qParam);
+      searchMutation.mutate(qParam);
+    }
+  }, [qParam, repoId]);
+
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!query.trim()) return;
-    searchMutation.mutate();
+    searchMutation.mutate(query);
   };
 
   const handleSelectSample = (sample: string) => {
     setQuery(sample);
-    setTimeout(() => {
-      searchMutation.mutate();
-    }, 0);
+    searchMutation.mutate(sample);
   };
 
   const handleCopyContext = (text: string) => {

@@ -40,4 +40,4 @@ def generate_chunk_id(
     sha1(repo_id + path + start_line + end_line + content_hash)[:24]
     """
     payload = f"{repo_id}:{path}:{start_line}:{end_line}:{content_hash}".encode()
-    return hashlib.sha1(payload).hexdigest()[:24]
+    return hashlib.sha1(payload, usedforsecurity=False).hexdigest()[:24]
