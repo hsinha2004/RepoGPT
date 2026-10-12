@@ -1,0 +1,75 @@
+erDiagram
+    User ||--o{ Repository : owns
+    User ||--o{ Conversation : initiates
+    User ||--o{ AuditLog : generates
+
+    Repository ||--o{ Snapshot : has
+    Repository ||--o{ File : contains
+    Repository ||--o{ Symbol : indexes
+    Repository ||--o{ DependencyGraph : produces
+    Repository ||--o{ Review : undergoes
+    Repository ||--o{ Conversation : scopes
+
+    Conversation ||--o{ Message : contains
+
+    Review ||--o{ ReviewFinding : includes
+
+    Benchmark ||--o{ EvalRun : evaluates
+
+    User {
+        ObjectId _id PK
+        string email UK
+        string password_hash
+        string role
+        object quotas
+    }
+
+    Repository {
+        ObjectId _id PK
+        string name
+        ObjectId owner_id FK
+        string default_branch
+        string status
+    }
+
+    File {
+        ObjectId _id PK
+        ObjectId repo_id FK
+        string path
+        string language
+        int line_count
+    }
+
+    Symbol {
+        ObjectId _id PK
+        ObjectId repo_id FK
+        string path
+        string name
+        string kind
+        int start_line
+        int end_line
+    }
+
+    Review {
+        ObjectId _id PK
+        ObjectId repo_id FK
+        string status
+        string risk_level
+        string walkthrough
+    }
+
+    Conversation {
+        ObjectId _id PK
+        ObjectId repo_id FK
+        ObjectId user_id FK
+        string title
+    }
+
+    Message {
+        ObjectId _id PK
+        ObjectId conversation_id FK
+        string role
+        string content
+        array citations
+        float confidence
+    }

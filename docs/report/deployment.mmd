@@ -1,0 +1,42 @@
+graph TD
+    subgraph AWS Cloud Infrastructure
+        subgraph EC2 Instance: m7i-flex.large Ubuntu 24.04
+            subgraph Edge Network
+                Caddy["Caddy Server (Port 80/443)<br/>Auto-TLS & Reverse Proxy"]
+            end
+
+            subgraph Application Tier
+                API["FastAPI Backend (repogpt-api)<br/>UID 10001, Read-Only, tmpfs"]
+                Worker["Celery Worker (repogpt-worker)<br/>Ingest, Review, Eval Queues"]
+            end
+
+            subgraph Data & Storage Tier (Internal Network)
+                Mongo[("MongoDB 8.0<br/>Auth: Admin/App User")]
+                Redis[("Redis 7 Alpine<br/>Password Protected")]
+                Chroma[("ChromaDB Vector Store<br/>Persistent Volume")]
+                LocalDisk[("Snapshots Storage<br/>/data/snapshots")]
+            end
+
+            subgraph Monitoring Profile
+                Prometheus["Prometheus v2.54<br/>Scraping /metrics"]
+                Grafana["Grafana v11.2<br/>Telemetry Dashboards"]
+            end
+        end
+
+        S3["AWS S3 Bucket<br/>Automated Backup Archives"]
+    end
+
+    Internet(("Internet Clients / Webhooks")) -->|HTTPS| Caddy
+    Caddy -->|/api/*| API
+    API --> Worker
+    API --> Mongo
+    API --> Redis
+    API --> Chroma
+    Worker --> Mongo
+    Worker --> Redis
+    Worker --> Chroma
+    Worker --> LocalDisk
+
+    Worker --> S3
+    Prometheus --> API
+    Grafana --> Prometheus

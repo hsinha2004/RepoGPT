@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    actor User as Developer
+    participant SPA as React Frontend
+    participant Gateway as Caddy Proxy
+    participant API as FastAPI Backend
+    participant Graph as QA LangGraph
+    participant Store as Chroma & BM25
+    participant LLM as LLM Provider
+
+    User->>SPA: Types question ("Where is auth handled?")
+    SPA->>Gateway: POST /api/v1/repos/{id}/chat/stream (SSE)
+    Gateway->>API: Proxy request (flush_interval -1)
+    API->>Graph: Initialize state with question & history
+    Graph->>Store: Multi-stage retrieval (BM25 + Chroma RRF)
+    Store-->>Graph: Top candidate chunks
+    Graph->>LLM: Stream prompt with context & citation instructions
+    LLM-->>Graph: Tokens with inline [S#] citations
+    Graph-->>API: Yield SSE token events
+    API-->>Gateway: SSE stream
+    Gateway-->>SPA: SSE stream
+    SPA-->>User: Live typed response rendering
+    Graph->>Graph: Verify citations & compute confidence
+    Graph-->>API: Yield 'citation' & 'confidence' events
+    API-->>SPA: Final metadata
+    SPA-->>User: Interactive citation highlights & confidence badge

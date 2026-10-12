@@ -127,7 +127,34 @@ make doctor
 
 ---
 
+## 📊 Evaluation & Benchmark Highlights
+
+RepoGPT's agentic retrieval and PR review pipelines are rigorously benchmarked against multi-category ground truth suites:
+
+- **TaskFlow 30Q Full-Stack Benchmark**:
+  - `hybrid_rerank` achieves **93% Hit@5**, **0.84 MRR**, and **0.88 nDCG@10** at **0.92 Citation Precision**.
+  - Adaptive query router matches the best strategy with **78ms p50 latency**.
+- **Phase 2 Context-Aware PR Review (6 Seeded Vulnerability Patches)**:
+  - **100% Detection Recall (6/6)** across SQL injection, authentication bypass, concurrency race conditions, error leaks, breaking contract changes, and N+1 query antipatterns.
+  - **100% Strict Category Recall** with **0.0 line average localization error**.
+
+See [`docs/evaluation.md`](docs/evaluation.md) for mathematical metric definitions and reproduction steps.
+
+---
+
+## 📚 Documentation Index
+
+- [**System Architecture & Design**](docs/architecture.md): LangGraph state machines, data flow diagrams, and MongoDB data models.
+- [**REST API & SSE Reference**](docs/api.md): Endpoint catalog, authentication flow, and Server-Sent Events specifications.
+- [**Production Deployment Guide**](docs/deployment.md): AWS EC2 host bootstrap, Docker Compose hardening, backups, and restore drills.
+- [**Evaluation & Benchmark Methodology**](docs/evaluation.md): Metric formulations, benchmark suites, and reproduction commands.
+- [**User & Task-Oriented Guide**](docs/user-guide.md): Step-by-step walkthrough for onboarding, exploration, chat, and PR reviews.
+- [**Developer & Extension Guide**](docs/development.md): Local development setup, adding tree-sitter extractors, and custom LLM providers.
+- [**Security Threat Model & Controls**](docs/security.md): STRIDE threat analysis and §11 security checklist.
+
+---
+
 ## 📜 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.  
 Copyright (c) 2026 Harsh Sinha & Anshuman Patel.

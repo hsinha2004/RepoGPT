@@ -1,0 +1,25 @@
+stateDiagram-v2
+    [*] --> IngestTriggered: User submits URL or ZIP
+    IngestTriggered --> ValidateArchive: Security Scan (ZipBomb, Symlink Traversal)
+    
+    ValidateArchive --> Rejected: Malicious path or size > 200MB
+    Rejected --> [*]
+    
+    ValidateArchive --> ExtractSnapshot: Unpack into /data/snapshots/{repo_id}
+    ExtractSnapshot --> FilterFiles: Ignore binaries, .git, vendor directories
+    
+    FilterFiles --> ParseAST: Tree-sitter parsing for symbols & imports
+    ParseAST --> RedactSecrets: Detect & mask high-entropy secrets and keys
+    RedactSecrets --> ChunkCode: AST-aware chunking (max 500 tokens, 50 overlap)
+    
+    ChunkCode --> BuildEmbeddings: Generate dense vector embeddings
+    BuildEmbeddings --> StoreChroma: Upsert vectors into ChromaDB
+    
+    ChunkCode --> IndexBM25: Build sparse lexical BM25 index
+    ParseAST --> BuildGraph: Construct NetworkX dependency & call graph
+    
+    StoreChroma --> MarkReady: Update status to 'ready'
+    IndexBM25 --> MarkReady
+    BuildGraph --> MarkReady
+    
+    MarkReady --> [*]

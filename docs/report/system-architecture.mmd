@@ -1,0 +1,19 @@
+graph TD
+    Client["Client Browser (React 19 / TypeScript SPA)"] -->|HTTPS / WSS| Caddy["Caddy Reverse Proxy & TLS Engine"]
+    Caddy -->|/api/* (flush_interval -1)| FastAPI["FastAPI Application Core"]
+    Caddy -->|Static Assets| SPAFiles["SPA Static Files (/assets/*)"]
+
+    FastAPI --> Celery["Celery Distributed Task Worker"]
+    FastAPI --> Mongo[("MongoDB 8.0: State & Metadata")]
+    FastAPI --> Redis[("Redis 7: Broker & Session Store")]
+    FastAPI --> Chroma[("ChromaDB: Dense Vector Store")]
+    FastAPI --> BM25[("BM25: Lexical Sparse Index")]
+
+    Celery --> Mongo
+    Celery --> Redis
+    Celery --> Chroma
+    Celery --> BM25
+    Celery --> Storage[("Local Snapshot Storage (/data)")]
+
+    FastAPI --> LLM["LLM Providers (Gemini / Anthropic / OpenAI / Ollama)"]
+    FastAPI --> GitHub["GitHub REST API (OAuth, PRs, Webhooks)"]

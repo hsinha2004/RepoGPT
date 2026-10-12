@@ -1,0 +1,16 @@
+stateDiagram-v2
+    [*] --> RouteQuery
+    
+    RouteQuery --> RetrieveEvidence: Heuristic or LLM router decides strategy
+    RetrieveEvidence --> SufficiencyCheck: Evaluate evidence coverage score
+    
+    SufficiencyCheck --> ReQuery: Coverage < 0.30 (Attempts < 2)
+    ReQuery --> RetrieveEvidence: Query expansion with HyDE
+    
+    SufficiencyCheck --> StreamAnswer: Coverage >= 0.30
+    StreamAnswer --> VerifyCitations: Grounding check on emitted [S#] tags
+    
+    VerifyCitations --> CalibrateConfidence: Brier calibration across 10 bins
+    CalibrateConfidence --> EmitFinalState: Attach citations, trace, and score
+    
+    EmitFinalState --> [*]

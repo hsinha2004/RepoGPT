@@ -1,0 +1,15 @@
+graph TD
+    Stage1["Stage 1: Literature Review & Groundwork<br/>- CodeBERT, GraphCodeBERT, Agentic RAG<br/>- Reciprocal Rank Fusion, Cross-Encoder Reranking"]
+    Stage2["Stage 2: Requirements Analysis & Dataset Design<br/>- Functional & Non-Functional Specifications<br/>- Benchmark Design (TaskFlow 30Q, requests 15Q, 6 Seeded Patches)"]
+    Stage3["Stage 3: Repository Processing & Code Parsing<br/>- Archive Security & Tarball Extraction<br/>- Tree-sitter AST Symbol Mapping (5 Tier-1 Languages)<br/>- Secret Detection & Redaction Engine"]
+    Stage4["Stage 4: Knowledge Indexing & Graph Construction<br/>- Dense Vector Embeddings (FastEmbed / API)<br/>- Sparse Lexical Tokenization (BM25s)<br/>- NetworkX Dependency & Import Graph Generation"]
+    Stage5["Stage 5: Agentic Retrieval & Grounded Generation<br/>- Adaptive Query Routing (Heuristic & LLM)<br/>- LangGraph Multi-Agent Answering Pipeline<br/>- Strict [S#] Inline Citations & Grounding Verification<br/>- 10-Bin Confidence Calibration"]
+    Stage6["Stage 6: System Development & User Experience<br/>- FastAPI REST Backend with SSE Streaming<br/>- React 19 Frontend (Overview, Explorer, Graph, Reviews, Eval)<br/>- Phase 2 Context-Aware PR Review Engine & GitHub Publishing"]
+    Stage7["Stage 7: Testing, Evaluation & Hardening<br/>- 192 Unit & Integration Backend Tests (100% Pass)<br/>- 24 Vitest Frontend Tests & Playwright E2E<br/>- AuthZ Anti-Enumeration & Security Checklist (§11)<br/>- Docker Compose Hardening & EC2 Deployment Delivery"]
+
+    Stage1 --> Stage2
+    Stage2 --> Stage3
+    Stage3 --> Stage4
+    Stage4 --> Stage5
+    Stage5 --> Stage6
+    Stage6 --> Stage7

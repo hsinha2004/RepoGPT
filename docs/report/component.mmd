@@ -1,0 +1,54 @@
+graph TD
+    subgraph Frontend Subsystem
+        UI["React 19 Components (Tailwind v4 / Radix)"]
+        State["State Management (Zustand & TanStack Query)"]
+        GraphVis["@xyflow/react & elkjs Layout Engine"]
+        StreamClient["SSE Stream Listener"]
+    end
+
+    subgraph Backend Core Subsystem
+        Router["FastAPI REST Routers (/api/v1)"]
+        Security["Auth & Security (Argon2, JWT, CSRF, RateLimit)"]
+        EventStreamer["SSE Event Formatter"]
+    end
+
+    subgraph Ingestion & Processing Subsystem
+        Fetcher["GitHub Tarball & Zip Extractors"]
+        Parser["ParserRegistry (Tree-sitter Grammars)"]
+        Redact["Secret Redaction Engine"]
+        Chunk["AST Code-Aware Chunker"]
+    end
+
+    subgraph Indexing & Retrieval Subsystem
+        DenseIndex["FastEmbed / API Embeddings"]
+        SparseIndex["BM25 Lexical Inverter"]
+        RRFEngine["Reciprocal Rank Fusion (k=60)"]
+        RerankEngine["Cross-Encoder Reranker"]
+        GraphEngine["NetworkX Code Graph Analyzer"]
+    end
+
+    subgraph Agentic Orchestration Subsystem
+        QAGraph["QA LangGraph Workflow"]
+        ReviewGraph["PR Review LangGraph Workflow"]
+        LLMAdapter["Unified LLM Provider Adapter"]
+    end
+
+    UI --> Router
+    Router --> Security
+    Router --> EventStreamer
+    Router --> QAGraph
+    Router --> ReviewGraph
+    
+    QAGraph --> RRFEngine
+    QAGraph --> RerankEngine
+    QAGraph --> LLMAdapter
+
+    ReviewGraph --> Parser
+    ReviewGraph --> LLMAdapter
+
+    Fetcher --> Parser
+    Parser --> Redact
+    Redact --> Chunk
+    Chunk --> DenseIndex
+    Chunk --> SparseIndex
+    Chunk --> GraphEngine

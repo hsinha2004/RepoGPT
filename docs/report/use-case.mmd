@@ -1,0 +1,29 @@
+graph TD
+    User["Software Developer / Student / Reviewer"]
+    Admin["System Administrator"]
+
+    subgraph RepoGPT Platform
+        UC1["Ingest Repository (URL / ZIP)"]
+        UC2["Explore AST Symbol Outline & Files"]
+        UC3["Inspect Architecture Overview & Stack"]
+        UC4["Query Natural Language QA with Citations"]
+        UC5["Visualize Dependency Graph & Cycles"]
+        UC6["Review Pull Request Diff / Webhook"]
+        UC7["Triage Findings (Accept / Reject / Edit)"]
+        UC8["Publish Review Comments to GitHub"]
+        UC9["Run & Inspect Retrieval Benchmarks"]
+        UC10["Manage Users, Quotas, and Worker Telemetry"]
+    end
+
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    User --> UC4
+    User --> UC5
+    User --> UC6
+    User --> UC7
+    User --> UC8
+    User --> UC9
+
+    Admin --> UC10
+    Admin --> UC9

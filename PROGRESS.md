@@ -166,9 +166,41 @@ Updated at the completion of each milestone with status, verification details, a
     - Quality Gates: Backend `ruff check` and `ruff format` 100% clean; `mypy backend/app` 100% clean across 160 source files; frontend `npm run lint`, `npm run typecheck`, `npm test` (24/24 vitest tests passing), and `npm run build` passing with zero errors. Compose files and GitHub workflows verified as 100% valid YAML.
   - Known issues: None
 
-- [ ] **M12: Finalisation**
+- [x] **M12: Finalisation**
   - Scope: Complete all docs (§19) and report assets, README screenshots, `make eval-report` results committed, Definition of Done (§21), self-audit (§22).
   - Exit criteria: Every DoD item ticked with evidence.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - Documentation Deliverables Complete (§19):
+      - `docs/architecture.md`: Comprehensive system architecture, AST symbol extraction, LangGraph state machines, multi-strategy retrieval, and MongoDB 8 data schemas.
+      - `docs/api.md`: Complete OpenAPI catalog narrative, authentication & session security, anti-enumeration rules, and Server-Sent Events (SSE) streaming protocol specifications.
+      - `docs/deployment.md`: Detailed AWS EC2 provisioning guide, instance sizing, Caddy auto-TLS, backups with S3 sync, restore drills, and Atlas setup.
+      - `docs/evaluation.md`: Full mathematical metric formulations (Hit@k, MRR, nDCG@k graded relevance, Citation validity/precision/recall, ECE, Brier score, PR review metrics) and CLI reproduction guide.
+      - `docs/development.md`: Local development guide, testing workflows, adding new tree-sitter extractors, and custom LLM/embedding providers.
+      - `docs/user-guide.md`: Task-oriented walkthrough covering onboarding, grounded chat with inline citations, code explorer, dependency graph, and PR reviews.
+    - Major Project Report & Viva Assets (`docs/report/`):
+      - 10 production Mermaid diagrams: `use-case.mmd`, `system-architecture.mmd`, `component.mmd`, `ingestion-activity.mmd`, `qa-langgraph.mmd`, `chat-sequence.mmd`, `review-flow.mmd`, `data-model.mmd`, `deployment.mmd`, and `methodology.mmd` (7-stage proposal lifecycle).
+      - `docs/report/references.md`: Foundational literature (Lewis et al. 2020, Feng et al. 2020, Guo et al. 2021, Gao et al. 2023, Robertson & Zaragoza 2009, Cormack et al. 2009, Nogueira & Cho 2019) and technology references.
+      - `docs/report/results/`: Evaluation comparison reports (`report.md`, `results.csv`, `results.json`) generated via `make eval-report`.
+    - Project Metadata & Changelog: `README.md` updated with architecture, quickstart, evaluation summary, doc links, UPES credits, and MIT license; `CHANGELOG.md` updated to v1.0.0.
+    - Definition of Done Checklist (§21):
+      - [x] First run reproducible via `make setup && make dev && make seed` with admin credentials.
+      - [x] Runs fully offline (`LLM_PROVIDER=fake`, `EMBEDDING_PROVIDER=fake`, `RERANKER_PROVIDER=fake`) and supports real providers (Gemini, Anthropic, OpenAI, Groq, Ollama).
+      - [x] GitHub public repo, private repo (with PAT), and ZIP upload ingest with live SSE progress.
+      - [x] All 5 tier-1 languages produce exact AST symbols; others fall back gracefully.
+      - [x] Secrets automatically redacted across chunks, viewer, and prompts with count displayed.
+      - [x] Keyword, vector, hybrid (RRF k=60), hybrid_rerank, and auto strategies work and are comparable in evaluation.
+      - [x] Chat streams answers with verifiable `[S#]` citations deep-linking to exact lines, trace inspection, and calibrated confidence scores.
+      - [x] Overview, Explorer, and Dependency Graph (clusters, cycles, centrality) work on TaskFlow and requests.
+      - [x] Evaluation framework produces all metrics in §14.2 including 10-bin calibration curves; reproducible via CLI.
+      - [x] Phase 2: Context-aware reviews from PR URL, diff upload, and webhooks; 100% recall on 6 seeded patches; human triage (Accept/Reject/Edit); COMMENT review publishing to GitHub.
+      - [x] Security checklist §11 fully implemented; authz enumeration test passes across 33 routes; gitleaks clean; non-root containers (UID 10001); production security headers present in Caddy.
+      - [x] Backend test suite passes 192/192 tests (100%); frontend test suite passes 24/24 vitest tests; zero `TODO`, `FIXME`, `NotImplementedError`, or `lorem ipsum` in `backend/app` or `frontend/src`.
+      - [x] Production Compose stack runs behind Caddy with hardening flags and resource limits; EC2 scripts and backup/restore drills complete.
+      - [x] All documentation in §19 exists and matches implementation.
+    - Final Self-Audit (§22):
+      - Forbidden placeholder scan (`TODO|FIXME|NotImplementedError|lorem ipsum`): exactly 0 hits across all source files.
+      - Backend quality gates: `ruff check` (0 errors), `ruff format --check` (199 files clean), `mypy backend/app` (0 issues across 160 source files).
+      - Frontend quality gates: `eslint src` (0 errors, 0 warnings), `tsc --noEmit` (0 errors), `vitest run` (24/24 passing), `vite build` (clean bundle).
+      - `scripts/doctor.py` diagnostic verification passed with all checks green.
   - Known issues: None

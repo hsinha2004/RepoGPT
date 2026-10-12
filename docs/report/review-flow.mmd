@@ -1,0 +1,19 @@
+flowchart TD
+    Trigger["PR Created / Diff Uploaded"] --> ParseDiff["Unidiff Parser: Extract hunks & changed line ranges"]
+    ParseDiff --> TreeSitter["Context Service: Map modified symbols & callers"]
+    TreeSitter --> StaticRuff["Static Analysis: Isolated Ruff Subprocess (E9, F, B, S)"]
+    
+    StaticRuff --> ReviewGraph["Review LangGraph: File & Cross-File Review"]
+    ReviewGraph --> Validator["Validation Engine: Anchor ±0 within hunks, Dedup, Cap at 30"]
+    Validator --> RiskSummary["Generate Risk Scoring & Walkthrough"]
+    RiskSummary --> StoreDB["Store Review Document in MongoDB"]
+    
+    StoreDB --> UserUI["Human Triage Dashboard (ReviewsPage)"]
+    UserUI --> HumanTriage{"Human Decision"}
+    
+    HumanTriage -->|Accept| Accepted["Mark finding accepted"]
+    HumanTriage -->|Reject| Rejected["Mark finding dismissed"]
+    HumanTriage -->|Edit| Edited["Update title / severity / notes"]
+    
+    Accepted --> PublishReq["User clicks 'Publish to GitHub'"]
+    PublishReq --> GitHub["GitHub API: Create COMMENT Review with Inline Comments"]
