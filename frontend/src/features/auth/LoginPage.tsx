@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Code2, Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { useAuthStore } from "../../stores/authStore";
 import { setAccessToken } from "../../api/client";
 
@@ -55,11 +55,12 @@ export const LoginPage: React.FC = () => {
     <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex flex-col justify-center items-center px-4 font-sans">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="size-10 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-lg shadow-[#6366f1]/20">
-              <Code2 className="size-6" />
-            </div>
-            <span className="font-bold text-2xl tracking-tight text-white">RepoGPT</span>
+          <Link to="/" className="inline-flex flex-col items-center gap-2 mb-4 group">
+            <img
+              src="/logo.png"
+              alt="RepoGPT Logo"
+              className="h-28 object-contain drop-shadow-xl transition-transform hover:scale-105"
+            />
           </Link>
           <h2 className="text-xl font-bold tracking-tight text-balance">Sign in to your account</h2>
           <p className="text-sm text-[#a1a1aa] mt-1 text-pretty">
@@ -84,7 +85,7 @@ export const LoginPage: React.FC = () => {
                 type="email"
                 {...register("email")}
                 placeholder="name@example.com"
-                className="w-full bg-[#09090b] border border-[#27272a] focus:border-[#6366f1] focus:ring-1 focus:ring-[#6366f1] rounded-lg px-3 py-2 text-sm text-white placeholder-[#71717a] outline-none transition-all"
+                className="w-full bg-[#09090b] border border-[#27272a] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-white placeholder-[#71717a] outline-none transition-all"
               />
               {errors.email && (
                 <p className="mt-1 text-xs text-[#ef4444]">{errors.email.message}</p>
@@ -99,7 +100,7 @@ export const LoginPage: React.FC = () => {
                 type="password"
                 {...register("password")}
                 placeholder="••••••••••••"
-                className="w-full bg-[#09090b] border border-[#27272a] focus:border-[#6366f1] focus:ring-1 focus:ring-[#6366f1] rounded-lg px-3 py-2 text-sm text-white placeholder-[#71717a] outline-none transition-all"
+                className="w-full bg-[#09090b] border border-[#27272a] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-white placeholder-[#71717a] outline-none transition-all"
               />
               {errors.password && (
                 <p className="mt-1 text-xs text-[#ef4444]">{errors.password.message}</p>
@@ -109,7 +110,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full mt-2 bg-[#6366f1] hover:bg-[#818cf8] text-white font-medium py-2.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-emerald-500/20 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
@@ -124,7 +125,7 @@ export const LoginPage: React.FC = () => {
 
           <div className="mt-6 pt-6 border-t border-[#27272a] text-center text-xs text-[#a1a1aa]">
             Don't have an account?{" "}
-            <Link to="/register" className="text-[#6366f1] hover:underline font-medium">
+            <Link to="/register" className="text-emerald-400 hover:text-emerald-300 font-medium">
               Create an account
             </Link>
           </div>

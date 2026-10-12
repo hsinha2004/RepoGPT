@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router";
 import {
-  Code2,
   FolderGit2,
   BarChart3,
   Settings,
@@ -88,8 +87,8 @@ export const AppLayout: React.FC = () => {
           {/* Brand Logo Header */}
           <div className="h-16 border-b border-[#27272a] px-5 flex items-center justify-between">
             <Link to="/app" className="flex items-center gap-3 group">
-              <div className="size-8 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-sm transition-transform group-hover:scale-105">
-                <Code2 className="size-4" />
+              <div className="size-9 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
+                <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-8 object-contain drop-shadow" />
               </div>
               <div>
                 <span className="font-semibold text-base tracking-tight text-white block leading-tight">
@@ -222,11 +221,11 @@ export const AppLayout: React.FC = () => {
                   to={tab.path}
                   className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-all whitespace-nowrap ${
                     isActive
-                      ? "border-[#6366f1] text-white bg-[#18181b]/50"
+                      ? "border-emerald-500 text-white bg-emerald-500/10"
                       : "border-transparent text-[#a1a1aa] hover:text-white hover:border-[#3f3f46]"
                   }`}
                 >
-                  <TabIcon className={`w-3.5 h-3.5 ${isActive ? "text-[#818cf8]" : "text-[#71717a]"}`} />
+                  <TabIcon className={`size-3.5 ${isActive ? "text-emerald-400" : "text-[#71717a]"}`} />
                   <span>{tab.label}</span>
                 </Link>
               );

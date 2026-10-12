@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router";
 import {
   CheckCircle,
-  Code2,
   FileSearch,
   GitPullRequest,
   Layers,
@@ -12,15 +11,13 @@ import {
 
 export const LandingPage: React.FC = () => {
   return (
-    <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex flex-col font-sans selection:bg-[#6366f1] selection:text-white">
+    <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
       {/* Top Navigation */}
       <header className="border-b border-[#27272a] bg-[#111113]/80 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="size-9 rounded-lg bg-[#6366f1] flex items-center justify-center font-bold text-white shadow-lg shadow-[#6366f1]/20">
-              <Code2 className="size-5" />
-            </div>
-            <span className="font-bold text-xl tracking-tight">RepoGPT</span>
+            <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-8 object-contain drop-shadow" />
+            <span className="font-bold text-xl tracking-tight text-white">RepoGPT</span>
           </div>
 
           <nav className="flex items-center gap-6">
@@ -44,7 +41,7 @@ export const LandingPage: React.FC = () => {
             </Link>
             <Link
               to="/register"
-              className="text-sm font-medium bg-[#6366f1] hover:bg-[#818cf8] text-white px-4 py-2 rounded-md transition-all shadow-sm"
+              className="text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-md transition-all shadow-sm"
             >
               Get Started
             </Link>
@@ -78,7 +75,7 @@ export const LandingPage: React.FC = () => {
         <div className="mt-8 flex flex-wrap gap-4 justify-center">
           <Link
             to="/register"
-            className="bg-[#6366f1] hover:bg-[#818cf8] text-white font-medium px-6 py-3 rounded-lg transition-all shadow-lg shadow-[#6366f1]/25 flex items-center gap-2"
+            className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-6 py-3 rounded-lg transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2"
           >
             Start Exploring Code
             <Sparkles className="w-4 h-4" />
@@ -276,8 +273,8 @@ export const LandingPage: React.FC = () => {
       <footer className="border-t border-[#27272a] bg-[#0c0c0e] py-12 mt-auto">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-              <Code2 className="w-5 h-5 text-[#6366f1]" />
+            <div className="flex items-center justify-center md:justify-start gap-2.5 mb-2">
+              <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-5 object-contain" />
               <span className="font-bold text-white tracking-tight">RepoGPT</span>
             </div>
             <p className="text-xs text-[#a1a1aa]">
