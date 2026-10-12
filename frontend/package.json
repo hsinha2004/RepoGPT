@@ -40,7 +40,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "elkjs": "^0.9.3",
-    "lucide-react": "^0.453.0",
+    "lucide-react": "^1.54.0",
     "motion": "^14.1.0",
     "openapi-fetch": "^0.13.0",
     "react": "^19.0.0",
