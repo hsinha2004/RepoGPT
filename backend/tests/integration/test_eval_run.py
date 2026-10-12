@@ -7,7 +7,6 @@ import pytest
 from app.core.config import Settings
 from app.db.repositories.benchmarks import BenchmarkRepository
 from app.db.repositories.eval_runs import EvalRunRepository
-from app.db.repositories.repos import RepositoryRepository
 from app.schemas.retrieval import RetrievedChunk, RouteResult, SearchRequest, SearchResponse
 from app.services.eval.report import EvalReportExporter
 from app.services.eval.runner import EvaluationRunner

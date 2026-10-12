@@ -31,6 +31,21 @@ class AppError(Exception):
         self.headers = headers or {}
 
 
+class BadRequestError(AppError):
+    def __init__(
+        self,
+        message: str = "Bad request",
+        code: str = "BAD_REQUEST",
+        details: dict[str, Any] | None = None,
+    ):
+        super().__init__(
+            code=code,
+            message=message,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            details=details,
+        )
+
+
 class NotFoundError(AppError):
     def __init__(
         self,

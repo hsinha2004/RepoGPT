@@ -24,6 +24,7 @@ import {
   FileText,
   MessageSquare,
   Network,
+  GitPullRequest,
 } from "lucide-react";
 
 interface OverviewSourceItem {
@@ -279,6 +280,13 @@ export const OverviewPage: React.FC = () => {
           >
             <Network className="w-3.5 h-3.5 text-[#f59e0b]" />
             <span>Graph</span>
+          </Link>
+          <Link
+            to={`/app/repos/${repoId}/reviews`}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#18181b] border border-[#27272a] text-[#a1a1aa] hover:text-white hover:border-[#6366f1]/50 transition-colors"
+          >
+            <GitPullRequest className="w-3.5 h-3.5 text-[#ec4899]" />
+            <span>Reviews</span>
           </Link>
 
           <button

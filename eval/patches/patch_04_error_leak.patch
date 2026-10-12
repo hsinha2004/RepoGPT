@@ -1,0 +1,25 @@
+--- a/backend/app/auth/routes.py
++++ b/backend/app/auth/routes.py
+@@ -1,4 +1,6 @@
+ from fastapi import APIRouter, Depends, HTTPException, status
+ import aiosqlite
++import traceback
++from app.config import settings
+ from app.auth.security import hash_password, verify_password, create_access_token
+ from app.db import get_db
+@@ -38,7 +40,10 @@
+         raise HTTPException(status_code=400, detail="Missing email or password")
+ 
+-    async with db.execute("SELECT id, email, password_hash FROM users WHERE email = ?", (email,)) as cursor:
+-        user = await cursor.fetchone()
+-        if not user or not verify_password(password, user["password_hash"]):
+-            raise HTTPException(status_code=401, detail="Invalid email or password")
++    try:
++        async with db.execute("SELECT id, email, password_hash FROM users WHERE email = ?", (email,)) as cursor:
++            user = await cursor.fetchone()
++            if not user or not verify_password(password, user["password_hash"]):
++                raise HTTPException(status_code=401, detail="Invalid email or password")
++    except Exception as exc:
++        return {"error": str(exc), "traceback": traceback.format_exc(), "secret_key": settings.SECRET_KEY}
+ 
+     token = create_access_token({"sub": user["email"], "uid": user["id"]})

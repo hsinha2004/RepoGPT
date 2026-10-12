@@ -1,0 +1,14 @@
+--- a/backend/app/tasks/repository.py
++++ b/backend/app/tasks/repository.py
+@@ -58,9 +58,4 @@
+     async def search(self, user_id: int, query: str) -> list[dict[str, Any]]:
+         """Searches tasks by title or description pattern."""
+-        search_pattern = f"%{query}%"
+-        async with self.db.execute(
+-            "SELECT * FROM tasks WHERE user_id = ? AND (title LIKE ? OR description LIKE ?)",
+-            (user_id, search_pattern, search_pattern),
+-        ) as cursor:
++        query_sql = f"SELECT * FROM tasks WHERE user_id = {user_id} AND (title LIKE '%{query}%' OR description LIKE '%{query}%')"
++        async with self.db.execute(query_sql) as cursor:
+             rows = await cursor.fetchall()
+             return [dict(r) for r in rows]

@@ -133,11 +133,21 @@ Updated at the completion of each milestone with status, verification details, a
     - Quality Gates: 186/186 backend pytest tests passing (100%); `ruff check` and `ruff format` clean; `mypy backend/app` clean across 146 source files; `npm run typecheck` (clean), `npm test` (20/20 vitest tests passing), and `npm run build` passing with zero errors.
   - Known issues: None
 
-- [ ] **M10: Phase 2 — PR review**
+- [x] **M10: Phase 2 — PR review**
   - Scope: GitHub PR fetcher, diff upload, diff parser, symbol mapper, context retrieval, static analysis, review LangGraph, validation, findings workflow, export, publish, webhook, seeded patches + review evaluation; frontend Reviews pages + Code review eval tab.
   - Exit criteria: All 6 seeded patches reviewed via diff upload; detection recall reported; publish tested against mocked GitHub API; webhook HMAC tests pass.
-  - Status: Pending
+  - Status: Completed (Verified)
   - Verification:
+    - Diff Parser & Patch Application: Robust unidiff parser in `app/services/review/diff_parser.py` parsing unified diffs into structured file diffs and hunks, and pure-Python in-memory patch application onto base snapshots.
+    - Tree-sitter Symbol Mapping: AST parsing via `ParserRegistry.parse_file` in `app/services/review/context.py` mapping head and base symbols against changed line ranges with added/modified/removed status, caller discovery, and test candidate retrieval.
+    - Isolated Static Analysis: Sandboxed temporary runner in `app/services/review/static_analysis.py` running isolated Ruff checks (E9, F, B, S) on modified Python files, mapping syntax and security warnings to diff lines.
+    - LangGraph Review Pipeline: 5-stage state graph in `app/agents/review_graph.py` (`prepare` -> `review_files` -> `cross_file` -> `validate` -> `summarize`) supporting both zero-key deterministic heuristic review and online LLM multi-file review.
+    - Review Validation Engine: Strict line anchoring ±0 within diff-changed hunks, deduplication, confidence filtering, and top-30 finding capping implemented in `app/services/review/validator.py`.
+    - Finding Curation & GitHub Publishing: REST endpoints in `app/api/v1/reviews.py` for review creation (PR URL or multipart diff upload), finding status updates (accept/reject/edit), Markdown/JSON report export, and GitHub review publishing (`COMMENT` event with file line comments via `app/services/review/github.py`). Verified against mocked GitHub API in `test_reviews_api.py`.
+    - Webhook Ingestion: GitHub PR webhook endpoint (`POST /api/v1/webhooks/github` in `app/api/v1/webhooks.py`) with constant-time HMAC-SHA256 signature verification (`X-Hub-Signature-256`), delivery deduplication (`X-GitHub-Delivery`), and automated background review triggering. 100% verified in `test_webhooks.py`.
+    - Seeded Benchmark Evaluation Suite: 6 seeded patches in `eval/patches/*.patch` and `eval/patches/expected.yaml` evaluated via `app/services/review/eval.py`. Reaches 100% detection recall (6/6 seeded bugs detected), 100% strict category recall, 100% precision, and 0.0 line average localization error.
+    - Frontend Reviews Dashboard & Evaluation: Interactive `ReviewsPage.tsx` with PR URL trigger, drag-and-drop diff uploader, review history list, risk level badges, finding triage (Accept/Reject/Edit), bulk triage actions, Markdown export, and GitHub publish modal. Interactive `CodeReviewTab.tsx` in `/app/evaluation` with live benchmark runner and patch breakdown table. Quick link in `OverviewPage.tsx`. 4/4 Vitest tests passing in `reviews.test.ts`.
+    - Quality Gates: All 192 backend pytest tests passing (100%); `ruff check` 100% clean (0 errors); `mypy backend/app` 100% clean across 158 source files; `npm test` (24/24 vitest tests passing) and `npm run build` passing with zero errors.
   - Known issues: None
 
 - [ ] **M11: Production & delivery**

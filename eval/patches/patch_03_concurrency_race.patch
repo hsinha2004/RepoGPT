@@ -1,0 +1,9 @@
+--- a/backend/app/tasks/service.py
++++ b/backend/app/tasks/service.py
+@@ -16,2 +16,5 @@
+         if len(title) > 200:
+             raise ValueError("Task title cannot exceed 200 characters")
++        current_tasks = await self.repo.list_by_user(user_id)
++        if len(current_tasks) >= 50:
++            raise ValueError("Task quota exceeded (max 50)")
+         if priority not in ["low", "medium", "high", "urgent"]:

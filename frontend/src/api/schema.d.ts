@@ -882,6 +882,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/eval/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Review Eval Metrics
+         * @description Evaluates automated code review against seeded patches (§10.6).
+         */
+        get: operations["get_review_eval_metrics_api_v1_eval_reviews_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/users": {
         parameters: {
             query?: never;
@@ -1016,6 +1036,130 @@ export interface paths {
         get: operations["list_audit_logs_api_v1_admin_audit_logs_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/repos/{repo_id}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List reviews for repository
+         * @description Lists past code reviews for the repository.
+         */
+        get: operations["list_reviews_api_v1_repos__repo_id__reviews_get"];
+        put?: never;
+        /**
+         * Trigger code review from PR URL or diff upload
+         * @description Triggers automated code review via PR URL or uploaded .diff/.patch file.
+         */
+        post: operations["create_review_api_v1_repos__repo_id__reviews_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reviews/{review_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get code review details and findings
+         * @description Retrieves review walkthrough, findings, and risk scoring.
+         */
+        get: operations["get_review_api_v1_reviews__review_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reviews/{review_id}/findings/{finding_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Accept, reject, or edit review finding
+         * @description Updates finding acceptance status or modifies title, severity, or notes.
+         */
+        patch: operations["update_finding_api_v1_reviews__review_id__findings__finding_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/reviews/{review_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish accepted review comments to GitHub
+         * @description Publishes accepted review findings to GitHub as a COMMENT review (§10.5).
+         */
+        post: operations["publish_review_api_v1_reviews__review_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reviews/{review_id}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export review report as Markdown
+         * @description Exports review report as downloadable Markdown or JSON.
+         */
+        get: operations["export_review_api_v1_reviews__review_id__export_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/webhooks/github": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * GitHub Pull Request Webhook
+         * @description Receives, verifies, and dispatches GitHub pull request webhook events.
+         */
+        post: operations["github_webhook_api_v1_webhooks_github_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1592,6 +1736,17 @@ export interface components {
              */
             redaction_count: number;
         };
+        /** FindingEvidence */
+        FindingEvidence: {
+            /** Source Id */
+            source_id: string;
+            /** Path */
+            path: string;
+            /** Start Line */
+            start_line: number;
+            /** End Line */
+            end_line: number;
+        };
         /** GraphEdge */
         GraphEdge: {
             /** Id */
@@ -1912,6 +2067,21 @@ export interface components {
             /** Last4 */
             last4?: string | null;
         };
+        /** PublishReviewRequest */
+        PublishReviewRequest: {
+            /**
+             * Comments Only
+             * @default true
+             */
+            comments_only: boolean;
+            /**
+             * Include General Summary
+             * @default true
+             */
+            include_general_summary: boolean;
+            /** Github Token */
+            github_token?: string | null;
+        };
         /** RankScores */
         RankScores: {
             /** Bm25 */
@@ -2229,6 +2399,212 @@ export interface components {
             ranks?: components["schemas"]["RankScores"];
             /** Rerank Score */
             rerank_score?: number | null;
+        };
+        /** ReviewEvalMetrics */
+        ReviewEvalMetrics: {
+            /** Detection Recall */
+            detection_recall: number;
+            /** Strict Recall */
+            strict_recall: number;
+            /** Precision */
+            precision: number;
+            /** Localization Accuracy */
+            localization_accuracy: number;
+            /** False Positives Per 100 Lines */
+            false_positives_per_100_lines: number;
+            /** Total Seeded */
+            total_seeded: number;
+            /** Matched Seeded */
+            matched_seeded: number;
+            /** Total Findings */
+            total_findings: number;
+            /** Latency Ms */
+            latency_ms: number;
+            /** Cost Usd */
+            cost_usd: number;
+            /** Patches Evaluated */
+            patches_evaluated: number;
+        };
+        /** ReviewFinding */
+        ReviewFinding: {
+            /** Id */
+            id: string;
+            /** Path */
+            path: string;
+            /** Start Line */
+            start_line: number;
+            /** End Line */
+            end_line: number;
+            /**
+             * Side
+             * @default RIGHT
+             * @enum {string}
+             */
+            side: "LEFT" | "RIGHT";
+            /**
+             * Category
+             * @enum {string}
+             */
+            category: "bug" | "security" | "performance" | "error_handling" | "concurrency" | "api_contract" | "testing" | "maintainability" | "documentation";
+            /**
+             * Severity
+             * @enum {string}
+             */
+            severity: "critical" | "high" | "medium" | "low" | "info";
+            /** Title */
+            title: string;
+            /** Explanation */
+            explanation: string;
+            /** Suggestion */
+            suggestion?: string | null;
+            /** Suggested Code */
+            suggested_code?: string | null;
+            /** Evidence */
+            evidence?: components["schemas"]["FindingEvidence"][];
+            /**
+             * Confidence
+             * @default 0.8
+             */
+            confidence: number;
+            /**
+             * Origin
+             * @default llm
+             * @enum {string}
+             */
+            origin: "llm" | "static";
+            /**
+             * Status
+             * @default pending
+             * @enum {string}
+             */
+            status: "pending" | "accepted" | "rejected" | "edited";
+            /** User Note */
+            user_note?: string | null;
+        };
+        /** ReviewFindingUpdate */
+        ReviewFindingUpdate: {
+            /** Status */
+            status?: ("pending" | "accepted" | "rejected" | "edited") | null;
+            /** Severity */
+            severity?: ("critical" | "high" | "medium" | "low" | "info") | null;
+            /** Title */
+            title?: string | null;
+            /** Explanation */
+            explanation?: string | null;
+            /** Suggestion */
+            suggestion?: string | null;
+            /** Suggested Code */
+            suggested_code?: string | null;
+            /** User Note */
+            user_note?: string | null;
+        };
+        /** ReviewResponse */
+        ReviewResponse: {
+            /** Id */
+            id: string;
+            /** Repo Id */
+            repo_id: string;
+            /** User Id */
+            user_id: string;
+            source: components["schemas"]["ReviewSource"];
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "running" | "completed" | "failed";
+            /**
+             * Risk Level
+             * @default low
+             * @enum {string}
+             */
+            risk_level: "low" | "medium" | "high" | "critical";
+            stats: components["schemas"]["ReviewStats"];
+            /**
+             * Summary
+             * @default
+             */
+            summary: string;
+            /** File Walkthrough */
+            file_walkthrough?: {
+                [key: string]: unknown;
+            }[];
+            /** Findings */
+            findings?: components["schemas"]["ReviewFinding"][];
+            /** General Comments */
+            general_comments?: {
+                [key: string]: unknown;
+            }[];
+            /**
+             * Published To Github
+             * @default false
+             */
+            published_to_github: boolean;
+            /** Github Review Id */
+            github_review_id?: string | null;
+            /** Github Review Url */
+            github_review_url?: string | null;
+            /** Error */
+            error?: string | null;
+            /**
+             * Indexed Commit Mismatch
+             * @default false
+             */
+            indexed_commit_mismatch: boolean;
+            /** Created At */
+            created_at: string;
+            /** Updated At */
+            updated_at: string;
+        };
+        /** ReviewSource */
+        ReviewSource: {
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "github" | "upload" | "webhook";
+            /** Pr Number */
+            pr_number?: number | null;
+            /** Pr Url */
+            pr_url?: string | null;
+            /** Base Sha */
+            base_sha?: string | null;
+            /** Head Sha */
+            head_sha?: string | null;
+            /** Patch Filename */
+            patch_filename?: string | null;
+        };
+        /** ReviewStats */
+        ReviewStats: {
+            /**
+             * Files Changed
+             * @default 0
+             */
+            files_changed: number;
+            /**
+             * Lines Added
+             * @default 0
+             */
+            lines_added: number;
+            /**
+             * Lines Deleted
+             * @default 0
+             */
+            lines_deleted: number;
+            /**
+             * Findings Count
+             * @default 0
+             */
+            findings_count: number;
+            /**
+             * Accepted Count
+             * @default 0
+             */
+            accepted_count: number;
+            /**
+             * Rejected Count
+             * @default 0
+             */
+            rejected_count: number;
         };
         /** RouteResult */
         RouteResult: {
@@ -4407,6 +4783,26 @@ export interface operations {
             };
         };
     };
+    get_review_eval_metrics_api_v1_eval_reviews_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewEvalMetrics"];
+                };
+            };
+        };
+    };
     list_users_api_v1_admin_users_get: {
         parameters: {
             query?: {
@@ -4626,6 +5022,240 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     }[];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_reviews_api_v1_repos__repo_id__reviews_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_review_api_v1_repos__repo_id__reviews_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_review_api_v1_reviews__review_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_finding_api_v1_reviews__review_id__findings__finding_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review_id: string;
+                finding_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewFindingUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    publish_review_api_v1_reviews__review_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PublishReviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_review_api_v1_reviews__review_id__export_get: {
+        parameters: {
+            query?: {
+                format?: string;
+            };
+            header?: never;
+            path: {
+                review_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    github_webhook_api_v1_webhooks_github_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Hub-Signature-256"?: string | null;
+                "X-GitHub-Event"?: string | null;
+                "X-GitHub-Delivery"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
                 };
             };
             /** @description Validation Error */

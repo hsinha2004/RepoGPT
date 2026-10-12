@@ -4,7 +4,19 @@ API v1 root router aggregator.
 
 from fastapi import APIRouter
 
-from app.api.v1 import admin, auth, conversations, eval, health, jobs, messages, repos, users
+from app.api.v1 import (
+    admin,
+    auth,
+    conversations,
+    eval,
+    health,
+    jobs,
+    messages,
+    repos,
+    reviews,
+    users,
+    webhooks,
+)
 
 api_v1_router = APIRouter(prefix="/api/v1")
 
@@ -18,3 +30,5 @@ api_v1_router.include_router(conversations.router)
 api_v1_router.include_router(messages.router)
 api_v1_router.include_router(eval.router)
 api_v1_router.include_router(admin.router)
+api_v1_router.include_router(reviews.router)
+api_v1_router.include_router(webhooks.router)

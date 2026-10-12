@@ -73,6 +73,10 @@ class FileRepository:
         """Retrieves a single file record by path within a repository."""
         return await self._files.find_one({"repo_id": str(repo_id), "path": path})
 
+    async def get_by_path(self, repo_id: str | ObjectId, path: str) -> dict[str, Any] | None:
+        """Alias for get_file."""
+        return await self.get_file(repo_id, path)
+
     async def list_files(
         self,
         repo_id: str | ObjectId,

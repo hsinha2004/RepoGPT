@@ -6,9 +6,6 @@ from httpx import ASGITransport, AsyncClient
 from app.core.config import Settings
 from app.core.deps import get_current_user
 from app.core.security import create_access_token
-from app.db.repositories.benchmarks import BenchmarkRepository
-from app.db.repositories.eval_runs import EvalRunRepository
-from app.db.repositories.repos import RepositoryRepository
 from app.main import create_app
 
 

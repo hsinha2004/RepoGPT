@@ -1,0 +1,62 @@
+benchmark_name: seeded_patches_taskflow
+description: 6 seeded pull request patches against TaskFlow covering security, bugs, concurrency, contracts, and performance.
+patches:
+  - id: patch_01
+    file: patch_01_sql_injection.patch
+    target_file: backend/app/tasks/repository.py
+    start_line: 60
+    end_line: 63
+    category: security
+    min_severity: critical
+    title: SQL Injection via unsanitized query formatting
+    description: String concatenation inside raw SQL query exposes the application to severe SQL injection.
+
+  - id: patch_02
+    file: patch_02_auth_bypass.patch
+    target_file: backend/app/auth/security.py
+    start_line: 16
+    end_line: 18
+    category: security
+    min_severity: critical
+    title: Authentication bypass in password verification
+    description: Injected override bypasses password check when password is empty or magic string.
+
+  - id: patch_03
+    file: patch_03_concurrency_race.patch
+    target_file: backend/app/tasks/service.py
+    start_line: 18
+    end_line: 21
+    category: concurrency
+    min_severity: high
+    title: Concurrency TOCTOU race condition on task quota
+    description: Task quota is checked without a lock or transactional isolation, allowing concurrent requests to exceed the limit.
+
+  - id: patch_04
+    file: patch_04_error_leak.patch
+    target_file: backend/app/auth/routes.py
+    start_line: 46
+    end_line: 48
+    category: error_handling
+    min_severity: high
+    title: Information disclosure in error response
+    description: Exception handler returns full stack trace and application SECRET_KEY to untrusted clients.
+
+  - id: patch_05
+    file: patch_05_contract_break.patch
+    target_file: backend/app/tasks/service.py
+    start_line: 10
+    end_line: 15
+    category: api_contract
+    min_severity: high
+    title: Breaking API contract change on create_task signature
+    description: Renaming parameter title to task_name breaks callers in routes.py passing title as keyword argument.
+
+  - id: patch_06
+    file: patch_06_perf_n_plus_one.patch
+    target_file: backend/app/tasks/routes.py
+    start_line: 45
+    end_line: 52
+    category: performance
+    min_severity: medium
+    title: N+1 database queries in task listing
+    description: Iterating over tasks and executing individual user lookup queries induces severe N+1 query performance penalty.

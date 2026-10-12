@@ -14,10 +14,8 @@ import re
 from typing import Any
 
 import pytest
-from fastapi.routing import APIRoute
-from httpx import ASGITransport, AsyncClient
-
 from bson import ObjectId
+from httpx import ASGITransport, AsyncClient
 
 import app.db.mongo as mongo
 from app.core.deps import get_current_user

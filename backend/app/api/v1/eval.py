@@ -30,6 +30,7 @@ from app.schemas.eval import (
     EvalRunCreate,
     EvalRunSummary,
 )
+from app.schemas.review import ReviewEvalMetrics
 from app.services.eval.report import EvalReportExporter
 from app.services.eval.runner import EvaluationRunner
 
@@ -362,3 +363,14 @@ async def get_live_eval_metrics(
 ) -> dict[str, Any]:
     """Returns telemetry and satisfaction rates from production chat usage (§14.2)."""
     return await eval_repo.get_live_metrics()
+
+
+@router.get("/reviews", response_model=ReviewEvalMetrics)
+async def get_review_eval_metrics(
+    _current_user: dict[str, Any] = Depends(get_current_user),
+) -> ReviewEvalMetrics:
+    """Evaluates automated code review against seeded patches (§10.6)."""
+    from app.services.review.eval import ReviewEvaluator
+
+    evaluator = ReviewEvaluator()
+    return await evaluator.evaluate_suite()

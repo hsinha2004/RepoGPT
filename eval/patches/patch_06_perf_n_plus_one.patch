@@ -1,0 +1,14 @@
+--- a/backend/app/tasks/routes.py
++++ b/backend/app/tasks/routes.py
+@@ -43,3 +43,9 @@
+     repo = TaskRepository(db)
+-    return await repo.list_by_user(current_user["id"])
++    tasks = await repo.list_by_user(current_user["id"])
++    enriched = []
++    for t in tasks:
++        async with db.execute("SELECT name, email FROM users WHERE id = ?", (t["user_id"],)) as cur:
++            u = await cur.fetchone()
++            t_dict = dict(t)
++            t_dict["user_info"] = dict(u) if u else None
++            enriched.append(t_dict)
++    return enriched
