@@ -5,7 +5,7 @@ Security, Cryptography, Password Hashing (Argon2id), JWT, and Token Utilities.
 import hashlib
 import secrets
 from datetime import UTC, datetime, timedelta
-from typing import Any
+from typing import Any, cast
 
 import jwt
 from argon2 import PasswordHasher
@@ -37,7 +37,7 @@ ph = PasswordHasher()
 
 def hash_password(password: str) -> str:
     """Hash password using Argon2id."""
-    return ph.hash(password)
+    return str(ph.hash(password))
 
 
 def verify_password(plain_password: str, hashed_password: str) -> tuple[bool, bool]:
@@ -91,7 +91,7 @@ def create_access_token(user_id: str, role: str, expires_delta: timedelta | None
         "type": "access",
         "iss": "repogpt",
     }
-    return jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256")
+    return str(jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256"))
 
 
 def decode_access_token(token: str) -> dict[str, Any]:
@@ -109,7 +109,7 @@ def decode_access_token(token: str) -> dict[str, Any]:
         )
         if payload.get("type") != "access":
             raise UnauthorizedError("Invalid token type")
-        return payload
+        return cast(dict[str, Any], payload)
     except jwt.ExpiredSignatureError:
         raise UnauthorizedError("Access token has expired") from None
     except jwt.InvalidTokenError as e:
@@ -127,7 +127,7 @@ def encrypt_secret(plaintext: str) -> str:
     if not plaintext:
         return ""
     cipher = get_fernet_cipher()
-    return cipher.encrypt(plaintext.encode("utf-8")).decode("utf-8")
+    return str(cipher.encrypt(plaintext.encode("utf-8")).decode("utf-8"))
 
 
 def decrypt_secret(ciphertext: str) -> str:
@@ -135,7 +135,7 @@ def decrypt_secret(ciphertext: str) -> str:
     if not ciphertext:
         return ""
     cipher = get_fernet_cipher()
-    return cipher.decrypt(ciphertext.encode("utf-8")).decode("utf-8")
+    return str(cipher.decrypt(ciphertext.encode("utf-8")).decode("utf-8"))
 
 
 def constant_time_compare(val1: str, val2: str) -> bool:

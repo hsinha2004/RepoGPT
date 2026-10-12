@@ -19,9 +19,9 @@ def get_client_ip(request: Request) -> str:
     """Extract client IP handling forwarded headers."""
     forwarded = request.headers.get("X-Forwarded-For")
     if forwarded:
-        return forwarded.split(",")[0].strip()
+        return str(forwarded.split(",")[0].strip())
     client = request.client
-    return client.host if client else "127.0.0.1"
+    return str(client.host) if client else "127.0.0.1"
 
 
 async def check_sliding_window_limit(

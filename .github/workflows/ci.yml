@@ -51,7 +51,7 @@ jobs:
         run: .venv/bin/ruff format --check backend/app backend/tests
 
       - name: Mypy Typecheck
-        run: .venv/bin/mypy backend/app
+        run: .venv/bin/mypy --config-file backend/pyproject.toml backend/app
 
       - name: Run Pytest
         env:
