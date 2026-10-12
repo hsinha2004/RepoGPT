@@ -85,16 +85,18 @@ export const AppLayout: React.FC = () => {
       <aside className="hidden md:flex w-64 border-r border-[#27272a] bg-[#0c0c0e] flex-col justify-between shrink-0">
         <div>
           {/* Brand Logo Header */}
-          <div className="h-16 border-b border-[#27272a] px-5 flex items-center justify-between">
-            <Link to="/app" className="flex items-center gap-3 group">
-              <div className="size-9 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
-                <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-8 object-contain drop-shadow" />
-              </div>
+          <div className="h-20 border-b border-[#27272a] px-5 flex items-center justify-between">
+            <Link to="/app" className="flex items-center gap-3.5 group">
+              <img
+                src="/logo-icon.png"
+                alt="RepoGPT Logo"
+                className="size-12 object-contain drop-shadow-md transition-transform group-hover:scale-105 shrink-0"
+              />
               <div>
-                <span className="font-semibold text-base tracking-tight text-white block leading-tight">
+                <span className="font-bold text-lg tracking-tight text-white block leading-tight">
                   RepoGPT
                 </span>
-                <span className="text-[10px] text-[#71717a] font-mono block">Code Intelligence</span>
+                <span className="text-[11px] text-[#71717a] font-mono block">Code Intelligence</span>
               </div>
             </Link>
           </div>
@@ -167,6 +169,12 @@ export const AppLayout: React.FC = () => {
               {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
 
+            {/* Mobile Brand Logo */}
+            <Link to="/app" className="md:hidden flex items-center gap-2.5">
+              <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-8 object-contain drop-shadow" />
+              <span className="font-bold text-base text-white">RepoGPT</span>
+            </Link>
+
             {/* Breadcrumb / Context */}
             {currentRepoId ? (
               <div className="flex items-center gap-2 text-xs">
@@ -235,7 +243,14 @@ export const AppLayout: React.FC = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-b border-[#27272a] bg-[#111113] p-4 space-y-2">
+          <div className="md:hidden border-b border-[#27272a] bg-[#111113] p-4 space-y-3">
+            <div className="flex items-center gap-3 px-2 py-1 border-b border-[#27272a] pb-3 mb-2">
+              <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-10 object-contain drop-shadow" />
+              <div>
+                <span className="font-bold text-base text-white block leading-tight">RepoGPT</span>
+                <span className="text-[11px] text-[#71717a] font-mono block">Code Intelligence</span>
+              </div>
+            </div>
             <nav className="space-y-1">
               {navItems.map((item) => (
                 <Link

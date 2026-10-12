@@ -102,17 +102,24 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Top action row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white text-balance">Repositories</h1>
-          <p className="text-sm text-[#a1a1aa] mt-1 text-pretty">
-            Manage ingested codebases, explore architecture and symbol graphs, and run intelligent code reviews.
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-[#141417] via-[#111113] to-[#141417] border border-[#27272a] shadow-xs">
+        <div className="flex items-center gap-4">
+          <img
+            src="/logo-icon.png"
+            alt="RepoGPT Logo"
+            className="size-14 object-contain drop-shadow-md hidden sm:block shrink-0"
+          />
+          <div>
+            <h1 className="text-2xl font-bold text-white text-balance">Repositories</h1>
+            <p className="text-sm text-[#a1a1aa] mt-1 text-pretty">
+              Manage ingested codebases, explore architecture and symbol graphs, and run intelligent code reviews.
+            </p>
+          </div>
         </div>
 
         <button
           onClick={() => setIsAddDialogOpen(true)}
-          className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-xs self-start sm:self-auto cursor-pointer"
+          className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-xs self-start sm:self-auto cursor-pointer shrink-0"
         >
           <Plus className="size-4" />
           <span>Add Repository</span>

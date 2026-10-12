@@ -14,10 +14,10 @@ export const LandingPage: React.FC = () => {
     <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
       {/* Top Navigation */}
       <header className="border-b border-[#27272a] bg-[#111113]/80 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-8 object-contain drop-shadow" />
-            <span className="font-bold text-xl tracking-tight text-white">RepoGPT</span>
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3.5">
+            <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-11 object-contain drop-shadow" />
+            <span className="font-extrabold text-2xl tracking-tight text-white">RepoGPT</span>
           </div>
 
           <nav className="flex items-center gap-6">
@@ -50,11 +50,23 @@ export const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 px-6 max-w-7xl mx-auto text-center flex-1 flex flex-col items-center justify-center overflow-hidden">
+      <section className="relative pt-16 pb-16 px-6 max-w-7xl mx-auto text-center flex-1 flex flex-col items-center justify-center overflow-hidden">
         {/* Subtle Green Ambient Glow */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[320px] bg-gradient-to-b from-emerald-500/15 via-teal-500/5 to-transparent blur-3xl pointer-events-none -z-10" />
 
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#27272a] bg-[#111113] text-xs text-[#a1a1aa] mb-8">
+        {/* Hero Logo Emblem */}
+        <div className="mb-6 flex justify-center">
+          <div className="relative group">
+            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/25 via-teal-500/20 to-blue-500/25 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 transition-opacity" />
+            <img
+              src="/logo.png"
+              alt="RepoGPT Official Logo"
+              className="relative h-36 md:h-44 object-contain drop-shadow-[0_15px_35px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#27272a] bg-[#111113] text-xs text-[#a1a1aa] mb-8">
           <Sparkles className="size-3.5 text-emerald-400" />
           <span>Agentic AI System for Codebase Understanding & Review</span>
         </div>
