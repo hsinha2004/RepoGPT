@@ -23,15 +23,61 @@ logger = structlog.get_logger(__name__)
 
 class ParserRegistry:
     def __init__(self) -> None:
-        self._python = PythonExtractor()
-        self._javascript = JavascriptExtractor()
-        self._typescript = TypescriptExtractor()
-        self._tsx = TypescriptExtractor(is_tsx=True)
-        self._java = JavaExtractor()
-        self._go = GoExtractor()
+        self._fallback = FallbackExtractor()
         self._docs = DocsExtractor()
         self._config = ConfigExtractor()
-        self._fallback = FallbackExtractor()
+
+        # Configure tree-sitter parsers from shared persistent cache if available
+        cache_dir = os.environ.get("TREE_SITTER_CACHE_DIR")
+        if not cache_dir:
+            model_cache = os.environ.get("MODEL_CACHE_DIR", "/models")
+            candidate = os.path.join(model_cache, "tree-sitter-cache")
+            if os.path.exists(candidate):
+                cache_dir = candidate
+
+        if cache_dir and os.path.exists(cache_dir):
+            try:
+                import tree_sitter_language_pack as tslp
+                from tree_sitter_language_pack import PackConfig
+                tslp.configure(PackConfig(cache_dir=cache_dir))
+            except Exception as e:
+                logger.warning("tslp_configure_failed", error=str(e))
+
+        try:
+            self._python: BaseExtractor = PythonExtractor()
+        except Exception as e:
+            logger.warning("python_extractor_init_failed", error=str(e))
+            self._python = self._fallback
+
+        try:
+            self._javascript: BaseExtractor = JavascriptExtractor()
+        except Exception as e:
+            logger.warning("javascript_extractor_init_failed", error=str(e))
+            self._javascript = self._fallback
+
+        try:
+            self._typescript: BaseExtractor = TypescriptExtractor()
+        except Exception as e:
+            logger.warning("typescript_extractor_init_failed", error=str(e))
+            self._typescript = self._fallback
+
+        try:
+            self._tsx: BaseExtractor = TypescriptExtractor(is_tsx=True)
+        except Exception as e:
+            logger.warning("tsx_extractor_init_failed", error=str(e))
+            self._tsx = self._fallback
+
+        try:
+            self._java: BaseExtractor = JavaExtractor()
+        except Exception as e:
+            logger.warning("java_extractor_init_failed", error=str(e))
+            self._java = self._fallback
+
+        try:
+            self._go: BaseExtractor = GoExtractor()
+        except Exception as e:
+            logger.warning("go_extractor_init_failed", error=str(e))
+            self._go = self._fallback
 
     def get_extractor(self, path: str, language: str | None = None) -> BaseExtractor:
         filename = os.path.basename(path).lower()

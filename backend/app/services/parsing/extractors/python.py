@@ -3,21 +3,41 @@ Python AST Extractor using tree-sitter (§8.4).
 Extracts functions, classes, methods, docstrings, type annotations, imports, route decorators and entry points.
 """
 
+import structlog
 import tree_sitter
 import tree_sitter_language_pack as tslp
 
 from app.services.parsing.extractors.base import BaseExtractor
+from app.services.parsing.extractors.fallback import FallbackExtractor
 from app.services.parsing.models import EntryPointHint, ParsedFile, SymbolInfo
+
+logger = structlog.get_logger(__name__)
 
 
 class PythonExtractor(BaseExtractor):
     def __init__(self) -> None:
-        self.parser = tslp.get_parser("python")
+        try:
+            self.parser = tslp.get_parser("python")
+        except Exception as e:
+            logger.warning("python_parser_init_failed", error=str(e))
+            self.parser = None
 
     def extract(self, source: str, path: str = "") -> ParsedFile:
-        source_bytes = source.encode("utf-8")
-        tree = self.parser.parse(source_bytes)
-        root = tree.root_node
+        if not self.parser:
+            try:
+                self.parser = tslp.get_parser("python")
+            except Exception:
+                self.parser = None
+        if not self.parser:
+            return FallbackExtractor().extract(source, path)
+
+        try:
+            source_bytes = source.encode("utf-8")
+            tree = self.parser.parse(source_bytes)
+            root = tree.root_node
+        except Exception as e:
+            logger.warning("python_parse_failed", path=path, error=str(e))
+            return FallbackExtractor().extract(source, path)
 
         symbols: list[SymbolInfo] = []
         imports: list[str] = []
