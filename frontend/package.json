@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.48.2",
+    "@tailwindcss/vite": "^4.3.3",
     "@testing-library/jest-dom": "^6.6.2",
     "@testing-library/react": "^16.0.1",
     "@types/node": "^22.8.1",
