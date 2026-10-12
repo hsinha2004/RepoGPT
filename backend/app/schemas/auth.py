@@ -2,22 +2,42 @@
 Pydantic schemas for authentication, users, sessions, and quotas.
 """
 
+import re
 from datetime import datetime
 
-from pydantic import EmailStr, Field
+from pydantic import Field, field_validator
 
 from app.schemas.common import BaseSchema
 
+EMAIL_REGEX = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def validate_email(v: str) -> str:
+    v = v.strip().lower()
+    if not EMAIL_REGEX.match(v):
+        raise ValueError("Invalid email address format")
+    return v
+
 
 class RegisterRequest(BaseSchema):
-    email: EmailStr
+    email: str = Field(min_length=3, max_length=255)
     name: str = Field(min_length=2, max_length=100)
     password: str = Field(min_length=10, max_length=128)
 
+    @field_validator("email")
+    @classmethod
+    def check_email(cls, v: str) -> str:
+        return validate_email(v)
+
 
 class LoginRequest(BaseSchema):
-    email: EmailStr
+    email: str = Field(min_length=3, max_length=255)
     password: str
+
+    @field_validator("email")
+    @classmethod
+    def check_email(cls, v: str) -> str:
+        return validate_email(v)
 
 
 class UserResponse(BaseSchema):
