@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
 import {
   CheckCircle,
@@ -7,16 +7,31 @@ import {
   Layers,
   Network,
   Sparkles,
+  Play,
+  X,
 } from "lucide-react";
-import { motion, useScroll, useSpring } from "motion/react";
+import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
 
 export const LandingPage: React.FC = () => {
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001,
   });
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsDemoOpen(false);
+      }
+    };
+    if (isDemoOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isDemoOpen]);
 
   return (
     <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
@@ -47,6 +62,16 @@ export const LandingPage: React.FC = () => {
             >
               How it Works
             </a>
+            <button
+              type="button"
+              id="top-nav-demo-btn"
+              data-testid="top-nav-demo-btn"
+              onClick={() => setIsDemoOpen(true)}
+              className="text-sm text-[#a1a1aa] hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <Play className="size-3.5 text-emerald-400 fill-emerald-400/20" />
+              Demo
+            </button>
             <Link
               to="/login"
               className="text-sm font-medium text-[#a1a1aa] hover:text-white transition-colors"
@@ -131,12 +156,16 @@ export const LandingPage: React.FC = () => {
             Start Exploring Code
             <Sparkles className="w-4 h-4" />
           </Link>
-          <Link
-            to="/login"
-            className="border border-[#27272a] bg-[#111113] hover:bg-[#18181b] text-white font-medium px-6 py-3 rounded-lg transition-all cursor-pointer"
+          <button
+            type="button"
+            id="hero-view-demo-btn"
+            data-testid="hero-view-demo-btn"
+            onClick={() => setIsDemoOpen(true)}
+            className="border border-[#27272a] bg-[#111113] hover:bg-[#18181b] hover:border-emerald-500/40 text-white font-medium px-6 py-3 rounded-lg transition-all cursor-pointer flex items-center gap-2.5 group shadow-sm"
           >
-            Live Demo
-          </Link>
+            <Play className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform fill-emerald-400/20" />
+            <span>View Demo</span>
+          </button>
         </motion.div>
 
         {/* Illustrative Product Preview - TaskFlow Sample */}
@@ -156,8 +185,20 @@ export const LandingPage: React.FC = () => {
                 TaskFlow / backend/app/auth/security.py
               </span>
             </div>
-            <div className="text-xs text-[#a1a1aa] bg-[#27272a] px-2 py-0.5 rounded font-mono">
-              Hybrid + Rerank
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                id="preview-watch-demo-btn"
+                data-testid="preview-watch-demo-btn"
+                onClick={() => setIsDemoOpen(true)}
+                className="hidden sm:flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 rounded font-medium transition-colors cursor-pointer"
+              >
+                <Play className="size-3 fill-emerald-400/30" />
+                Watch Demo
+              </button>
+              <div className="text-xs text-[#a1a1aa] bg-[#27272a] px-2 py-0.5 rounded font-mono">
+                Hybrid + Rerank
+              </div>
             </div>
           </div>
 
@@ -433,6 +474,96 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
       </motion.footer>
+
+      {/* Product Demo Video Modal Dialog */}
+      <AnimatePresence>
+        {isDemoOpen && (
+          <motion.div
+            id="demo-video-modal"
+            data-testid="demo-video-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="RepoGPT Product Demo Video"
+            className="fixed inset-0 z-[200] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setIsDemoOpen(false);
+              }
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-5xl rounded-2xl border border-[#27272a] bg-[#0c0c0e] shadow-2xl shadow-black overflow-hidden flex flex-col"
+            >
+              {/* Modal Header */}
+              <div className="h-14 border-b border-[#27272a] bg-[#111113] px-5 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="font-semibold text-sm text-white">
+                    RepoGPT Product Walkthrough &amp; Demo
+                  </span>
+                  <span className="hidden sm:inline text-xs text-[#71717a] font-mono border-l border-[#27272a] pl-2.5">
+                    Feature Overview Video
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  id="close-demo-modal-btn"
+                  data-testid="close-demo-modal-btn"
+                  onClick={() => setIsDemoOpen(false)}
+                  className="p-1.5 rounded-lg text-[#a1a1aa] hover:text-white hover:bg-[#1f1f23] transition-colors cursor-pointer"
+                  aria-label="Close demo video"
+                >
+                  <X className="size-5" />
+                </button>
+              </div>
+
+              {/* Video Player */}
+              <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
+                <video
+                  id="demo-video-player"
+                  data-testid="demo-video-player"
+                  src="/demo.mp4"
+                  controls
+                  autoPlay
+                  playsInline
+                  className="w-full h-full object-contain"
+                >
+                  Your browser does not support HTML5 video.
+                </video>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="px-5 py-3 border-t border-[#27272a] bg-[#0c0c0e] flex items-center justify-between text-xs text-[#a1a1aa]">
+                <span className="text-[#71717a]">
+                  Press{" "}
+                  <kbd className="font-mono bg-[#18181b] border border-[#27272a] px-1.5 py-0.5 rounded text-[10px] text-[#a1a1aa]">
+                    ESC
+                  </kbd>{" "}
+                  or click outside to close
+                </span>
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/register"
+                    onClick={() => setIsDemoOpen(false)}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3.5 py-1.5 rounded-md transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+                  >
+                    Get Started Free
+                    <Sparkles className="size-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
