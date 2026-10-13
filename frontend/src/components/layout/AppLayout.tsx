@@ -95,23 +95,23 @@ export const AppLayout: React.FC = () => {
     : [];
 
   return (
-    <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex font-sans antialiased">
+    <div className="min-h-dvh bg-zinc-50 text-zinc-900 flex font-sans antialiased">
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex w-64 border-r border-[#27272a] bg-[#0c0c0e] flex-col justify-between shrink-0">
+      <aside className="hidden md:flex w-64 border-r border-zinc-200 bg-white flex-col justify-between shrink-0 shadow-xs">
         <div>
           {/* Brand Logo Header */}
-          <div className="h-20 border-b border-[#27272a] px-5 flex items-center justify-between">
+          <div className="h-20 border-b border-zinc-200 px-5 flex items-center justify-between">
             <Link to="/app" className="flex items-center gap-3.5 group">
               <img
                 src="/logo-icon.png"
                 alt="RepoGPT Logo"
-                className="size-12 object-contain drop-shadow-md transition-transform group-hover:scale-105 shrink-0"
+                className="size-12 object-contain drop-shadow-sm transition-transform group-hover:scale-105 shrink-0"
               />
               <div>
-                <span className="font-bold text-lg tracking-tight text-white block leading-tight">
+                <span className="font-bold text-lg tracking-tight text-zinc-950 block leading-tight">
                   RepoGPT
                 </span>
-                <span className="text-[11px] text-[#71717a] font-mono block">Code Intelligence</span>
+                <span className="text-[11px] text-zinc-500 font-mono block">Code Intelligence</span>
               </div>
             </Link>
           </div>
@@ -131,11 +131,11 @@ export const AppLayout: React.FC = () => {
                   to={item.path}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-[#18181b] text-white border border-[#27272a] shadow-xs"
-                      : "text-[#a1a1aa] hover:bg-[#141417] hover:text-white"
+                      ? "bg-emerald-50 text-emerald-900 border border-emerald-200/80 shadow-xs font-semibold"
+                      : "text-zinc-600 hover:bg-zinc-100/70 hover:text-zinc-900"
                   }`}
                 >
-                  <Icon className={`size-4 ${isActive ? "text-[#818cf8]" : "text-[#71717a]"}`} />
+                  <Icon className={`size-4 ${isActive ? "text-emerald-600" : "text-zinc-400"}`} />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -144,17 +144,17 @@ export const AppLayout: React.FC = () => {
         </div>
 
         {/* User Profile & Sign Out Footer */}
-        <div className="p-3 border-t border-[#27272a] bg-[#09090b]">
-          <div className="flex items-center justify-between p-2 rounded-lg bg-[#111113] border border-[#27272a]">
+        <div className="p-3 border-t border-zinc-200 bg-zinc-50/50">
+          <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-zinc-200 shadow-xs">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="size-7 rounded-full bg-[#27272a] border border-[#3f3f46] flex items-center justify-center text-xs font-semibold text-white shrink-0">
+              <div className="size-7 rounded-full bg-zinc-100 border border-zinc-300 flex items-center justify-center text-xs font-semibold text-zinc-700 shrink-0">
                 {user?.name ? user.name[0].toUpperCase() : "U"}
               </div>
               <div className="truncate">
-                <p className="text-xs font-medium text-white truncate leading-tight">
+                <p className="text-xs font-medium text-zinc-900 truncate leading-tight">
                   {user?.name || "Developer"}
                 </p>
-                <p className="text-[10px] text-[#71717a] truncate font-mono">
+                <p className="text-[10px] text-zinc-500 truncate font-mono">
                   {user?.email || "user@repogpt.local"}
                 </p>
               </div>
@@ -163,7 +163,7 @@ export const AppLayout: React.FC = () => {
               onClick={handleLogout}
               title="Sign Out"
               aria-label="Sign out"
-              className="p-1.5 rounded-md text-[#71717a] hover:text-white hover:bg-[#27272a] transition-colors cursor-pointer"
+              className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer"
             >
               <LogOut className="size-3.5" />
             </button>
@@ -174,30 +174,30 @@ export const AppLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="h-16 border-b border-[#27272a] bg-[#0c0c0e]/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-40">
+        <header className="h-16 border-b border-zinc-200 bg-white/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center gap-4 min-w-0">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle mobile navigation"
-              className="md:hidden p-2 rounded-lg text-[#a1a1aa] hover:text-white hover:bg-[#27272a]"
+              className="md:hidden p-2 rounded-lg text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100"
             >
               {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
 
             {/* Mobile Brand Logo */}
             <Link to="/app" className="md:hidden flex items-center gap-2.5 shrink-0">
-              <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-8 object-contain drop-shadow" />
-              <span className="font-bold text-base text-white">RepoGPT</span>
+              <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-8 object-contain drop-shadow-sm" />
+              <span className="font-bold text-base text-zinc-950">RepoGPT</span>
             </Link>
 
             {/* Breadcrumb / Context */}
             {currentRepoId && (
               <div className="flex items-center gap-2 text-xs shrink-0">
-                <Link to="/app" className="text-[#71717a] hover:text-white transition-colors">
+                <Link to="/app" className="text-zinc-500 hover:text-zinc-900 transition-colors">
                   Repositories
                 </Link>
-                <ChevronRight className="size-3.5 text-[#52525b]" />
-                <span className="font-mono text-white font-medium truncate max-w-[150px] sm:max-w-none">
+                <ChevronRight className="size-3.5 text-zinc-400" />
+                <span className="font-mono text-zinc-950 font-medium truncate max-w-[150px] sm:max-w-none">
                   {currentRepoId}
                 </span>
               </div>
@@ -208,11 +208,11 @@ export const AppLayout: React.FC = () => {
               type="button"
               onClick={() => setCommandPaletteOpen(true)}
               aria-label="Search repository, symbol, file (Ctrl K)"
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#27272a] bg-[#111113] hover:bg-[#18181b] hover:border-[#3f3f46] text-xs text-[#71717a] hover:text-[#e4e4e7] transition-all cursor-pointer shadow-sm group"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 hover:border-zinc-300 text-xs text-zinc-500 hover:text-zinc-900 transition-all cursor-pointer shadow-xs group"
             >
-              <Search className="size-3.5 text-[#71717a] group-hover:text-emerald-400 transition-colors" />
+              <Search className="size-3.5 text-zinc-400 group-hover:text-emerald-600 transition-colors" />
               <span>Search repository, symbol, file...</span>
-              <kbd className="ml-2 font-mono bg-[#18181b] group-hover:bg-[#27272a] border border-[#27272a] group-hover:border-[#3f3f46] px-1.5 py-0.5 rounded text-[10px] text-[#a1a1aa] transition-colors">
+              <kbd className="ml-2 font-mono bg-white group-hover:bg-zinc-50 border border-zinc-200 px-1.5 py-0.5 rounded text-[10px] text-zinc-600 shadow-xs transition-colors">
                 Ctrl K
               </kbd>
             </button>
@@ -224,32 +224,32 @@ export const AppLayout: React.FC = () => {
               type="button"
               onClick={() => setCommandPaletteOpen(true)}
               aria-label="Search repository, symbol, file"
-              className="sm:hidden p-2 rounded-lg border border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:text-white hover:border-[#3f3f46] transition-colors cursor-pointer"
+              className="sm:hidden p-2 rounded-lg border border-zinc-200 bg-zinc-50 text-zinc-600 hover:text-zinc-950 hover:border-zinc-300 transition-colors cursor-pointer"
             >
               <Search className="size-4" />
             </button>
 
             {/* Engine Status Indicator Pill */}
-            <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#18181b] border border-[#27272a] text-xs text-[#a1a1aa]">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
-              <span className="font-mono text-[11px]">Verified AST &amp; BM25</span>
+            <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-xs text-zinc-700">
+              <span className="size-1.5 rounded-full bg-emerald-600" />
+              <span className="font-mono text-[11px] font-medium">Verified AST &amp; BM25</span>
             </div>
 
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg border border-[#27272a] bg-[#111113] text-[#a1a1aa] hover:text-white hover:border-[#3f3f46] transition-colors cursor-pointer"
+              className="p-2 rounded-lg border border-zinc-200 bg-zinc-50 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 hover:border-zinc-300 transition-colors cursor-pointer shadow-xs"
               title="Toggle Theme"
               aria-label="Toggle color theme"
             >
-              {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+              {theme === "dark" ? <Sun className="size-4 text-amber-500" /> : <Moon className="size-4 text-zinc-700" />}
             </button>
           </div>
         </header>
 
         {/* Repository Context Sub-Navigation Tabs */}
         {currentRepoId && (
-          <div className="border-b border-[#27272a] bg-[#111113]/50 px-6 overflow-x-auto scrollbar-none flex gap-1">
+          <div className="border-b border-zinc-200 bg-white px-6 overflow-x-auto scrollbar-none flex gap-1">
             {repoNavTabs.map((tab) => {
               const TabIcon = tab.icon;
               const isActive =
@@ -260,11 +260,11 @@ export const AppLayout: React.FC = () => {
                   to={tab.path}
                   className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 transition-all whitespace-nowrap ${
                     isActive
-                      ? "border-emerald-500 text-white bg-emerald-500/10"
-                      : "border-transparent text-[#a1a1aa] hover:text-white hover:border-[#3f3f46]"
+                      ? "border-emerald-600 text-emerald-800 bg-emerald-50/70 font-semibold"
+                      : "border-transparent text-zinc-600 hover:text-zinc-950 hover:border-zinc-300"
                   }`}
                 >
-                  <TabIcon className={`size-3.5 ${isActive ? "text-emerald-400" : "text-[#71717a]"}`} />
+                  <TabIcon className={`size-3.5 ${isActive ? "text-emerald-600" : "text-zinc-400"}`} />
                   <span>{tab.label}</span>
                 </Link>
               );
@@ -274,12 +274,12 @@ export const AppLayout: React.FC = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-b border-[#27272a] bg-[#111113] p-4 space-y-3">
-            <div className="flex items-center gap-3 px-2 py-1 border-b border-[#27272a] pb-3 mb-2">
-              <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-10 object-contain drop-shadow" />
+          <div className="md:hidden border-b border-zinc-200 bg-white p-4 space-y-3 shadow-md">
+            <div className="flex items-center gap-3 px-2 py-1 border-b border-zinc-200 pb-3 mb-2">
+              <img src="/logo-icon.png" alt="RepoGPT Logo" className="size-10 object-contain drop-shadow-sm" />
               <div>
-                <span className="font-bold text-base text-white block leading-tight">RepoGPT</span>
-                <span className="text-[11px] text-[#71717a] font-mono block">Code Intelligence</span>
+                <span className="font-bold text-base text-zinc-950 block leading-tight">RepoGPT</span>
+                <span className="text-[11px] text-zinc-500 font-mono block">Code Intelligence</span>
               </div>
             </div>
             <nav className="space-y-1">
@@ -288,7 +288,7 @@ export const AppLayout: React.FC = () => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#a1a1aa] hover:bg-[#18181b] hover:text-white"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
                 >
                   <item.icon className="w-4 h-4" />
                   <span>{item.label}</span>

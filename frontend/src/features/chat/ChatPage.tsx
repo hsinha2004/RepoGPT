@@ -119,7 +119,7 @@ export const chatMarkdownComponents = {
   code({ className: _className, children, ...props }: any) {
     return (
       <code
-        className="rounded bg-[#18181b] px-1 py-0.5 font-mono text-[11px] text-[#e4e4e7]"
+        className="rounded bg-zinc-100 border border-zinc-200 px-1 py-0.5 font-mono text-[11px] text-zinc-800"
         {...props}
       >
         {children}
@@ -142,7 +142,7 @@ export const chatMarkdownComponents = {
         href={href}
         target={isExternal ? "_blank" : undefined}
         rel={isExternal ? "noopener noreferrer nofollow" : undefined}
-        className="text-emerald-400 underline hover:text-emerald-300"
+        className="text-emerald-600 underline font-medium hover:text-emerald-700"
         {...props}
       >
         {children}
@@ -468,21 +468,21 @@ export const ChatPage: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-1 min-h-0 w-full overflow-hidden bg-[#09090b] text-[#fafafa]">
+    <div className="flex flex-1 min-h-0 w-full overflow-hidden bg-white text-zinc-900">
       {/* ======================================================== */}
       {/* 1. LEFT PANE: CONVERSATION LIST (Sidebar)              */}
       {/* ======================================================== */}
-      <aside className="flex w-72 flex-col border-r border-[#27272a] bg-[#111113]">
+      <aside className="flex w-72 flex-col border-r border-zinc-200 bg-zinc-50">
         {/* Header & New Chat button */}
-        <div className="flex flex-col gap-3 p-3 border-b border-[#27272a]">
+        <div className="flex flex-col gap-3 p-3 border-b border-zinc-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs font-semibold uppercase text-[#a1a1aa]">
+            <h2 className="text-xs font-semibold uppercase text-zinc-500 tracking-wider">
               Conversations
             </h2>
             <button
               onClick={() => createConvMutation.mutate("New Conversation")}
               disabled={createConvMutation.isPending}
-              className="flex items-center gap-1.5 rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white transition-colors hover:bg-emerald-500 cursor-pointer"
+              className="flex items-center gap-1.5 rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white transition-colors hover:bg-emerald-700 cursor-pointer shadow-xs"
             >
               <Plus className="size-3.5" />
               New Chat
@@ -491,13 +491,13 @@ export const ChatPage: React.FC = () => {
 
           {/* Search bar */}
           <div className="relative">
-            <Search className="absolute left-2.5 top-2 size-3.5 text-[#71717a]" />
+            <Search className="absolute left-2.5 top-2 size-3.5 text-zinc-400" />
             <input
               type="text"
               placeholder="Search conversations..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              className="w-full rounded-md border border-[#27272a] bg-[#18181b] py-1.5 pl-8 pr-3 text-xs text-[#fafafa] placeholder-[#71717a] focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-md border border-zinc-200 bg-white py-1.5 pl-8 pr-3 text-xs text-zinc-900 placeholder-zinc-400 focus:border-emerald-500 focus:outline-none shadow-xs"
             />
           </div>
         </div>
@@ -505,9 +505,9 @@ export const ChatPage: React.FC = () => {
         {/* Scrollable List */}
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
           {isLoadingConvs ? (
-            <div className="p-4 text-center text-xs text-[#71717a]">Loading chats...</div>
+            <div className="p-4 text-center text-xs text-zinc-400">Loading chats...</div>
           ) : filteredConversations.length === 0 ? (
-            <div className="p-6 text-center text-xs text-[#71717a]">
+            <div className="p-6 text-center text-xs text-zinc-400">
               No conversations found. Click "New Chat" to begin!
             </div>
           ) : (
@@ -519,14 +519,14 @@ export const ChatPage: React.FC = () => {
                   onClick={() => navigate(`/app/repos/${repoId}/chat/${c.id}`)}
                   className={`group relative flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs transition-all ${
                     isActive
-                      ? "bg-[#27272a] font-medium text-[#fafafa] shadow-sm"
-                      : "text-[#a1a1aa] hover:bg-[#18181b] hover:text-[#fafafa]"
+                      ? "bg-white font-medium text-zinc-900 border border-zinc-200 shadow-xs"
+                      : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
                   }`}
                 >
                   <div className="flex items-center gap-2 overflow-hidden pr-6">
                     <MessageSquare
                       className={`size-3.5 shrink-0 ${
-                        isActive ? "text-emerald-400" : "text-[#71717a]"
+                        isActive ? "text-emerald-600" : "text-zinc-400"
                       }`}
                     />
                     {editingConvId === c.id ? (
@@ -543,7 +543,7 @@ export const ChatPage: React.FC = () => {
                         }}
                         autoFocus
                         onClick={(e) => e.stopPropagation()}
-                        className="w-full rounded bg-[#09090b] px-1.5 py-0.5 text-xs text-white border border-emerald-500 outline-none"
+                        className="w-full rounded bg-white px-1.5 py-0.5 text-xs text-zinc-900 border border-emerald-500 outline-none"
                       />
                     ) : (
                       <span className="truncate">{c.title}</span>
@@ -560,7 +560,7 @@ export const ChatPage: React.FC = () => {
                       }}
                       title="Rename"
                       aria-label="Rename conversation"
-                      className="rounded p-1 text-[#71717a] hover:bg-[#27272a] hover:text-white"
+                      className="rounded p-1 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-900"
                     >
                       <Edit2 className="size-3" />
                     </button>
@@ -571,7 +571,7 @@ export const ChatPage: React.FC = () => {
                       }}
                       title="Export Markdown"
                       aria-label="Export conversation as Markdown"
-                      className="rounded p-1 text-[#71717a] hover:bg-[#27272a] hover:text-white"
+                      className="rounded p-1 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-900"
                     >
                       <Download className="size-3" />
                     </button>
@@ -584,7 +584,7 @@ export const ChatPage: React.FC = () => {
                       }}
                       title="Delete"
                       aria-label="Delete conversation"
-                      className="rounded p-1 text-[#71717a] hover:bg-[#27272a] hover:text-[#ef4444]"
+                      className="rounded p-1 text-zinc-400 hover:bg-zinc-200 hover:text-rose-600"
                     >
                       <Trash2 className="size-3" />
                     </button>
@@ -599,14 +599,14 @@ export const ChatPage: React.FC = () => {
       {/* ======================================================== */}
       {/* 2. MIDDLE PANE: MESSAGE THREAD & COMPOSER               */}
       {/* ======================================================== */}
-      <main className="flex flex-1 flex-col overflow-hidden bg-[#09090b]">
+      <main className="flex flex-1 flex-col overflow-hidden bg-zinc-50/50">
         {/* Top Header Bar */}
-        <header className="flex h-12 items-center justify-between border-b border-[#27272a] px-4">
+        <header className="flex h-12 items-center justify-between border-b border-zinc-200 bg-white px-4">
           <div className="flex items-center gap-2 overflow-hidden">
-            <span className="text-xs font-semibold text-[#fafafa] truncate">
+            <span className="text-xs font-semibold text-zinc-900 truncate">
               {activeConvDetail?.conversation?.title || "RepoGPT Assistant"}
             </span>
-            <span className="rounded bg-[#27272a] px-1.5 py-0.5 text-[10px] text-[#a1a1aa]">
+            <span className="rounded bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 text-[10px] text-zinc-600 font-medium">
               <span className="tabular-nums">{messages.length} messages</span>
             </span>
           </div>
@@ -614,11 +614,11 @@ export const ChatPage: React.FC = () => {
           <div className="flex items-center gap-2">
             {/* Strategy selector dropdown */}
             <div className="flex items-center gap-1.5">
-              <SlidersHorizontal className="size-3.5 text-[#a1a1aa]" />
+              <SlidersHorizontal className="size-3.5 text-zinc-500" />
               <select
                 value={selectedStrategy}
                 onChange={(e) => setSelectedStrategy(e.target.value as StrategyOption)}
-                className="rounded-md border border-[#27272a] bg-[#18181b] px-2 py-1 text-xs text-[#fafafa] outline-none focus:border-emerald-500"
+                className="rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs text-zinc-800 outline-none focus:border-emerald-500 shadow-xs cursor-pointer"
               >
                 <option value="auto">Auto (Router)</option>
                 <option value="hybrid_rerank">Hybrid + Rerank</option>
@@ -632,10 +632,10 @@ export const ChatPage: React.FC = () => {
             <button
               onClick={() => setIsEvidenceOpen(!isEvidenceOpen)}
               title={isEvidenceOpen ? "Hide Evidence Panel" : "Show Evidence Panel"}
-              className={`flex items-center gap-1 rounded-md border border-[#27272a] px-2.5 py-1 text-xs transition-colors cursor-pointer ${
+              className={`flex items-center gap-1 rounded-md border border-zinc-200 px-2.5 py-1 text-xs transition-colors cursor-pointer shadow-xs ${
                 isEvidenceOpen
-                  ? "bg-[#27272a] text-[#fafafa]"
-                  : "bg-[#18181b] text-[#a1a1aa] hover:bg-[#27272a] hover:text-[#fafafa]"
+                  ? "bg-zinc-100 text-zinc-900 font-medium"
+                  : "bg-white text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
               }`}
             >
               <Layers className="size-3.5" />
@@ -647,25 +647,25 @@ export const ChatPage: React.FC = () => {
         {/* Message Thread Body */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
           {isLoadingMessages ? (
-            <div className="flex h-full items-center justify-center text-xs text-[#71717a]">
+            <div className="flex h-full items-center justify-center text-xs text-zinc-400">
               Loading messages...
             </div>
           ) : messages.length === 0 && !isStreaming ? (
             /* Empty State with Suggested Questions */
             <div className="flex h-full flex-col items-center justify-center text-center p-6 max-w-xl mx-auto">
-              <div className="mb-4 rounded-full bg-[#18181b] p-3 text-emerald-400 ring-1 ring-[#27272a]">
+              <div className="mb-4 rounded-full bg-emerald-50 p-3 text-emerald-600 ring-1 ring-emerald-200">
                 <Sparkles className="size-6" />
               </div>
-              <h3 className="text-base font-semibold text-[#fafafa] text-balance">
+              <h3 className="text-base font-semibold text-zinc-900 text-balance">
                 Ask RepoGPT about this Codebase
               </h3>
-              <p className="mt-1.5 text-xs text-[#a1a1aa] leading-relaxed text-pretty">
+              <p className="mt-1.5 text-xs text-zinc-600 leading-relaxed text-pretty">
                 RepoGPT uses an agentic RAG workflow with AST-aware code chunking, hybrid retrieval,
                 and verifiable inline citations.
               </p>
 
               <div className="mt-6 w-full space-y-2">
-                <span className="text-[11px] font-medium text-[#71717a] uppercase">
+                <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
                   Suggested Questions
                 </span>
                 <div className="grid grid-cols-1 gap-2 pt-1">
@@ -673,10 +673,10 @@ export const ChatPage: React.FC = () => {
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(q)}
-                      className="flex items-center justify-between rounded-lg border border-[#27272a] bg-[#111113] p-2.5 text-left text-xs text-[#fafafa] transition-all hover:border-emerald-500 hover:bg-[#18181b] cursor-pointer"
+                      className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white p-2.5 text-left text-xs text-zinc-800 transition-all hover:border-emerald-400 hover:bg-emerald-50/30 shadow-xs cursor-pointer"
                     >
                       <span>{q}</span>
-                      <ChevronRight className="size-3.5 text-[#71717a]" />
+                      <ChevronRight className="size-3.5 text-zinc-400" />
                     </button>
                   ))}
                 </div>
@@ -695,12 +695,12 @@ export const ChatPage: React.FC = () => {
                   }`}
                 >
                   {/* Sender Header */}
-                  <div className="flex items-center gap-2 text-[11px] text-[#71717a]">
+                  <div className="flex items-center gap-2 text-[11px] text-zinc-500">
                     <span>{isAssistant ? "RepoGPT" : "You"}</span>
                     <span>•</span>
                     <span className="tabular-nums">{new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
                     {isAssistant && m.cached && (
-                      <span className="rounded bg-[#1e293b] px-1.5 py-0.2 text-[10px] text-[#38bdf8]">
+                      <span className="rounded bg-sky-50 border border-sky-200 px-1.5 py-0.2 text-[10px] text-sky-700 font-medium">
                         Cached
                       </span>
                     )}
@@ -710,20 +710,20 @@ export const ChatPage: React.FC = () => {
                   <div
                     className={`max-w-2xl rounded-xl px-4 py-3 text-xs leading-relaxed ${
                       isAssistant
-                        ? "border border-[#27272a] bg-[#111113] text-[#fafafa] shadow-sm"
-                        : "bg-emerald-600 text-white"
+                        ? "border border-zinc-200 bg-white text-zinc-800 shadow-xs"
+                        : "bg-emerald-600 text-white shadow-xs"
                     }`}
                   >
                     {/* Metadata Header for Assistant */}
                     {isAssistant && (
-                      <div className="mb-2 flex flex-wrap items-center gap-2 border-b border-[#27272a] pb-2 text-[10px]">
+                      <div className="mb-2 flex flex-wrap items-center gap-2 border-b border-zinc-100 pb-2 text-[10px]">
                         {/* Route Intent Badge */}
                         {m.route && (
                           <span
                             title={m.route.reason}
-                            className="flex items-center gap-1 rounded bg-[#27272a] px-2 py-0.5 font-mono text-[#a1a1aa]"
+                            className="flex items-center gap-1 rounded bg-zinc-100 border border-zinc-200 px-2 py-0.5 font-mono text-zinc-700"
                           >
-                            <Compass className="size-3 text-emerald-400" />
+                            <Compass className="size-3 text-emerald-600" />
                             {m.route.intent}
                           </span>
                         )}
@@ -732,14 +732,14 @@ export const ChatPage: React.FC = () => {
                         {m.confidence && (
                           <span
                             title={`Relevance: ${(m.confidence.factors.r * 100).toFixed(0)}% | Validity: ${(m.confidence.factors.c * 100).toFixed(0)}%`}
-                            className={`flex items-center gap-1 rounded px-2 py-0.5 font-semibold ${
+                            className={`flex items-center gap-1 rounded px-2 py-0.5 font-semibold border ${
                               m.confidence.label === "High"
-                                ? "bg-[#14532d]/40 text-[#22c55e]"
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                                 : m.confidence.label === "Medium"
-                                ? "bg-[#78350f]/40 text-[#f59e0b]"
+                                ? "bg-amber-50 text-amber-700 border-amber-200"
                                 : m.confidence.label === "Low"
-                                ? "bg-[#7f1d1d]/40 text-[#ef4444]"
-                                : "bg-[#27272a] text-[#a1a1aa]"
+                                ? "bg-rose-50 text-rose-700 border-rose-200"
+                                : "bg-zinc-100 text-zinc-600 border-zinc-200"
                             }`}
                           >
                             <ShieldAlert className="h-3 w-3" />
@@ -751,7 +751,7 @@ export const ChatPage: React.FC = () => {
                         {(!m.citations || m.citations.length === 0) &&
                           m.route?.intent !== "general" &&
                           m.route?.intent !== "out_of_scope" && (
-                            <span className="flex items-center gap-1 text-[#f59e0b]">
+                            <span className="flex items-center gap-1 text-amber-600 font-medium">
                               <AlertTriangle className="h-3 w-3" />
                               No supporting citations
                             </span>
@@ -760,7 +760,7 @@ export const ChatPage: React.FC = () => {
                     )}
 
                     {/* Markdown Content */}
-                    <div className="prose prose-invert prose-xs max-w-none">
+                    <div className="prose prose-zinc prose-xs max-w-none prose-headings:text-zinc-900 prose-p:text-zinc-800 prose-strong:text-zinc-900">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         rehypePlugins={[rehypeSanitize]}
@@ -772,7 +772,7 @@ export const ChatPage: React.FC = () => {
 
                     {/* Assistant Action Bar */}
                     {isAssistant && (
-                      <div className="mt-3 flex items-center justify-between border-t border-[#27272a] pt-2 text-[#71717a]">
+                      <div className="mt-3 flex items-center justify-between border-t border-zinc-100 pt-2 text-zinc-400">
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => {
@@ -781,7 +781,7 @@ export const ChatPage: React.FC = () => {
                             }}
                             title="Copy Answer"
                             aria-label="Copy answer to clipboard"
-                            className="rounded p-1 hover:bg-[#18181b] hover:text-white"
+                            className="rounded p-1 hover:bg-zinc-100 hover:text-zinc-800 cursor-pointer"
                           >
                             <Copy className="size-3" />
                           </button>
@@ -789,7 +789,7 @@ export const ChatPage: React.FC = () => {
                             onClick={() => handleSendMessage(messages[messages.indexOf(m) - 1]?.content || "")}
                             title="Regenerate"
                             aria-label="Regenerate answer"
-                            className="rounded p-1 hover:bg-[#18181b] hover:text-white"
+                            className="rounded p-1 hover:bg-zinc-100 hover:text-zinc-800 cursor-pointer"
                           >
                             <RotateCw className="size-3" />
                           </button>
@@ -804,8 +804,8 @@ export const ChatPage: React.FC = () => {
                               feedbackMutation.mutate({ msgId: m.id, rating: "up" });
                             }}
                             aria-label="Mark answer as helpful"
-                            className={`rounded p-1 hover:bg-[#18181b] ${
-                              m.feedback?.rating === "up" ? "text-[#22c55e]" : "hover:text-white"
+                            className={`rounded p-1 hover:bg-zinc-100 cursor-pointer ${
+                              m.feedback?.rating === "up" ? "text-emerald-600" : "hover:text-zinc-800"
                             }`}
                           >
                             <ThumbsUp className="size-3" />
@@ -816,8 +816,8 @@ export const ChatPage: React.FC = () => {
                               setFeedbackRating("down");
                             }}
                             aria-label="Mark answer as unhelpful"
-                            className={`rounded p-1 hover:bg-[#18181b] ${
-                              m.feedback?.rating === "down" ? "text-[#ef4444]" : "hover:text-white"
+                            className={`rounded p-1 hover:bg-zinc-100 cursor-pointer ${
+                              m.feedback?.rating === "down" ? "text-rose-600" : "hover:text-zinc-800"
                             }`}
                           >
                             <ThumbsDown className="size-3" />
@@ -834,27 +834,27 @@ export const ChatPage: React.FC = () => {
           {/* Active Streaming Message Bubble */}
           {isStreaming && (
             <div className="flex flex-col items-start gap-2">
-              <div className="flex items-center gap-2 text-[11px] text-[#71717a]">
+              <div className="flex items-center gap-2 text-[11px] text-zinc-500">
                 <span>RepoGPT</span>
                 <span>•</span>
-                <span className="flex items-center gap-1 text-emerald-400 animate-pulse">
+                <span className="flex items-center gap-1 text-emerald-600 font-medium animate-pulse">
                   <Activity className="size-3" />
                   {streamingStatus || "Processing..."}
                 </span>
               </div>
 
-              <div className="max-w-2xl rounded-xl border border-[#27272a] bg-[#111113] px-4 py-3 text-xs leading-relaxed text-[#fafafa] shadow-sm">
+              <div className="max-w-2xl rounded-xl border border-zinc-200 bg-white px-4 py-3 text-xs leading-relaxed text-zinc-800 shadow-xs">
                 {streamingRoute && (
-                  <div className="mb-2 flex items-center gap-2 border-b border-[#27272a] pb-2 text-[10px]">
-                    <span className="flex items-center gap-1 rounded bg-[#27272a] px-2 py-0.5 font-mono text-[#a1a1aa]">
-                      <Compass className="size-3 text-emerald-400" />
+                  <div className="mb-2 flex items-center gap-2 border-b border-zinc-100 pb-2 text-[10px]">
+                    <span className="flex items-center gap-1 rounded bg-zinc-100 border border-zinc-200 px-2 py-0.5 font-mono text-zinc-700">
+                      <Compass className="size-3 text-emerald-600" />
                       {streamingRoute.intent}
                     </span>
-                    <span className="text-[#71717a] truncate">{streamingRoute.reason}</span>
+                    <span className="text-zinc-500 truncate">{streamingRoute.reason}</span>
                   </div>
                 )}
 
-                <div className="prose prose-invert prose-xs max-w-none">
+                <div className="prose prose-zinc prose-xs max-w-none">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeSanitize]}
@@ -865,12 +865,12 @@ export const ChatPage: React.FC = () => {
                 </div>
 
                 {streamingCitations.length > 0 && (
-                  <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-[#27272a] pt-2">
-                    <span className="text-[10px] text-[#71717a]">Citations:</span>
+                  <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-zinc-100 pt-2">
+                    <span className="text-[10px] text-zinc-400">Citations:</span>
                     {streamingCitations.map((c: CitationUI) => (
                       <span
                         key={c.source_id}
-                        className="rounded bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10px] text-emerald-300"
+                        className="rounded bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 font-mono text-[10px] text-emerald-700"
                       >
                         [{c.source_id}] {c.path}:{c.start_line}-{c.end_line}
                       </span>
@@ -885,8 +885,8 @@ export const ChatPage: React.FC = () => {
         </div>
 
         {/* Composer Bar */}
-        <div className="border-t border-[#27272a] bg-[#111113] p-3">
-          <div className="relative flex flex-col rounded-xl border border-[#27272a] bg-[#18181b] focus-within:border-emerald-500 transition-all">
+        <div className="border-t border-zinc-200 bg-white p-3">
+          <div className="relative flex flex-col rounded-xl border border-zinc-200 bg-zinc-50 focus-within:bg-white focus-within:border-emerald-500 transition-all shadow-xs">
             <textarea
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
@@ -898,17 +898,17 @@ export const ChatPage: React.FC = () => {
               }}
               placeholder="Ask a question about this repository... (Enter to send, Shift+Enter for newline)"
               rows={2}
-              className="w-full resize-none bg-transparent p-3 text-xs text-[#fafafa] placeholder-[#71717a] focus:outline-none"
+              className="w-full resize-none bg-transparent p-3 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none"
             />
 
-            <div className="flex items-center justify-between border-t border-[#27272a]/60 px-3 py-2 text-[11px] text-[#71717a]">
+            <div className="flex items-center justify-between border-t border-zinc-200/60 px-3 py-2 text-[11px] text-zinc-500">
               <span>Strategy: {selectedStrategy}</span>
 
               <div className="flex items-center gap-2">
                 {isStreaming ? (
                   <button
                     onClick={handleStopStreaming}
-                    className="flex items-center gap-1.5 rounded-md bg-[#ef4444] px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-[#dc2626] cursor-pointer"
+                    className="flex items-center gap-1.5 rounded-md bg-rose-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-rose-700 cursor-pointer shadow-xs"
                   >
                     <Square className="size-3 fill-white" />
                     Stop
@@ -917,7 +917,7 @@ export const ChatPage: React.FC = () => {
                   <button
                     onClick={() => handleSendMessage()}
                     disabled={!inputMessage.trim()}
-                    className="flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-emerald-500 disabled:opacity-40 disabled:hover:bg-emerald-600 cursor-pointer"
+                    className="flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-40 disabled:hover:bg-emerald-600 cursor-pointer shadow-xs"
                   >
                     <Send className="size-3" />
                     Send
@@ -933,36 +933,36 @@ export const ChatPage: React.FC = () => {
       {/* 3. RIGHT PANE: EVIDENCE PANEL (Sources, Trace, Confidence)*/}
       {/* ======================================================== */}
       {isEvidenceOpen && (
-        <aside className="flex w-96 flex-col border-l border-[#27272a] bg-[#111113]">
+        <aside className="flex w-96 flex-col border-l border-zinc-200 bg-white">
           {/* Header & Tabs */}
-          <div className="flex items-center justify-between border-b border-[#27272a] p-3">
-            <div className="flex items-center gap-1 rounded-lg bg-[#18181b] p-0.5 text-xs">
+          <div className="flex items-center justify-between border-b border-zinc-200 p-3">
+            <div className="flex items-center gap-1 rounded-lg bg-zinc-100 p-0.5 text-xs">
               <button
                 onClick={() => setEvidenceTab("sources")}
-                className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
+                className={`rounded-md px-2.5 py-1 font-medium transition-colors cursor-pointer ${
                   evidenceTab === "sources"
-                    ? "bg-[#27272a] text-[#fafafa]"
-                    : "text-[#a1a1aa] hover:text-[#fafafa]"
+                    ? "bg-white text-zinc-900 shadow-xs"
+                    : "text-zinc-600 hover:text-zinc-900"
                 }`}
               >
                 Sources ({displayedSources.length})
               </button>
               <button
                 onClick={() => setEvidenceTab("trace")}
-                className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
+                className={`rounded-md px-2.5 py-1 font-medium transition-colors cursor-pointer ${
                   evidenceTab === "trace"
-                    ? "bg-[#27272a] text-[#fafafa]"
-                    : "text-[#a1a1aa] hover:text-[#fafafa]"
+                    ? "bg-white text-zinc-900 shadow-xs"
+                    : "text-zinc-600 hover:text-zinc-900"
                 }`}
               >
                 Trace
               </button>
               <button
                 onClick={() => setEvidenceTab("confidence")}
-                className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
+                className={`rounded-md px-2.5 py-1 font-medium transition-colors cursor-pointer ${
                   evidenceTab === "confidence"
-                    ? "bg-[#27272a] text-[#fafafa]"
-                    : "text-[#a1a1aa] hover:text-[#fafafa]"
+                    ? "bg-white text-zinc-900 shadow-xs"
+                    : "text-zinc-600 hover:text-zinc-900"
                 }`}
               >
                 Confidence
@@ -971,7 +971,7 @@ export const ChatPage: React.FC = () => {
 
             <button
               onClick={() => setIsEvidenceOpen(false)}
-              className="rounded p-1 text-[#71717a] hover:bg-[#27272a] hover:text-white"
+              className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 cursor-pointer"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -983,41 +983,41 @@ export const ChatPage: React.FC = () => {
             {evidenceTab === "sources" && (
               <div className="space-y-3">
                 {displayedSources.length === 0 ? (
-                  <div className="p-6 text-center text-xs text-[#71717a]">
+                  <div className="p-6 text-center text-xs text-zinc-400">
                     No sources retrieved yet. Ask a question to view citations and evidence.
                   </div>
                 ) : (
                   displayedSources.map((s: SourceUI, idx: number) => (
                     <div
                       key={idx}
-                      className="rounded-lg border border-[#27272a] bg-[#18181b] p-2.5 text-xs space-y-2"
+                      className="rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 text-xs space-y-2 shadow-xs"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 font-mono text-[10px] font-bold text-emerald-300">
+                        <span className="rounded bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 font-mono text-[10px] font-bold text-emerald-700">
                           {s.id}
                         </span>
                         <Link
                           to={`/app/repos/${repoId}/explorer?path=${encodeURIComponent(
                             s.path
                           )}#L${s.start_line}-L${s.end_line}`}
-                          className="flex items-center gap-1 text-[11px] text-emerald-400 hover:underline"
+                          className="flex items-center gap-1 text-[11px] text-emerald-600 hover:underline font-medium"
                         >
                           Explorer <ExternalLink className="size-3" />
                         </Link>
                       </div>
 
-                      <div className="text-[11px] text-[#fafafa] font-mono break-all tabular-nums">
+                      <div className="text-[11px] text-zinc-900 font-mono break-all tabular-nums">
                         {s.path}:{s.start_line}-{s.end_line}
                       </div>
 
                       {s.symbol && (
-                        <div className="text-[10px] text-[#a1a1aa]">
-                          Symbol: <code className="text-[#e4e4e7]">{s.symbol}</code>
+                        <div className="text-[10px] text-zinc-500">
+                          Symbol: <code className="text-zinc-800 bg-white px-1 py-0.5 rounded border border-zinc-200">{s.symbol}</code>
                         </div>
                       )}
 
                       {/* Snippet box */}
-                      <pre className="max-h-28 overflow-y-auto rounded bg-[#09090b] p-2 font-mono text-[10px] text-[#a1a1aa] whitespace-pre-wrap">
+                      <pre className="max-h-28 overflow-y-auto rounded bg-white border border-zinc-200 p-2 font-mono text-[10px] text-zinc-700 whitespace-pre-wrap">
                         {s.snippet}
                       </pre>
                     </div>
@@ -1030,42 +1030,42 @@ export const ChatPage: React.FC = () => {
             {evidenceTab === "trace" && (
               <div className="space-y-4 text-xs">
                 {displayedRoute ? (
-                  <div className="rounded-lg border border-[#27272a] bg-[#18181b] p-3 space-y-2">
-                    <div className="text-[11px] font-semibold text-[#a1a1aa] uppercase">
+                  <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 space-y-2 shadow-xs">
+                    <div className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
                       Query Route Decision
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[#71717a]">Intent:</span>
-                      <span className="font-mono text-[#fafafa]">{displayedRoute.intent}</span>
+                      <span className="text-zinc-500">Intent:</span>
+                      <span className="font-mono text-zinc-900 font-medium">{displayedRoute.intent}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[#71717a]">Strategy:</span>
-                      <span className="font-mono text-[#fafafa]">{displayedRoute.strategy}</span>
+                      <span className="text-zinc-500">Strategy:</span>
+                      <span className="font-mono text-zinc-900 font-medium">{displayedRoute.strategy}</span>
                     </div>
-                    <div className="flex flex-col gap-1 pt-1 border-t border-[#27272a]">
-                      <span className="text-[#71717a]">Rationale:</span>
-                      <span className="text-[#a1a1aa] text-[11px] leading-relaxed">
+                    <div className="flex flex-col gap-1 pt-1 border-t border-zinc-200">
+                      <span className="text-zinc-500">Rationale:</span>
+                      <span className="text-zinc-700 text-[11px] leading-relaxed">
                         {displayedRoute.reason}
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <div className="p-6 text-center text-xs text-[#71717a]">
+                  <div className="p-6 text-center text-xs text-zinc-400">
                     No trace data available.
                   </div>
                 )}
 
                 {/* Timing Breakdown */}
                 {Object.keys(displayedTimings).length > 0 && (
-                  <div className="rounded-lg border border-[#27272a] bg-[#18181b] p-3 space-y-2">
-                    <div className="text-[11px] font-semibold text-[#a1a1aa] uppercase flex items-center gap-1.5">
+                  <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 space-y-2 shadow-xs">
+                    <div className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
                       <Clock className="size-3.5" />
                       Latency Breakdown
                     </div>
                     {Object.entries(displayedTimings).map(([stage, ms]) => (
                       <div key={stage} className="flex items-center justify-between text-[11px]">
-                        <span className="text-[#71717a] capitalize">{stage}:</span>
-                        <span className="font-mono text-[#fafafa] tabular-nums">{String(ms)} ms</span>
+                        <span className="text-zinc-500 capitalize">{stage}:</span>
+                        <span className="font-mono text-zinc-900 tabular-nums">{String(ms)} ms</span>
                       </div>
                     ))}
                   </div>
@@ -1077,24 +1077,24 @@ export const ChatPage: React.FC = () => {
             {evidenceTab === "confidence" && (
               <div className="space-y-4 text-xs">
                 {displayedConfidence ? (
-                  <div className="rounded-lg border border-[#27272a] bg-[#18181b] p-3 space-y-3">
+                  <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 space-y-3 shadow-xs">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold uppercase text-[#a1a1aa]">
+                      <span className="text-[11px] font-semibold uppercase text-zinc-500 tracking-wider">
                         Overall Score
                       </span>
-                      <span className="font-mono text-sm font-bold text-[#fafafa] tabular-nums">
+                      <span className="font-mono text-sm font-bold text-zinc-900 tabular-nums">
                         {(displayedConfidence.score * 100).toFixed(0)}%
                       </span>
                     </div>
 
                     {/* Factors Breakdown Progress Bars */}
-                    <div className="space-y-2 pt-2 border-t border-[#27272a]">
+                    <div className="space-y-2 pt-2 border-t border-zinc-200">
                       <div>
-                        <div className="flex justify-between text-[10px] text-[#a1a1aa] mb-1">
+                        <div className="flex justify-between text-[10px] text-zinc-600 mb-1">
                           <span>Retrieval Relevance (R - 35%)</span>
-                          <span className="tabular-nums">{(displayedConfidence.factors.r * 100).toFixed(0)}%</span>
+                          <span className="tabular-nums font-mono font-medium">{(displayedConfidence.factors.r * 100).toFixed(0)}%</span>
                         </div>
-                        <div className="h-1.5 w-full bg-[#27272a] rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-emerald-500"
                             style={{ width: `${displayedConfidence.factors.r * 100}%` }}
@@ -1103,26 +1103,26 @@ export const ChatPage: React.FC = () => {
                       </div>
 
                       <div>
-                        <div className="flex justify-between text-[10px] text-[#a1a1aa] mb-1">
+                        <div className="flex justify-between text-[10px] text-zinc-600 mb-1">
                           <span>Citation Validity (C - 20%)</span>
-                          <span className="tabular-nums">{(displayedConfidence.factors.c * 100).toFixed(0)}%</span>
+                          <span className="tabular-nums font-mono font-medium">{(displayedConfidence.factors.c * 100).toFixed(0)}%</span>
                         </div>
-                        <div className="h-1.5 w-full bg-[#27272a] rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-[#22c55e]"
+                            className="h-full bg-emerald-600"
                             style={{ width: `${displayedConfidence.factors.c * 100}%` }}
                           />
                         </div>
                       </div>
 
                       <div>
-                        <div className="flex justify-between text-[10px] text-[#a1a1aa] mb-1">
+                        <div className="flex justify-between text-[10px] text-zinc-600 mb-1">
                           <span>Citation Coverage (K - 15%)</span>
-                          <span className="tabular-nums">{(displayedConfidence.factors.k * 100).toFixed(0)}%</span>
+                          <span className="tabular-nums font-mono font-medium">{(displayedConfidence.factors.k * 100).toFixed(0)}%</span>
                         </div>
-                        <div className="h-1.5 w-full bg-[#27272a] rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-[#f59e0b]"
+                            className="h-full bg-amber-500"
                             style={{ width: `${displayedConfidence.factors.k * 100}%` }}
                           />
                         </div>
@@ -1130,13 +1130,13 @@ export const ChatPage: React.FC = () => {
 
                       {displayedConfidence.factors.g !== null && (
                         <div>
-                          <div className="flex justify-between text-[10px] text-[#a1a1aa] mb-1">
+                          <div className="flex justify-between text-[10px] text-zinc-600 mb-1">
                             <span>Grounding Verification (G - 30%)</span>
-                            <span className="tabular-nums">{(displayedConfidence.factors.g! * 100).toFixed(0)}%</span>
+                            <span className="tabular-nums font-mono font-medium">{(displayedConfidence.factors.g! * 100).toFixed(0)}%</span>
                           </div>
-                          <div className="h-1.5 w-full bg-[#27272a] rounded-full overflow-hidden">
+                          <div className="h-1.5 w-full bg-zinc-200 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-[#38bdf8]"
+                              className="h-full bg-sky-500"
                               style={{ width: `${displayedConfidence.factors.g! * 100}%` }}
                             />
                           </div>
@@ -1145,7 +1145,7 @@ export const ChatPage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="p-6 text-center text-xs text-[#71717a]">
+                  <div className="p-6 text-center text-xs text-zinc-400">
                     No confidence evaluation available.
                   </div>
                 )}
@@ -1157,10 +1157,10 @@ export const ChatPage: React.FC = () => {
 
       {/* Feedback Dialog Modal */}
       {feedbackMsgId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-sm rounded-xl border border-[#27272a] bg-[#111113] p-4 text-xs space-y-3">
-            <h4 className="font-semibold text-white">Provide Feedback</h4>
-            <p className="text-[#a1a1aa]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+          <div className="w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-4 text-xs space-y-3 shadow-xl">
+            <h4 className="font-semibold text-zinc-900">Provide Feedback</h4>
+            <p className="text-zinc-600">
               Help improve RepoGPT by sharing why this answer was {feedbackRating === "up" ? "helpful" : "unhelpful"}.
             </p>
 
@@ -1169,13 +1169,13 @@ export const ChatPage: React.FC = () => {
               onChange={(e) => setFeedbackComment(e.target.value)}
               placeholder="Optional comment..."
               rows={3}
-              className="w-full rounded-md border border-[#27272a] bg-[#18181b] p-2 text-xs text-white placeholder-[#71717a] focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-md border border-zinc-200 bg-zinc-50 p-2 text-xs text-zinc-900 placeholder-zinc-400 focus:border-emerald-500 focus:bg-white focus:outline-none"
             />
 
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setFeedbackMsgId(null)}
-                className="rounded px-3 py-1.5 text-xs text-[#a1a1aa] hover:bg-[#27272a] cursor-pointer"
+                className="rounded px-3 py-1.5 text-xs text-zinc-600 hover:bg-zinc-100 cursor-pointer"
               >
                 Cancel
               </button>
@@ -1187,7 +1187,7 @@ export const ChatPage: React.FC = () => {
                     comment: feedbackComment,
                   })
                 }
-                className="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-500 cursor-pointer"
+                className="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700 cursor-pointer shadow-xs"
               >
                 Submit Feedback
               </button>

@@ -124,19 +124,19 @@ export const IngestionStepper: React.FC<IngestionStepperProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-xl bg-[#18181b] border border-[#27272a] rounded-xl shadow-2xl p-6 text-white animate-in fade-in zoom-in-95 duration-150 space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="relative w-full max-w-xl bg-white border border-zinc-200 rounded-2xl shadow-2xl p-6 text-zinc-900 animate-in fade-in zoom-in-95 duration-150 space-y-6">
         <button
           onClick={onClose}
           aria-label="Close ingestion progress"
-          className="absolute right-4 top-4 text-[#71717a] hover:text-white transition-colors cursor-pointer"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 absolute right-4 top-4 transition-colors cursor-pointer"
         >
           <X className="size-5" />
         </button>
 
         <div>
-          <h2 className="text-xl font-bold text-balance">Repository Ingestion Progress</h2>
-          <p className="text-xs text-[#a1a1aa] mt-1 font-mono tabular-nums">Job ID: {jobId}</p>
+          <h2 className="text-xl font-bold text-zinc-950 text-balance">Repository Ingestion Progress</h2>
+          <p className="text-xs text-zinc-500 mt-1 font-mono tabular-nums">Job ID: {jobId}</p>
         </div>
 
         {/* Stepper Steps */}
@@ -149,17 +149,17 @@ export const IngestionStepper: React.FC<IngestionStepperProps> = ({
                 key={step.key}
                 className={`p-3 rounded-lg border text-center transition-colors ${
                   state === "active"
-                    ? "bg-emerald-500/15 border-emerald-500 text-white shadow-xs"
+                    ? "bg-emerald-50 border-emerald-500 text-emerald-950 font-medium shadow-xs"
                     : state === "completed"
-                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                    ? "bg-emerald-50/60 border-emerald-200 text-emerald-700"
                     : state === "error"
-                    ? "bg-red-500/10 border-red-500/30 text-red-400"
-                    : "bg-[#09090b] border-[#27272a] text-[#71717a]"
+                    ? "bg-red-50 border-red-200 text-red-700"
+                    : "bg-zinc-50 border-zinc-200 text-zinc-400"
                 }`}
               >
                 <div className="flex justify-center mb-1">
                   {state === "active" ? (
-                    <Loader2 className="size-5 animate-spin text-emerald-400" />
+                    <Loader2 className="size-5 animate-spin text-emerald-600" />
                   ) : (
                     <Icon className="size-5" />
                   )}
@@ -173,17 +173,17 @@ export const IngestionStepper: React.FC<IngestionStepperProps> = ({
         {/* Progress Bar */}
         <div className="space-y-2">
           <div className="flex justify-between text-xs">
-            <span className="text-[#a1a1aa]">{statusMessage}</span>
-            <span className="font-mono font-semibold text-white tabular-nums">{progressPercent}%</span>
+            <span className="text-zinc-600">{statusMessage}</span>
+            <span className="font-mono font-semibold text-zinc-900 tabular-nums">{progressPercent}%</span>
           </div>
-          <div className="w-full bg-[#27272a] rounded-full h-2.5 overflow-hidden">
+          <div className="w-full bg-zinc-200 rounded-full h-2.5 overflow-hidden">
             <div
               className={`h-full transition-all duration-500 ${
                 jobStatus === "failed"
                   ? "bg-red-500"
                   : jobStatus === "succeeded"
-                  ? "bg-emerald-500"
-                  : "bg-gradient-to-r from-emerald-500 to-teal-400"
+                  ? "bg-emerald-600"
+                  : "bg-gradient-to-r from-emerald-600 to-teal-500"
               }`}
               style={{ width: `${progressPercent}%` }}
             />
@@ -192,28 +192,28 @@ export const IngestionStepper: React.FC<IngestionStepperProps> = ({
 
         {/* Metrics Counters */}
         {counters && Object.keys(counters).length > 0 && (
-          <div className="grid grid-cols-4 gap-3 p-3 bg-[#09090b] rounded-lg border border-[#27272a] text-center">
+          <div className="grid grid-cols-4 gap-3 p-3 bg-zinc-50 rounded-xl border border-zinc-200 text-center">
             <div>
-              <span className="text-[10px] text-[#71717a] font-mono block">Scanned</span>
-              <span className="text-sm font-mono font-semibold text-white tabular-nums">
+              <span className="text-[10px] text-zinc-500 font-mono block">Scanned</span>
+              <span className="text-sm font-mono font-semibold text-zinc-900 tabular-nums">
                 {counters.files_scanned ?? 0}
               </span>
             </div>
             <div>
-              <span className="text-[10px] text-[#71717a] font-mono block">Indexed</span>
-              <span className="text-sm font-mono font-semibold text-emerald-400 tabular-nums">
+              <span className="text-[10px] text-zinc-500 font-mono block">Indexed</span>
+              <span className="text-sm font-mono font-semibold text-emerald-700 tabular-nums">
                 {counters.files_kept ?? 0}
               </span>
             </div>
             <div>
-              <span className="text-[10px] text-[#71717a] font-mono block">Skipped</span>
-              <span className="text-sm font-mono font-semibold text-amber-400 tabular-nums">
+              <span className="text-[10px] text-zinc-500 font-mono block">Skipped</span>
+              <span className="text-sm font-mono font-semibold text-amber-700 tabular-nums">
                 {counters.files_skipped ?? 0}
               </span>
             </div>
             <div>
-              <span className="text-[10px] text-[#71717a] font-mono block">Lines</span>
-              <span className="text-sm font-mono font-semibold text-white tabular-nums">
+              <span className="text-[10px] text-zinc-500 font-mono block">Lines</span>
+              <span className="text-sm font-mono font-semibold text-zinc-900 tabular-nums">
                 {counters.loc ? counters.loc.toLocaleString() : 0}
               </span>
             </div>
@@ -222,13 +222,13 @@ export const IngestionStepper: React.FC<IngestionStepperProps> = ({
 
         {/* Warnings */}
         {warnings.length > 0 && (
-          <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-300 text-xs space-y-1">
+          <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs space-y-1">
             <div className="flex items-center gap-1.5 font-semibold">
-              <AlertCircle className="size-4" />
+              <AlertCircle className="size-4 text-amber-600" />
               <span>Ingestion Notices</span>
             </div>
             {warnings.map((w, idx) => (
-              <p key={idx} className="text-[#fde68a] pl-5 text-pretty">
+              <p key={idx} className="text-amber-800 pl-5 text-pretty">
                 • {w}
               </p>
             ))}
@@ -241,7 +241,7 @@ export const IngestionStepper: React.FC<IngestionStepperProps> = ({
             <button
               onClick={handleCancel}
               disabled={isCancelling}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-red-400 hover:text-red-300 border border-red-500/30 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-red-600 hover:text-red-700 border border-red-200 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
             >
               <StopCircle className="size-4" />
               {isCancelling ? "Cancelling..." : "Cancel Ingestion"}
@@ -252,7 +252,7 @@ export const IngestionStepper: React.FC<IngestionStepperProps> = ({
             {jobStatus === "succeeded" ? (
               <button
                 onClick={handleGoToRepo}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors shadow-xs cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors shadow-xs cursor-pointer"
               >
                 Explore Repository
                 <ArrowRight className="size-4" />
@@ -260,7 +260,7 @@ export const IngestionStepper: React.FC<IngestionStepperProps> = ({
             ) : (
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-[#27272a] hover:bg-[#3f3f46] text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-sm font-medium rounded-lg transition-colors cursor-pointer"
               >
                 {jobStatus === "failed" ? "Close" : "Run in Background"}
               </button>

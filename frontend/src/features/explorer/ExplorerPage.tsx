@@ -153,8 +153,8 @@ export const ExplorerPage: React.FC = () => {
   if (filesLoading) {
     return (
       <div className="flex flex-1 min-h-0 items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-zinc-400">
-          <Loader2 className="size-6 animate-spin text-emerald-400" />
+        <div className="flex flex-col items-center gap-3 text-zinc-500">
+          <Loader2 className="size-6 animate-spin text-emerald-600" />
           <span className="text-sm">Loading repository tree...</span>
         </div>
       </div>
@@ -164,8 +164,8 @@ export const ExplorerPage: React.FC = () => {
   if (filesError) {
     return (
       <div className="flex flex-1 min-h-0 items-center justify-center p-6">
-        <div className="flex items-center gap-2 p-4 bg-red-950/40 border border-red-800 text-red-300 rounded text-sm text-pretty">
-          <AlertCircle className="size-5 text-red-400 shrink-0" />
+        <div className="flex items-center gap-2 p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded text-sm text-pretty shadow-xs">
+          <AlertCircle className="size-5 text-rose-600 shrink-0" />
           <span>Failed to load repository files. Please try again or check ingestion status.</span>
         </div>
       </div>
@@ -173,7 +173,7 @@ export const ExplorerPage: React.FC = () => {
   }
 
   return (
-    <div className="flex-1 min-h-0 flex overflow-hidden bg-[#0d0d0f]">
+    <div className="flex-1 min-h-0 flex overflow-hidden bg-white">
       {/* Left: File Tree Explorer (260px) */}
       <div className="w-64 shrink-0 h-full">
         <FileTree
@@ -209,11 +209,11 @@ export const ExplorerPage: React.FC = () => {
           </>
         ) : detailLoading ? (
           <div className="flex-1 flex items-center justify-center">
-            <Loader2 className="size-6 animate-spin text-emerald-400" />
+            <Loader2 className="size-6 animate-spin text-emerald-600" />
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-zinc-500 gap-2">
-            <FileCode className="size-8 text-zinc-600" />
+          <div className="flex-1 flex flex-col items-center justify-center text-zinc-400 gap-2">
+            <FileCode className="size-8 text-zinc-300" />
             <p className="text-xs text-pretty">Select a file from the explorer tree to view its content</p>
           </div>
         )}

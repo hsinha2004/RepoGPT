@@ -126,16 +126,16 @@ export const CodeReviewTab: React.FC = () => {
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-16">
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-[#111113] border border-[#27272a]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-white border border-zinc-200 shadow-xs">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-1">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-1">
             <Sparkles className="size-3.5" />
             Phase 2 Evaluation Engine • Milestone 10
           </div>
-          <h2 className="text-xl font-bold text-white text-balance">
+          <h2 className="text-xl font-bold text-zinc-900 text-balance">
             Automated Code Review Benchmarking (§10.6)
           </h2>
-          <p className="text-xs text-zinc-400 max-w-xl text-pretty">
+          <p className="text-xs text-zinc-500 max-w-xl text-pretty">
             Evaluates automated pull request review detection recall, precision, and localization
             accuracy against 6 ground-truth seeded vulnerability and bug patches.
           </p>
@@ -145,7 +145,7 @@ export const CodeReviewTab: React.FC = () => {
           type="button"
           onClick={() => refetch()}
           disabled={isLoading || isRefetching}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-500 disabled:opacity-50 transition-all shadow-md shadow-emerald-600/20 cursor-pointer self-start sm:self-auto"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 transition-all shadow-xs cursor-pointer self-start sm:self-auto"
         >
           <RefreshCw className={`size-3.5 ${isRefetching ? "animate-spin" : ""}`} />
           <span>{isRefetching ? "Running Evaluation..." : "Run Review Evaluation"}</span>
@@ -153,7 +153,7 @@ export const CodeReviewTab: React.FC = () => {
       </div>
 
       {isError && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-400 flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-center gap-2">
           <AlertTriangle className="size-4 shrink-0" />
           <span>{(error as Error).message}</span>
         </div>
@@ -162,75 +162,75 @@ export const CodeReviewTab: React.FC = () => {
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {/* 1. Detection Recall */}
-        <div className="p-4 rounded-xl bg-[#111113] border border-[#27272a] space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-zinc-400">
+        <div className="p-4 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
             <span>Detection Recall</span>
-            <Target className="size-4 text-emerald-400" />
+            <Target className="size-4 text-emerald-600" />
           </div>
-          <div className="text-2xl font-bold text-white tabular-nums">
+          <div className="text-2xl font-bold text-zinc-900 tabular-nums">
             {metrics ? `${Math.round(metrics.detection_recall * 100)}%` : "100%"}
           </div>
-          <div className="text-[11px] text-emerald-400 font-medium">Target: ≥ 90% (Pass)</div>
+          <div className="text-[11px] text-emerald-700 font-medium">Target: ≥ 90% (Pass)</div>
         </div>
 
         {/* 2. Strict Recall */}
-        <div className="p-4 rounded-xl bg-[#111113] border border-[#27272a] space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-zinc-400">
+        <div className="p-4 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
             <span>Strict Recall</span>
-            <Crosshair className="size-4 text-emerald-400" />
+            <Crosshair className="size-4 text-emerald-600" />
           </div>
-          <div className="text-2xl font-bold text-white tabular-nums">
+          <div className="text-2xl font-bold text-zinc-900 tabular-nums">
             {metrics ? `${(metrics.strict_recall * 100).toFixed(1)}%` : "83.3%"}
           </div>
-          <div className="text-[11px] text-emerald-400 font-medium">Category match</div>
+          <div className="text-[11px] text-emerald-700 font-medium">Category match</div>
         </div>
 
         {/* 3. Precision */}
-        <div className="p-4 rounded-xl bg-[#111113] border border-[#27272a] space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-zinc-400">
+        <div className="p-4 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
             <span>Precision</span>
-            <Percent className="size-4 text-amber-400" />
+            <Percent className="size-4 text-amber-600" />
           </div>
-          <div className="text-2xl font-bold text-white tabular-nums">
+          <div className="text-2xl font-bold text-zinc-900 tabular-nums">
             {metrics ? `${(metrics.precision * 100).toFixed(1)}%` : "66.7%"}
           </div>
-          <div className="text-[11px] text-zinc-400 font-medium">On seeded patches</div>
+          <div className="text-[11px] text-zinc-500 font-medium">On seeded patches</div>
         </div>
 
         {/* 4. Localisation Accuracy */}
-        <div className="p-4 rounded-xl bg-[#111113] border border-[#27272a] space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-zinc-400">
+        <div className="p-4 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
             <span>Localisation</span>
-            <Zap className="size-4 text-emerald-400" />
+            <Zap className="size-4 text-emerald-600" />
           </div>
-          <div className="text-2xl font-bold text-white tabular-nums">
+          <div className="text-2xl font-bold text-zinc-900 tabular-nums">
             {metrics ? `${Math.round(metrics.localization_accuracy * 100)}%` : "95%"}
           </div>
-          <div className="text-[11px] text-emerald-400 font-medium">Within ±3 lines</div>
+          <div className="text-[11px] text-emerald-700 font-medium">Within ±3 lines</div>
         </div>
 
         {/* 5. False Positives / 100 lines */}
-        <div className="p-4 rounded-xl bg-[#111113] border border-[#27272a] space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-zinc-400">
+        <div className="p-4 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
             <span>FP / 100 lines</span>
-            <ShieldAlert className="size-4 text-blue-400" />
+            <ShieldAlert className="size-4 text-blue-600" />
           </div>
-          <div className="text-2xl font-bold text-white tabular-nums">
+          <div className="text-2xl font-bold text-zinc-900 tabular-nums">
             {metrics ? metrics.false_positives_per_100_lines.toFixed(1) : "0.0"}
           </div>
-          <div className="text-[11px] text-blue-400 font-medium">Noise rate</div>
+          <div className="text-[11px] text-blue-700 font-medium">Noise rate</div>
         </div>
 
         {/* 6. Seeded Patches Passed */}
-        <div className="p-4 rounded-xl bg-[#111113] border border-[#27272a] space-y-1.5">
-          <div className="flex items-center justify-between text-xs text-zinc-400">
+        <div className="p-4 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-1.5">
+          <div className="flex items-center justify-between text-xs text-zinc-500">
             <span>Seeded Patches</span>
-            <CheckCircle2 className="size-4 text-emerald-400" />
+            <CheckCircle2 className="size-4 text-emerald-600" />
           </div>
-          <div className="text-2xl font-bold text-white tabular-nums">
+          <div className="text-2xl font-bold text-zinc-900 tabular-nums">
             {metrics ? `${metrics.matched_seeded} / ${metrics.total_seeded}` : "6 / 6"}
           </div>
-          <div className="text-[11px] text-emerald-400 font-medium">100% Detected</div>
+          <div className="text-[11px] text-emerald-700 font-medium">100% Detected</div>
         </div>
       </div>
 
@@ -238,8 +238,8 @@ export const CodeReviewTab: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Seeded Patches List */}
         <div className="lg:col-span-2 space-y-3">
-          <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-            <Layers className="size-4 text-emerald-400" />
+          <h3 className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
+            <Layers className="size-4 text-emerald-600" />
             Curated Seeded Benchmark Patches (6 Fixtures)
           </h3>
 
@@ -253,30 +253,30 @@ export const CodeReviewTab: React.FC = () => {
                   onClick={() => setSelectedFixtureId(f.id)}
                   className={`p-4 rounded-xl border transition-all cursor-pointer ${
                     isSelected
-                      ? "bg-[#18181b] border-emerald-500 shadow-md shadow-emerald-500/10"
-                      : "bg-[#111113] border-[#27272a] hover:border-zinc-700"
+                      ? "bg-emerald-50/50 border-emerald-400 shadow-xs"
+                      : "bg-white border-zinc-200 hover:border-zinc-300 shadow-xs"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="size-5 rounded-md bg-[#27272a] text-zinc-300 font-mono text-[11px] flex items-center justify-center font-bold">
+                        <span className="size-5 rounded-md bg-zinc-100 text-zinc-700 font-mono text-[11px] flex items-center justify-center font-bold">
                           {idx + 1}
                         </span>
-                        <h4 className="text-xs font-semibold text-white">{f.title}</h4>
+                        <h4 className="text-xs font-semibold text-zinc-900">{f.title}</h4>
                       </div>
 
-                      <div className="flex items-center gap-2 text-[11px] text-zinc-400">
-                        <span className="font-mono text-emerald-400">{f.target_file}</span>
+                      <div className="flex items-center gap-2 text-[11px] text-zinc-500">
+                        <span className="font-mono text-emerald-700">{f.target_file}</span>
                         <span>•</span>
                         <span className="font-mono text-zinc-500">Lines {f.expected_lines}</span>
                         <span>•</span>
-                        <span className="capitalize text-zinc-300">{f.category}</span>
+                        <span className="capitalize text-zinc-700">{f.category}</span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
                         <Check className="size-3" />
                         Matched
                       </span>
@@ -290,24 +290,24 @@ export const CodeReviewTab: React.FC = () => {
 
         {/* Right: Selected Fixture Detail Card */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-            <FileCode className="size-4 text-emerald-400" />
+          <h3 className="text-sm font-semibold text-zinc-900 flex items-center gap-2">
+            <FileCode className="size-4 text-emerald-600" />
             Benchmark Fixture Details
           </h3>
 
           {selectedFixture ? (
-            <div className="p-5 rounded-2xl bg-[#111113] border border-[#27272a] space-y-4 text-xs">
-              <div className="space-y-1 border-b border-[#27272a] pb-3">
+            <div className="p-5 rounded-2xl bg-white border border-zinc-200 space-y-4 text-xs shadow-xs">
+              <div className="space-y-1 border-b border-zinc-200 pb-3">
                 <span className="text-[10px] font-mono text-zinc-500 uppercase">
                   {selectedFixture.id}
                 </span>
-                <h4 className="text-sm font-semibold text-white">{selectedFixture.title}</h4>
+                <h4 className="text-sm font-semibold text-zinc-900">{selectedFixture.title}</h4>
               </div>
 
               <div className="space-y-2">
                 <div>
                   <span className="text-zinc-500 text-[11px]">Target File:</span>
-                  <div className="font-mono text-zinc-300 bg-[#18181b] p-1.5 rounded mt-0.5">
+                  <div className="font-mono text-zinc-800 bg-zinc-50 border border-zinc-200 p-1.5 rounded mt-0.5">
                     {selectedFixture.target_file}
                   </div>
                 </div>
@@ -315,13 +315,13 @@ export const CodeReviewTab: React.FC = () => {
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <span className="text-zinc-500 text-[11px]">Expected Severity:</span>
-                    <div className="font-semibold text-rose-400 uppercase mt-0.5">
+                    <div className="font-semibold text-rose-700 uppercase mt-0.5">
                       {selectedFixture.expected_severity}
                     </div>
                   </div>
                   <div>
                     <span className="text-zinc-500 text-[11px]">Category:</span>
-                    <div className="font-semibold text-emerald-400 capitalize mt-0.5">
+                    <div className="font-semibold text-emerald-700 capitalize mt-0.5">
                       {selectedFixture.category}
                     </div>
                   </div>
@@ -329,26 +329,26 @@ export const CodeReviewTab: React.FC = () => {
 
                 <div>
                   <span className="text-zinc-500 text-[11px]">Vulnerability Description:</span>
-                  <p className="text-zinc-300 leading-relaxed mt-1 text-pretty">
+                  <p className="text-zinc-700 leading-relaxed mt-1 text-pretty">
                     {selectedFixture.description}
                   </p>
                 </div>
 
                 <div>
                   <span className="text-zinc-500 text-[11px]">Ground-Truth Patch File:</span>
-                  <div className="font-mono text-[11px] text-zinc-400 bg-[#18181b] p-2 rounded mt-0.5">
+                  <div className="font-mono text-[11px] text-zinc-700 bg-zinc-50 border border-zinc-200 p-2 rounded mt-0.5">
                     {selectedFixture.file}
                   </div>
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-[11px] flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] flex items-center gap-2">
                 <CheckCircle2 className="size-4 shrink-0" />
                 <span>Verified in test suite with 100% recall and exact line anchoring.</span>
               </div>
             </div>
           ) : (
-            <div className="p-8 text-center text-xs text-zinc-500">
+            <div className="p-8 text-center text-xs text-zinc-500 bg-white border border-zinc-200 rounded-2xl shadow-xs">
               Select a fixture to view details
             </div>
           )}

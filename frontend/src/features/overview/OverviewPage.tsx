@@ -185,9 +185,9 @@ export const OverviewPage: React.FC = () => {
   if (repoLoading || overviewLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[450px] text-center">
-        <RefreshCw className="size-7 text-emerald-400 animate-spin mb-3" />
-        <h3 className="text-base font-medium text-white text-balance">Synthesizing Architecture Overview...</h3>
-        <p className="text-xs text-[#71717a] max-w-sm mt-1 text-pretty">
+        <RefreshCw className="size-7 text-emerald-600 animate-spin mb-3" />
+        <h3 className="text-base font-medium text-zinc-900 text-balance">Synthesizing Architecture Overview...</h3>
+        <p className="text-xs text-zinc-500 max-w-sm mt-1 text-pretty">
           Extracting AST symbols, mapping dependencies, and generating verified reading paths.
         </p>
       </div>
@@ -231,7 +231,7 @@ export const OverviewPage: React.FC = () => {
         type="button"
         onClick={() => src && setActiveSource(src)}
         aria-label={`View citation source ${citationId}`}
-        className="inline-flex items-center px-1.5 py-0.5 mx-1 my-0.5 rounded text-[11px] font-mono font-medium bg-[#1e1e24] text-emerald-300 border border-[#27272a] hover:border-emerald-500/60 hover:text-white transition-colors cursor-pointer"
+        className="inline-flex items-center px-1.5 py-0.5 mx-1 my-0.5 rounded text-[11px] font-mono font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 hover:border-emerald-300 hover:bg-emerald-100 transition-colors cursor-pointer"
         title={src ? `${src.path}:${src.start_line}-${src.end_line}` : citationId}
       >
         [{citationId}]
@@ -248,23 +248,23 @@ export const OverviewPage: React.FC = () => {
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-16">
       {/* Surface Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#27272a]/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-zinc-200">
         <div className="flex items-center gap-3">
-          <div className="size-9 rounded-lg bg-[#18181b] border border-[#27272a] flex items-center justify-center text-emerald-400">
+          <div className="size-9 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
             <Layers className="size-4" />
           </div>
           <div>
             <div className="flex items-center gap-2.5">
-              <h1 className="text-lg font-semibold text-white text-balance">
+              <h1 className="text-lg font-semibold text-zinc-900 text-balance">
                 {repo?.display_name || "Repository Overview"}
               </h1>
               {overview?.commit_sha && (
-                <span className="px-2 py-0.5 rounded font-mono text-[11px] tabular-nums bg-[#18181b] text-[#a1a1aa] border border-[#27272a]">
+                <span className="px-2 py-0.5 rounded font-mono text-[11px] tabular-nums bg-zinc-100 text-zinc-600 border border-zinc-200">
                   @{overview.commit_sha.slice(0, 7)}
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#71717a] mt-0.5 text-pretty">
+            <p className="text-xs text-zinc-500 mt-0.5 text-pretty">
               Architectural tour, entry points, technology stack, and recommended onboarding reading order
             </p>
           </div>
@@ -275,11 +275,11 @@ export const OverviewPage: React.FC = () => {
           <button
             onClick={() => regenerateMutation.mutate()}
             disabled={regenerateMutation.isPending || overviewRefetching}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#18181b] border border-[#27272a] text-[#a1a1aa] hover:text-white hover:border-[#3f3f46] disabled:opacity-50 transition-colors cursor-pointer shadow-xs"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-zinc-200 text-zinc-700 hover:text-zinc-950 hover:bg-zinc-50 hover:border-zinc-300 disabled:opacity-50 transition-colors cursor-pointer shadow-xs"
           >
             <RefreshCw
               className={`size-3.5 ${
-                regenerateMutation.isPending || overviewRefetching ? "animate-spin text-emerald-400" : ""
+                regenerateMutation.isPending || overviewRefetching ? "animate-spin text-emerald-600" : ""
               }`}
             />
             <span>Regenerate Summary</span>
@@ -288,65 +288,65 @@ export const OverviewPage: React.FC = () => {
       </div>
 
       {/* Architecture Metrics Rail */}
-      <div className="rounded-xl bg-[#0f0f12] border border-[#27272a] p-4 divide-y divide-[#1e1e24] sm:divide-y-0 sm:divide-x sm:divide-[#1e1e24] grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-0">
+      <div className="rounded-xl bg-white border border-zinc-200 shadow-xs p-4 divide-y divide-zinc-200 sm:divide-y-0 sm:divide-x sm:divide-zinc-200 grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-0">
         <div className="px-3 sm:px-4 py-1.5">
-          <span className="text-[11px] text-[#71717a] block font-medium">Indexed Files</span>
-          <span className="text-base font-semibold font-mono text-white tabular-nums block mt-0.5">
+          <span className="text-[11px] text-zinc-500 block font-medium">Indexed Files</span>
+          <span className="text-base font-semibold font-mono text-zinc-900 tabular-nums block mt-0.5">
             {totalFiles}
           </span>
-          <span className="text-[10px] text-[#52525b] block font-mono tabular-nums">
+          <span className="text-[10px] text-zinc-400 block font-mono tabular-nums">
             {stats?.file_counts_by_kind?.code ?? totalFiles} code, {stats?.file_counts_by_kind?.doc ?? 0} docs
           </span>
         </div>
 
         <div className="px-3 sm:px-4 py-1.5">
-          <span className="text-[11px] text-[#71717a] block font-medium">Total Lines</span>
-          <span className="text-base font-semibold font-mono text-white tabular-nums block mt-0.5">
+          <span className="text-[11px] text-zinc-500 block font-medium">Total Lines</span>
+          <span className="text-base font-semibold font-mono text-zinc-900 tabular-nums block mt-0.5">
             {totalLoc.toLocaleString()}
           </span>
-          <span className="text-[10px] text-[#52525b] block">across repository</span>
+          <span className="text-[10px] text-zinc-400 block">across repository</span>
         </div>
 
         <div className="px-3 sm:px-4 py-1.5">
-          <span className="text-[11px] text-[#71717a] block font-medium">AST Symbols</span>
-          <span className="text-base font-semibold font-mono text-emerald-400 tabular-nums block mt-0.5">
+          <span className="text-[11px] text-zinc-500 block font-medium">AST Symbols</span>
+          <span className="text-base font-semibold font-mono text-emerald-600 tabular-nums block mt-0.5">
             {totalSymbols}
           </span>
-          <span className="text-[10px] text-[#52525b] block">functions &amp; classes</span>
+          <span className="text-[10px] text-zinc-400 block">functions &amp; classes</span>
         </div>
 
         <div className="px-3 sm:px-4 py-1.5">
-          <span className="text-[11px] text-[#71717a] block font-medium">Semantic Chunks</span>
-          <span className="text-base font-semibold font-mono text-white tabular-nums block mt-0.5">
+          <span className="text-[11px] text-zinc-500 block font-medium">Semantic Chunks</span>
+          <span className="text-base font-semibold font-mono text-zinc-900 tabular-nums block mt-0.5">
             {totalChunks}
           </span>
-          <span className="text-[10px] text-[#52525b] block">indexed for retrieval</span>
+          <span className="text-[10px] text-zinc-400 block">indexed for retrieval</span>
         </div>
 
         <div className="px-3 sm:px-4 py-1.5">
-          <span className="text-[11px] text-[#71717a] block font-medium">Secret Redaction</span>
-          <span className="text-base font-semibold font-mono text-emerald-400 tabular-nums block mt-0.5 flex items-center gap-1.5">
+          <span className="text-[11px] text-zinc-500 block font-medium">Secret Redaction</span>
+          <span className="text-base font-semibold font-mono text-emerald-600 tabular-nums block mt-0.5 flex items-center gap-1.5">
             <ShieldCheck className="size-3.5 shrink-0" />
             <span>{totalRedactions === 0 ? "Clean" : `${totalRedactions} redacted`}</span>
           </span>
-          <span className="text-[10px] text-[#52525b] block">zero secrets exposed</span>
+          <span className="text-[10px] text-zinc-400 block">zero secrets exposed</span>
         </div>
       </div>
 
       {/* Language Proportion Bar */}
       {sortedLangs.length > 0 && (
-        <div className="p-3.5 rounded-xl bg-[#0f0f12] border border-[#27272a] space-y-2.5">
-          <div className="flex items-center justify-between text-xs text-[#a1a1aa]">
-            <span className="flex items-center gap-1.5 font-medium text-white">
-              <Code2 className="size-3.5 text-emerald-400" />
+        <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-2.5">
+          <div className="flex items-center justify-between text-xs text-zinc-600">
+            <span className="flex items-center gap-1.5 font-medium text-zinc-900">
+              <Code2 className="size-3.5 text-emerald-600" />
               <span>Language Distribution</span>
             </span>
-            <span className="font-mono text-[11px] text-[#71717a] tabular-nums">
+            <span className="font-mono text-[11px] text-zinc-500 tabular-nums">
               {totalLoc.toLocaleString()} LOC
             </span>
           </div>
 
-          <div className="h-2 w-full bg-[#18181b] rounded-full overflow-hidden flex">
+          <div className="h-2 w-full bg-zinc-100 border border-zinc-200 rounded-full overflow-hidden flex">
             {sortedLangs.map((lang) => (
               <div
                 key={lang.name}
@@ -364,8 +364,8 @@ export const OverviewPage: React.FC = () => {
                   className="size-2 rounded-full shrink-0"
                   style={{ backgroundColor: lang.color }}
                 />
-                <span className="text-[#e4e4e7] font-medium">{lang.name}</span>
-                <span className="text-[#71717a] font-mono text-[11px] tabular-nums">{lang.pct}%</span>
+                <span className="text-zinc-800 font-medium">{lang.name}</span>
+                <span className="text-zinc-500 font-mono text-[11px] tabular-nums">{lang.pct}%</span>
               </div>
             ))}
           </div>
@@ -374,9 +374,9 @@ export const OverviewPage: React.FC = () => {
 
       {/* Suggested Inquiries Prompt Ribbon */}
       {overview?.suggested_questions && overview.suggested_questions.length > 0 && (
-        <div className="p-3.5 rounded-xl bg-[#111113] border border-[#27272a] space-y-2">
-          <div className="flex items-center gap-1.5 text-xs font-medium text-white">
-            <Sparkles className="size-3.5 text-emerald-400" />
+        <div className="p-3.5 rounded-xl bg-emerald-50/50 border border-emerald-100 shadow-xs space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-zinc-900">
+            <Sparkles className="size-3.5 text-emerald-600" />
             <span>Explore with Agentic QA</span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -389,10 +389,10 @@ export const OverviewPage: React.FC = () => {
                     `/app/repos/${repoId}/chat?prompt=${encodeURIComponent(question)}`
                   )
                 }
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#27272a] text-xs text-[#d4d4d8] hover:text-white hover:border-emerald-500/60 hover:bg-[#1e1e24] transition-colors cursor-pointer text-left group"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-zinc-200 text-xs text-zinc-700 hover:text-emerald-700 hover:border-emerald-300 hover:bg-emerald-50/40 transition-colors cursor-pointer text-left group shadow-xs"
               >
                 <span>{question}</span>
-                <ArrowRight className="size-3 text-[#71717a] group-hover:text-emerald-400 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="size-3 text-zinc-400 group-hover:text-emerald-600 shrink-0 transition-transform group-hover:translate-x-0.5" />
               </button>
             ))}
           </div>
@@ -404,14 +404,14 @@ export const OverviewPage: React.FC = () => {
         {/* Left Column (2 Cols): Markdown Architecture & Reading Roadmap */}
         <div className="lg:col-span-2 space-y-6">
           {/* Architecture Tour */}
-          <div className="p-6 rounded-xl bg-[#0f0f12] border border-[#27272a] space-y-4">
-            <div className="flex items-center justify-between border-b border-[#27272a]/80 pb-3">
-              <div className="flex items-center gap-2 text-sm font-semibold text-white text-balance">
-                <BookOpen className="size-4 text-emerald-400" />
+          <div className="p-6 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
+              <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900 text-balance">
+                <BookOpen className="size-4 text-emerald-600" />
                 <span>Architecture &amp; System Tour</span>
               </div>
               {overview?.updated_at && (
-                <div className="flex items-center gap-1.5 text-[11px] text-[#71717a] font-mono tabular-nums">
+                <div className="flex items-center gap-1.5 text-[11px] text-zinc-500 font-mono tabular-nums">
                   <Calendar className="size-3" />
                   <span>{new Date(overview.updated_at).toLocaleDateString()}</span>
                 </div>
@@ -419,7 +419,7 @@ export const OverviewPage: React.FC = () => {
             </div>
 
             {/* Markdown Text Body */}
-            <div className="prose prose-invert prose-sm max-w-none prose-headings:font-semibold prose-headings:text-white prose-p:text-[#d4d4d8] prose-p:leading-relaxed prose-p:text-pretty prose-code:font-mono prose-code:text-emerald-300 prose-code:bg-[#18181b] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-[#27272a] prose-li:text-[#d4d4d8] prose-strong:text-white">
+            <div className="prose prose-zinc prose-sm max-w-none prose-headings:font-semibold prose-headings:text-zinc-900 prose-p:text-zinc-700 prose-p:leading-relaxed prose-p:text-pretty prose-code:font-mono prose-code:text-emerald-700 prose-code:bg-zinc-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:border-zinc-200 prose-li:text-zinc-700 prose-strong:text-zinc-900">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeSanitize]}
@@ -471,39 +471,39 @@ export const OverviewPage: React.FC = () => {
 
           {/* Sequential Reading Roadmap */}
           {overview?.reading_order && overview.reading_order.length > 0 && (
-            <div className="p-6 rounded-xl bg-[#0f0f12] border border-[#27272a] space-y-4">
-              <div className="flex items-center justify-between border-b border-[#27272a]/80 pb-3">
-                <div className="flex items-center gap-2 text-sm font-semibold text-white text-balance">
-                  <Compass className="size-4 text-emerald-400" />
+            <div className="p-6 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-4">
+              <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
+                <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900 text-balance">
+                  <Compass className="size-4 text-emerald-600" />
                   <span>Onboarding Reading Order</span>
                 </div>
-                <span className="text-[11px] text-[#71717a] font-mono tabular-nums">
+                <span className="text-[11px] text-zinc-500 font-mono tabular-nums">
                   {overview.reading_order.length} sequential milestones
                 </span>
               </div>
 
-              <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-px before:bg-[#27272a]">
+              <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-px before:bg-zinc-200">
                 {overview.reading_order.map((step) => (
                   <div key={step.step} className="relative group">
                     {/* Node Dot */}
-                    <div className="absolute -left-6 top-1 size-5 rounded-full bg-[#18181b] border border-[#3f3f46] text-emerald-300 flex items-center justify-center text-[10px] font-mono font-bold group-hover:border-emerald-500 group-hover:text-white transition-colors tabular-nums">
+                    <div className="absolute -left-6 top-1 size-5 rounded-full bg-white border border-zinc-300 text-emerald-600 flex items-center justify-center text-[10px] font-mono font-bold group-hover:border-emerald-500 group-hover:bg-emerald-50 transition-colors tabular-nums shadow-xs">
                       {step.step}
                     </div>
 
-                    <div className="p-3 rounded-lg bg-[#111113] border border-[#27272a] hover:border-[#3f3f46] transition-colors">
+                    <div className="p-3 rounded-lg bg-zinc-50 border border-zinc-200 hover:border-zinc-300 hover:bg-white transition-colors">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Link
                           to={`/app/repos/${repoId}/explorer?file=${encodeURIComponent(step.path)}`}
-                          className="font-mono text-xs font-semibold text-white hover:text-emerald-400 transition-colors flex items-center gap-1 truncate"
+                          className="font-mono text-xs font-semibold text-zinc-900 hover:text-emerald-600 transition-colors flex items-center gap-1 truncate"
                         >
                           <span>{step.path}</span>
                           <ExternalLink className="size-3 shrink-0 opacity-50" />
                         </Link>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#18181b] text-[#a1a1aa] border border-[#27272a]">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white text-zinc-600 border border-zinc-200">
                           {step.category.replace("_", " ")}
                         </span>
                       </div>
-                      <p className="text-xs text-[#71717a] mt-1 leading-relaxed text-pretty">
+                      <p className="text-xs text-zinc-600 mt-1 leading-relaxed text-pretty">
                         {step.reason}
                       </p>
                     </div>
@@ -517,29 +517,29 @@ export const OverviewPage: React.FC = () => {
         {/* Right Column (1 Col): Technology Stack & Entry Points */}
         <div className="space-y-6">
           {/* Tech Stack */}
-          <div className="p-5 rounded-xl bg-[#0f0f12] border border-[#27272a] space-y-4">
-            <div className="flex items-center gap-2 text-sm font-semibold text-white border-b border-[#27272a]/80 pb-3 text-balance">
-              <Boxes className="size-4 text-emerald-400" />
+          <div className="p-5 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900 border-b border-zinc-200 pb-3 text-balance">
+              <Boxes className="size-4 text-emerald-600" />
               <span>Technology Stack</span>
             </div>
 
             {Object.keys(techByCategory).length === 0 ? (
-              <p className="text-xs text-[#71717a] text-pretty">No technology stack detected.</p>
+              <p className="text-xs text-zinc-500 text-pretty">No technology stack detected.</p>
             ) : (
               <div className="space-y-3.5">
                 {Object.entries(techByCategory).map(([cat, items]) => (
                   <div key={cat} className="space-y-1.5">
-                    <span className="text-[10px] text-[#71717a] font-semibold block font-mono">
+                    <span className="text-[10px] text-zinc-500 font-semibold block font-mono">
                       {cat}
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {items.map((tech) => (
                         <div
                           key={tech.name}
-                          className="px-2 py-1 rounded-md bg-[#18181b] border border-[#27272a] text-xs text-[#e4e4e7] flex items-center gap-1.5"
+                          className="px-2 py-1 rounded-md bg-zinc-50 border border-zinc-200 text-xs text-zinc-800 flex items-center gap-1.5 shadow-xs"
                           title={tech.evidence ? `Evidence: ${tech.evidence}` : tech.name}
                         >
-                          <span className="size-1.5 rounded-full bg-emerald-500" />
+                          <span className="size-1.5 rounded-full bg-emerald-600" />
                           <span>{tech.name}</span>
                         </div>
                       ))}
@@ -551,35 +551,35 @@ export const OverviewPage: React.FC = () => {
           </div>
 
           {/* Application Entry Points */}
-          <div className="p-5 rounded-xl bg-[#0f0f12] border border-[#27272a] space-y-4">
-            <div className="flex items-center gap-2 text-sm font-semibold text-white border-b border-[#27272a]/80 pb-3 text-balance">
-              <Terminal className="size-4 text-teal-400" />
+          <div className="p-5 rounded-xl bg-white border border-zinc-200 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900 border-b border-zinc-200 pb-3 text-balance">
+              <Terminal className="size-4 text-teal-600" />
               <span>Application Entry Points</span>
             </div>
 
             {!overview?.entry_points || overview.entry_points.length === 0 ? (
-              <p className="text-xs text-[#71717a] text-pretty">No explicit entry points identified.</p>
+              <p className="text-xs text-zinc-500 text-pretty">No explicit entry points identified.</p>
             ) : (
               <div className="space-y-2.5">
                 {overview.entry_points.map((ep, idx) => (
                   <div
                     key={idx}
-                    className="p-3 rounded-lg bg-[#111113] border border-[#27272a] space-y-1.5 hover:border-[#3f3f46] transition-colors"
+                    className="p-3 rounded-lg bg-zinc-50 border border-zinc-200 space-y-1.5 hover:border-zinc-300 hover:bg-white transition-colors"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <Link
                         to={`/app/repos/${repoId}/explorer?file=${encodeURIComponent(ep.path)}#L${ep.line}`}
-                        className="font-mono text-xs font-semibold text-white hover:text-emerald-400 transition-colors truncate flex items-center gap-1"
+                        className="font-mono text-xs font-semibold text-zinc-900 hover:text-emerald-600 transition-colors truncate flex items-center gap-1"
                       >
                         <span className="truncate">{ep.path}</span>
-                        <span className="text-[10px] text-[#71717a] tabular-nums">:{ep.line}</span>
+                        <span className="text-[10px] text-zinc-500 tabular-nums">:{ep.line}</span>
                         <ExternalLink className="size-3 shrink-0 opacity-50" />
                       </Link>
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#18181b] border border-[#27272a] text-emerald-300 shrink-0">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-50 border border-emerald-200 text-emerald-700 shrink-0">
                         {ep.kind.replace("_", " ")}
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#71717a] leading-relaxed text-pretty">
+                    <p className="text-[11px] text-zinc-600 leading-relaxed text-pretty">
                       {ep.description}
                     </p>
                   </div>
@@ -592,19 +592,19 @@ export const OverviewPage: React.FC = () => {
 
       {/* Interactive Citation Snippet Drawer Modal */}
       {activeSource && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="relative w-full max-w-2xl bg-[#111113] border border-[#27272a] rounded-xl shadow-2xl p-5 text-white animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-start justify-between pb-3 border-b border-[#27272a]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+          <div className="relative w-full max-w-2xl bg-white border border-zinc-200 rounded-xl shadow-2xl p-5 text-zinc-900 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-start justify-between pb-3 border-b border-zinc-200">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  <span className="px-2 py-0.5 rounded text-xs font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                     [{activeSource.id}]
                   </span>
-                  <span className="font-mono text-sm font-medium text-white">
+                  <span className="font-mono text-sm font-medium text-zinc-900">
                     {activeSource.path}
                   </span>
                 </div>
-                <span className="text-xs text-[#71717a] font-mono block mt-1 tabular-nums">
+                <span className="text-xs text-zinc-500 font-mono block mt-1 tabular-nums">
                   Lines {activeSource.start_line}–{activeSource.end_line}
                   {activeSource.symbol ? ` · Symbol: ${activeSource.symbol}` : ""}
                 </span>
@@ -612,19 +612,19 @@ export const OverviewPage: React.FC = () => {
               <button
                 onClick={() => setActiveSource(null)}
                 aria-label="Close citation details"
-                className="text-[#71717a] hover:text-white transition-colors p-1 rounded-md"
+                className="text-zinc-400 hover:text-zinc-700 transition-colors p-1 rounded-md"
               >
                 <X className="size-5" />
               </button>
             </div>
 
-            <div className="my-4 max-h-[350px] overflow-y-auto rounded-lg bg-[#09090b] border border-[#27272a] p-3">
+            <div className="my-4 max-h-[350px] overflow-y-auto rounded-lg bg-zinc-50 border border-zinc-200 p-3">
               {activeSource.snippet ? (
-                <pre className="font-mono text-xs text-[#d4d4d8] leading-relaxed whitespace-pre-wrap">
+                <pre className="font-mono text-xs text-zinc-800 leading-relaxed whitespace-pre-wrap">
                   {activeSource.snippet}
                 </pre>
               ) : (
-                <p className="text-xs text-[#71717a] italic">
+                <p className="text-xs text-zinc-500 italic">
                   Snippet content mapped from AST symbol table.
                 </p>
               )}
@@ -634,14 +634,14 @@ export const OverviewPage: React.FC = () => {
               <Link
                 to={`/app/repos/${repoId}/explorer?file=${encodeURIComponent(activeSource.path)}#L${activeSource.start_line}`}
                 onClick={() => setActiveSource(null)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white hover:bg-emerald-500 transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-xs"
               >
                 <FileText className="size-3.5" />
                 <span>Open in Explorer</span>
               </Link>
               <button
                 onClick={() => setActiveSource(null)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#18181b] border border-[#27272a] text-[#a1a1aa] hover:text-white transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-zinc-200 text-zinc-700 hover:text-zinc-950 hover:bg-zinc-50 transition-colors cursor-pointer"
               >
                 Close
               </button>

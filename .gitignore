@@ -46,6 +46,7 @@ frontend/dist-ssr/
 frontend/.next/
 *.local
 *.tsbuildinfo
+*.timestamp-*.mjs
 
 # Environment & Secrets (Rule 8: Never commit .env*, except .env.example)
 .env

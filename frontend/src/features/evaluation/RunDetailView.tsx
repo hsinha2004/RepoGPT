@@ -209,24 +209,24 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Header & Actions */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-[#27272a]">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-zinc-200">
         <div>
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors mb-2 cursor-pointer"
+            className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-900 transition-colors mb-2 cursor-pointer"
           >
             <ArrowLeft className="size-3.5" />
             Back to Evaluation Runs
           </button>
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold text-white text-balance">
+            <h1 className="text-xl font-bold text-zinc-900 text-balance">
               {run.benchmark_name}
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
               {run.status}
             </span>
           </div>
-          <p className="text-xs text-zinc-400 mt-1 font-mono tabular-nums">
+          <p className="text-xs text-zinc-500 mt-1 font-mono tabular-nums">
             Run ID: {run.id} • Completed in {run.duration_seconds.toFixed(1)}s •{" "}
             {new Date(run.created_at).toLocaleString()}
           </p>
@@ -235,12 +235,12 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
         {/* Toolbar: Comparison & Exports */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Comparison Run Selector */}
-          <div className="flex items-center gap-2 bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs">
+          <div className="flex items-center gap-2 bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs shadow-xs">
             <GitCompare className="size-3.5 text-zinc-400" />
             <select
               value={compareRunId}
               onChange={(e) => setCompareRunId(e.target.value)}
-              className="bg-transparent text-zinc-200 focus:outline-none"
+              className="bg-transparent text-zinc-800 focus:outline-none"
             >
               <option value="">Compare with another run...</option>
               {allRuns
@@ -254,36 +254,36 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
           </div>
 
           {/* Export Dropdown / Buttons */}
-          <div className="flex items-center gap-1 bg-[#18181b] border border-[#27272a] rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-white border border-zinc-200 rounded-lg p-1 shadow-xs">
             <button
               onClick={() => handleExport("csv")}
               title="Export CSV"
-              className="px-2.5 py-1 rounded text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1 rounded text-xs text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 transition-colors flex items-center gap-1 cursor-pointer"
             >
-              <FileSpreadsheet className="size-3.5 text-emerald-400" />
+              <FileSpreadsheet className="size-3.5 text-emerald-600" />
               CSV
             </button>
             <button
               onClick={() => handleExport("markdown")}
               title="Export Markdown Report"
-              className="px-2.5 py-1 rounded text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1 rounded text-xs text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 transition-colors flex items-center gap-1 cursor-pointer"
             >
-              <FileText className="size-3.5 text-blue-400" />
+              <FileText className="size-3.5 text-blue-600" />
               MD
             </button>
             <button
               onClick={() => handleExport("json")}
               title="Export JSON"
-              className="px-2.5 py-1 rounded text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1 rounded text-xs text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 transition-colors flex items-center gap-1 cursor-pointer"
             >
-              <FileCode className="size-3.5 text-amber-400" />
+              <FileCode className="size-3.5 text-amber-600" />
               JSON
             </button>
           </div>
 
           <button
             onClick={() => onRerun(run.benchmark_id, run.strategies)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-medium transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition-colors shadow-xs cursor-pointer"
           >
             Rerun Benchmark
           </button>
@@ -292,15 +292,15 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
 
       {/* Strategy Pills Selector */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
-        <span className="text-xs font-semibold text-zinc-400 uppercase font-mono mr-1">
+        <span className="text-xs font-semibold text-zinc-500 uppercase font-mono mr-1">
           Strategy:
         </span>
         <button
           onClick={() => setSelectedStrategy("all")}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
             selectedStrategy === "all"
-              ? "bg-emerald-600 text-white shadow-sm"
-              : "bg-[#18181b] border border-[#27272a] text-zinc-400 hover:text-white"
+              ? "bg-emerald-600 text-white shadow-xs"
+              : "bg-white border border-zinc-200 text-zinc-600 hover:text-zinc-900 shadow-xs"
           }`}
         >
           All Strategies (Best View)
@@ -311,8 +311,8 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
             onClick={() => setSelectedStrategy(strat)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
               selectedStrategy === strat
-                ? "bg-emerald-600 text-white shadow-sm"
-                : "bg-[#18181b] border border-[#27272a] text-zinc-400 hover:text-white"
+                ? "bg-emerald-600 text-white shadow-xs"
+                : "bg-white border border-zinc-200 text-zinc-600 hover:text-zinc-900 shadow-xs"
             }`}
           >
             {strat}
@@ -323,12 +323,12 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
       {/* KPI Cards Grid (§14.2) */}
       {activeMetrics && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl p-3.5">
-            <div className="text-[11px] font-mono text-zinc-400 uppercase flex items-center gap-1">
-              <Target className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="bg-white border border-zinc-200 rounded-xl p-3.5 shadow-xs">
+            <div className="text-[11px] font-mono text-zinc-500 uppercase flex items-center gap-1">
+              <Target className="w-3.5 h-3.5 text-emerald-600" />
               Hit@5
             </div>
-            <div className="text-2xl font-bold text-white mt-1">
+            <div className="text-2xl font-bold text-zinc-900 mt-1">
               {(activeMetrics.hit_5 * 100).toFixed(1)}%
             </div>
             <div className="text-[10px] text-zinc-500 mt-0.5">
@@ -337,23 +337,23 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
             </div>
           </div>
 
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl p-3.5">
-            <div className="text-[11px] font-mono text-zinc-400 uppercase flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5 text-indigo-400" />
+          <div className="bg-white border border-zinc-200 rounded-xl p-3.5 shadow-xs">
+            <div className="text-[11px] font-mono text-zinc-500 uppercase flex items-center gap-1">
+              <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
               MRR
             </div>
-            <div className="text-2xl font-bold text-white mt-1">
+            <div className="text-2xl font-bold text-zinc-900 mt-1">
               {activeMetrics.mrr.toFixed(3)}
             </div>
             <div className="text-[10px] text-zinc-500 mt-0.5">Mean Reciprocal Rank</div>
           </div>
 
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl p-3.5">
-            <div className="text-[11px] font-mono text-zinc-400 uppercase flex items-center gap-1">
-              <Percent className="w-3.5 h-3.5 text-purple-400" />
+          <div className="bg-white border border-zinc-200 rounded-xl p-3.5 shadow-xs">
+            <div className="text-[11px] font-mono text-zinc-500 uppercase flex items-center gap-1">
+              <Percent className="w-3.5 h-3.5 text-purple-600" />
               nDCG@5
             </div>
-            <div className="text-2xl font-bold text-white mt-1">
+            <div className="text-2xl font-bold text-zinc-900 mt-1">
               {activeMetrics.ndcg_5.toFixed(3)}
             </div>
             <div className="text-[10px] text-zinc-500 mt-0.5">
@@ -361,12 +361,12 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
             </div>
           </div>
 
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl p-3.5">
-            <div className="text-[11px] font-mono text-zinc-400 uppercase flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="bg-white border border-zinc-200 rounded-xl p-3.5 shadow-xs">
+            <div className="text-[11px] font-mono text-zinc-500 uppercase flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-cyan-600" />
               Citation Valid
             </div>
-            <div className="text-2xl font-bold text-white mt-1">
+            <div className="text-2xl font-bold text-zinc-900 mt-1">
               {(activeMetrics.citation_validity * 100).toFixed(1)}%
             </div>
             <div className="text-[10px] text-zinc-500 mt-0.5">
@@ -375,12 +375,12 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
             </div>
           </div>
 
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl p-3.5">
-            <div className="text-[11px] font-mono text-zinc-400 uppercase flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <div className="bg-white border border-zinc-200 rounded-xl p-3.5 shadow-xs">
+            <div className="text-[11px] font-mono text-zinc-500 uppercase flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               Answer Acc
             </div>
-            <div className="text-2xl font-bold text-white mt-1">
+            <div className="text-2xl font-bold text-zinc-900 mt-1">
               {(activeMetrics.answer_correctness * 100).toFixed(1)}%
             </div>
             <div className="text-[10px] text-zinc-500 mt-0.5">
@@ -388,12 +388,12 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
             </div>
           </div>
 
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl p-3.5">
-            <div className="text-[11px] font-mono text-zinc-400 uppercase flex items-center gap-1">
-              <Timer className="w-3.5 h-3.5 text-rose-400" />
+          <div className="bg-white border border-zinc-200 rounded-xl p-3.5 shadow-xs">
+            <div className="text-[11px] font-mono text-zinc-500 uppercase flex items-center gap-1">
+              <Timer className="w-3.5 h-3.5 text-rose-600" />
               ECE / Latency
             </div>
-            <div className="text-2xl font-bold text-white mt-1">
+            <div className="text-2xl font-bold text-zinc-900 mt-1">
               {activeMetrics.ece.toFixed(3)}
             </div>
             <div className="text-[10px] text-zinc-500 mt-0.5 font-mono">
@@ -406,15 +406,15 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
 
       {/* Comparison Delta View (when comparison run is picked) */}
       {compareRun && (
-        <div className="p-4 bg-emerald-950/20 border border-emerald-500/30 rounded-xl space-y-3">
+        <div className="p-4 bg-emerald-50/50 border border-emerald-200 rounded-xl space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-emerald-300 flex items-center gap-1.5 uppercase font-mono">
+            <h3 className="text-xs font-semibold text-emerald-800 flex items-center gap-1.5 uppercase font-mono">
               <GitCompare className="size-3.5" />
               Run Delta: {run.benchmark_name} vs {compareRun.benchmark_name}
             </h3>
             <button
               onClick={() => setCompareRunId("")}
-              className="text-xs text-zinc-400 hover:text-white cursor-pointer"
+              className="text-xs text-zinc-500 hover:text-zinc-900 cursor-pointer"
             >
               Clear Comparison
             </button>
@@ -422,7 +422,7 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
 
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
-              <thead className="text-zinc-400 border-b border-[#27272a]">
+              <thead className="text-zinc-600 border-b border-emerald-200">
                 <tr>
                   <th className="py-2 px-3">Metric</th>
                   <th className="py-2 px-3">Current Run</th>
@@ -430,7 +430,7 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                   <th className="py-2 px-3">Delta</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#27272a]/60">
+              <tbody className="divide-y divide-emerald-100">
                 {activeMetrics && (
                   <>
                     {(() => {
@@ -449,7 +449,7 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                         return (
                           <span
                             className={
-                              isPositive ? "text-emerald-400 font-semibold" : "text-rose-400 font-semibold"
+                              isPositive ? "text-emerald-700 font-semibold" : "text-rose-700 font-semibold"
                             }
                           >
                             {isPositive ? `+${formatted}` : formatted}
@@ -460,11 +460,11 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                       return (
                         <>
                           <tr>
-                            <td className="py-2 px-3 font-medium text-white">Hit@5 Rate</td>
-                            <td className="py-2 px-3 text-zinc-300 font-mono">
+                            <td className="py-2 px-3 font-medium text-zinc-900">Hit@5 Rate</td>
+                            <td className="py-2 px-3 text-zinc-800 font-mono">
                               {(activeMetrics.hit_5 * 100).toFixed(1)}%
                             </td>
-                            <td className="py-2 px-3 text-zinc-400 font-mono">
+                            <td className="py-2 px-3 text-zinc-600 font-mono">
                               {cMetrics ? `${(cMetrics.hit_5 * 100).toFixed(1)}%` : "—"}
                             </td>
                             <td className="py-2 px-3 font-mono">
@@ -472,11 +472,11 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                             </td>
                           </tr>
                           <tr>
-                            <td className="py-2 px-3 font-medium text-white">MRR</td>
-                            <td className="py-2 px-3 text-zinc-300 font-mono">
+                            <td className="py-2 px-3 font-medium text-zinc-900">MRR</td>
+                            <td className="py-2 px-3 text-zinc-800 font-mono">
                               {activeMetrics.mrr.toFixed(3)}
                             </td>
-                            <td className="py-2 px-3 text-zinc-400 font-mono">
+                            <td className="py-2 px-3 text-zinc-600 font-mono">
                               {cMetrics ? cMetrics.mrr.toFixed(3) : "—"}
                             </td>
                             <td className="py-2 px-3 font-mono">
@@ -484,11 +484,11 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                             </td>
                           </tr>
                           <tr>
-                            <td className="py-2 px-3 font-medium text-white">Answer Accuracy</td>
-                            <td className="py-2 px-3 text-zinc-300 font-mono">
+                            <td className="py-2 px-3 font-medium text-zinc-900">Answer Accuracy</td>
+                            <td className="py-2 px-3 text-zinc-800 font-mono">
                               {(activeMetrics.answer_correctness * 100).toFixed(1)}%
                             </td>
-                            <td className="py-2 px-3 text-zinc-400 font-mono">
+                            <td className="py-2 px-3 text-zinc-600 font-mono">
                               {cMetrics ? `${(cMetrics.answer_correctness * 100).toFixed(1)}%` : "—"}
                             </td>
                             <td className="py-2 px-3 font-mono">
@@ -496,11 +496,11 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                             </td>
                           </tr>
                           <tr>
-                            <td className="py-2 px-3 font-medium text-white">Expected Calibration Error</td>
-                            <td className="py-2 px-3 text-zinc-300 font-mono">
+                            <td className="py-2 px-3 font-medium text-zinc-900">Expected Calibration Error</td>
+                            <td className="py-2 px-3 text-zinc-800 font-mono">
                               {activeMetrics.ece.toFixed(3)}
                             </td>
-                            <td className="py-2 px-3 text-zinc-400 font-mono">
+                            <td className="py-2 px-3 text-zinc-600 font-mono">
                               {cMetrics ? cMetrics.ece.toFixed(3) : "—"}
                             </td>
                             <td className="py-2 px-3 font-mono">
@@ -521,19 +521,19 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Strategy Performance Comparison Bar Chart */}
-        <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-4">
+        <div className="bg-white border border-zinc-200 rounded-xl p-5 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">Strategy Metrics Comparison</h3>
-            <span className="text-[11px] text-zinc-400">All tested retrieval strategies</span>
+            <h3 className="text-sm font-semibold text-zinc-900">Strategy Metrics Comparison</h3>
+            <span className="text-[11px] text-zinc-500">All tested retrieval strategies</span>
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={comparisonBarData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
                 <XAxis dataKey="strategy" stroke="#71717a" fontSize={11} />
                 <YAxis stroke="#71717a" fontSize={11} domain={[0, 100]} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#18181b", borderColor: "#27272a", fontSize: "12px" }}
+                  contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e4e4e7", color: "#18181b", fontSize: "12px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
                 />
                 <Legend wrapperStyle={{ fontSize: "11px" }} />
                 <Bar dataKey="Hit@5 (%)" fill="#10b981" radius={[4, 4, 0, 0]} />
@@ -545,60 +545,60 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
         </div>
 
         {/* Stage Latency Breakdown Stacked Bar Chart */}
-        <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-4">
+        <div className="bg-white border border-zinc-200 rounded-xl p-5 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">Stage Latency Breakdown (p50 ms)</h3>
-            <span className="text-[11px] text-zinc-400">Route + Retrieve + Rerank + Generate</span>
+            <h3 className="text-sm font-semibold text-zinc-900">Stage Latency Breakdown (p50 ms)</h3>
+            <span className="text-[11px] text-zinc-500">Route + Retrieve + Rerank + Generate</span>
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={latencyStackedData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
                 <XAxis dataKey="strategy" stroke="#71717a" fontSize={11} />
                 <YAxis stroke="#71717a" fontSize={11} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#18181b", borderColor: "#27272a", fontSize: "12px" }}
+                  contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e4e4e7", color: "#18181b", fontSize: "12px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
                 />
                 <Legend wrapperStyle={{ fontSize: "11px" }} />
-                <Bar dataKey="Route" stackId="a" fill="#38bdf8" />
-                <Bar dataKey="Retrieve" stackId="a" fill="#818cf8" />
-                <Bar dataKey="Rerank" stackId="a" fill="#c084fc" />
-                <Bar dataKey="Generate" stackId="a" fill="#fb7185" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Route" stackId="a" fill="#0284c7" />
+                <Bar dataKey="Retrieve" stackId="a" fill="#6366f1" />
+                <Bar dataKey="Rerank" stackId="a" fill="#a855f7" />
+                <Bar dataKey="Generate" stackId="a" fill="#f43f5e" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Confidence Calibration Reliability Diagram */}
-        <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-4 lg:col-span-2">
+        <div className="bg-white border border-zinc-200 rounded-xl p-5 space-y-4 lg:col-span-2 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-white">
+              <h3 className="text-sm font-semibold text-zinc-900">
                 Reliability Diagram (Confidence Calibration)
               </h3>
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-zinc-500">
                 10-bin distribution comparing mean predicted confidence against actual empirical accuracy.
               </p>
             </div>
-            <div className="text-xs font-mono text-zinc-400">
+            <div className="text-xs font-mono text-zinc-500">
               ECE: {activeMetrics?.ece.toFixed(3)} • Brier: {activeMetrics?.brier_score.toFixed(3)}
             </div>
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={calibrationChartData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
                 <XAxis dataKey="label" stroke="#71717a" fontSize={11} />
                 <YAxis stroke="#71717a" fontSize={11} domain={[0, 100]} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#18181b", borderColor: "#27272a", fontSize: "12px" }}
+                  contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e4e4e7", color: "#18181b", fontSize: "12px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
                 />
                 <Legend wrapperStyle={{ fontSize: "11px" }} />
-                <ReferenceLine stroke="#52525b" strokeDasharray="4 4" />
+                <ReferenceLine stroke="#d4d4d8" strokeDasharray="4 4" />
                 <Line
                   type="monotone"
                   dataKey="Ideal"
-                  stroke="#71717a"
+                  stroke="#a1a1aa"
                   strokeDasharray="4 4"
                   name="Perfect Calibration (y = x)"
                   dot={false}
@@ -626,16 +626,16 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
       </div>
 
       {/* Per-Category Performance Table */}
-      <div className="bg-[#111113] border border-[#27272a] rounded-xl overflow-hidden space-y-0">
-        <div className="px-5 py-3 border-b border-[#27272a] flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-white">Performance by Question Category</h3>
-          <span className="text-xs text-zinc-400">
+      <div className="bg-white border border-zinc-200 rounded-xl overflow-hidden space-y-0 shadow-xs">
+        <div className="px-5 py-3 border-b border-zinc-200 flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-zinc-900">Performance by Question Category</h3>
+          <span className="text-xs text-zinc-500">
             {Object.keys(categorySummary).length} categories detected
           </span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#18181b] border-b border-[#27272a] text-zinc-400 uppercase font-mono text-[11px]">
+            <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 uppercase font-mono text-[11px]">
               <tr>
                 <th className="py-2.5 px-4">Category</th>
                 <th className="py-2.5 px-4">Questions</th>
@@ -643,17 +643,17 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                 <th className="py-2.5 px-4">Answer Accuracy</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#27272a]">
+            <tbody className="divide-y divide-zinc-200">
               {Object.entries(categorySummary).map(([cat, stats]) => (
-                <tr key={cat} className="hover:bg-zinc-800/30">
-                  <td className="py-2.5 px-4 font-medium text-white capitalize">{cat}</td>
-                  <td className="py-2.5 px-4 text-zinc-300 font-mono tabular-nums">{stats.count}</td>
-                  <td className="py-2.5 px-4 font-mono text-emerald-400 tabular-nums">
+                <tr key={cat} className="hover:bg-zinc-50">
+                  <td className="py-2.5 px-4 font-medium text-zinc-900 capitalize">{cat}</td>
+                  <td className="py-2.5 px-4 text-zinc-700 font-mono tabular-nums">{stats.count}</td>
+                  <td className="py-2.5 px-4 font-mono text-emerald-600 tabular-nums">
                     {stats.count > 0
                       ? `${((stats.hit5Count / stats.count) * 100).toFixed(1)}%`
                       : "—"}
                   </td>
-                  <td className="py-2.5 px-4 font-mono text-emerald-400 tabular-nums">
+                  <td className="py-2.5 px-4 font-mono text-emerald-600 tabular-nums">
                     {stats.count > 0
                       ? `${((stats.correctCount / stats.count) * 100).toFixed(1)}%`
                       : "—"}
@@ -666,11 +666,11 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
       </div>
 
       {/* Per-Question Drill-Down Table */}
-      <div className="bg-[#111113] border border-[#27272a] rounded-xl overflow-hidden space-y-0">
-        <div className="p-4 border-b border-[#27272a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="bg-white border border-zinc-200 rounded-xl overflow-hidden space-y-0 shadow-xs">
+        <div className="p-4 border-b border-zinc-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-sm font-semibold text-white text-balance">Question-Level Drill-Down</h3>
-            <p className="text-xs text-zinc-400 text-pretty">
+            <h3 className="text-sm font-semibold text-zinc-900 text-balance">Question-Level Drill-Down</h3>
+            <p className="text-xs text-zinc-500 text-pretty">
               Inspect retrieval results, citations, and answers for each benchmark question.
             </p>
           </div>
@@ -683,14 +683,14 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                 placeholder="Search questions..."
                 value={searchQuestion}
                 onChange={(e) => setSearchQuestion(e.target.value)}
-                className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-white border border-zinc-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 shadow-xs"
               />
             </div>
 
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
+              className="bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-800 focus:outline-none focus:border-emerald-500 shadow-xs"
             >
               <option value="all">All Categories</option>
               {Object.keys(categorySummary).map((c) => (
@@ -704,7 +704,7 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#18181b] border-b border-[#27272a] text-zinc-400 uppercase font-mono text-[11px]">
+            <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 uppercase font-mono text-[11px]">
               <tr>
                 <th className="py-2.5 px-4">Q ID</th>
                 <th className="py-2.5 px-4">Category</th>
@@ -718,7 +718,7 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                 <th className="py-2.5 px-4 text-right">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#27272a]">
+            <tbody className="divide-y divide-zinc-200">
               {filteredQuestions.map((q) => {
                 const isExpanded = expandedQuestionId === `${q.question_id}_${q.strategy}`;
                 return (
@@ -727,47 +727,47 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
                       onClick={() =>
                         setExpandedQuestionId(isExpanded ? null : `${q.question_id}_${q.strategy}`)
                       }
-                      className="hover:bg-zinc-800/40 cursor-pointer transition-colors"
+                      className="hover:bg-zinc-50 cursor-pointer transition-colors"
                     >
-                      <td className="py-2.5 px-4 font-mono text-zinc-400 tabular-nums">{q.question_id}</td>
+                      <td className="py-2.5 px-4 font-mono text-zinc-500 tabular-nums">{q.question_id}</td>
                       <td className="py-2.5 px-4">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-300 border border-zinc-700">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-100 text-zinc-700 border border-zinc-200">
                           {q.category}
                         </span>
                       </td>
-                      <td className="py-2.5 px-4 max-w-xs truncate font-medium text-white">
+                      <td className="py-2.5 px-4 max-w-xs truncate font-medium text-zinc-900">
                         {q.query}
                       </td>
-                      <td className="py-2.5 px-4 font-mono text-zinc-400">{q.strategy}</td>
+                      <td className="py-2.5 px-4 font-mono text-zinc-600">{q.strategy}</td>
                       <td className="py-2.5 px-4 font-mono">
                         {q.hit_5 > 0 ? (
-                          <span className="text-emerald-400">HIT</span>
+                          <span className="text-emerald-600 font-semibold">HIT</span>
                         ) : (
-                          <span className="text-rose-400">MISS</span>
+                          <span className="text-rose-600 font-semibold">MISS</span>
                         )}
                       </td>
                       <td className="py-2.5 px-4 font-mono">
                         {q.citations?.length > 0 ? (
-                          <span className="text-cyan-400 tabular-nums">{q.citations.length} cited</span>
+                          <span className="text-blue-600 tabular-nums">{q.citations.length} cited</span>
                         ) : (
-                          <span className="text-zinc-500">None</span>
+                          <span className="text-zinc-400">None</span>
                         )}
                       </td>
                       <td className="py-2.5 px-4">
                         {q.is_correct ? (
-                          <span className="flex items-center gap-1 text-emerald-400">
+                          <span className="flex items-center gap-1 text-emerald-600 font-medium">
                             <CheckCircle2 className="size-3.5" /> Correct
                           </span>
                         ) : (
-                          <span className="flex items-center gap-1 text-zinc-500">
+                          <span className="flex items-center gap-1 text-zinc-400">
                             <XCircle className="size-3.5" /> Incorrect
                           </span>
                         )}
                       </td>
-                      <td className="py-2.5 px-4 font-mono text-zinc-300 tabular-nums">
+                      <td className="py-2.5 px-4 font-mono text-zinc-800 tabular-nums">
                         {(q.confidence_score * 100).toFixed(0)}%
                       </td>
-                      <td className="py-2.5 px-4 font-mono text-zinc-400 tabular-nums">
+                      <td className="py-2.5 px-4 font-mono text-zinc-500 tabular-nums">
                         {q.latency_ms.toFixed(0)}ms
                       </td>
                       <td className="py-2.5 px-4 text-right">
@@ -781,41 +781,41 @@ export const RunDetailView: React.FC<RunDetailViewProps> = ({
 
                     {/* Expanded Detail Row */}
                     {isExpanded && (
-                      <tr className="bg-[#18181b]/70 border-b border-[#27272a]">
+                      <tr className="bg-zinc-50 border-b border-zinc-200">
                         <td colSpan={10} className="p-4 space-y-3">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                              <div className="text-xs font-semibold text-zinc-300 mb-1">
+                              <div className="text-xs font-semibold text-zinc-700 mb-1">
                                 Generated Answer:
                               </div>
-                              <div className="p-3 bg-[#111113] border border-[#27272a] rounded-lg text-xs text-zinc-200 leading-relaxed font-sans">
+                              <div className="p-3 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-800 leading-relaxed font-sans shadow-2xs">
                                 {q.answer || "No answer generated."}
                               </div>
                             </div>
                             <div className="space-y-2">
-                              <div className="text-xs font-semibold text-zinc-300">
+                              <div className="text-xs font-semibold text-zinc-700">
                                 Trace & Citations:
                               </div>
-                              <div className="p-3 bg-[#111113] border border-[#27272a] rounded-lg text-xs space-y-1.5 font-mono">
+                              <div className="p-3 bg-white border border-zinc-200 rounded-lg text-xs space-y-1.5 font-mono shadow-2xs">
                                 <div>
                                   <span className="text-zinc-500">Predicted Intent:</span>{" "}
-                                  <span className="text-zinc-200">{q.predicted_intent}</span>
+                                  <span className="text-zinc-900">{q.predicted_intent}</span>
                                 </div>
                                 <div>
                                   <span className="text-zinc-500">Citations:</span>{" "}
-                                  <span className="text-cyan-400">
+                                  <span className="text-blue-600">
                                     {q.citations?.join(", ") || "None"}
                                   </span>
                                 </div>
                                 <div>
                                   <span className="text-zinc-500">Citation Validity:</span>{" "}
-                                  <span className="text-emerald-400">
+                                  <span className="text-emerald-600">
                                     {(q.citation_validity * 100).toFixed(1)}%
                                   </span>
                                 </div>
                                 <div>
                                   <span className="text-zinc-500">Must-Mention Coverage:</span>{" "}
-                                  <span className="text-amber-400">
+                                  <span className="text-amber-600">
                                     {(q.must_mention_coverage * 100).toFixed(1)}%
                                   </span>
                                 </div>

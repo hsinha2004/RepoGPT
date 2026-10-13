@@ -75,15 +75,15 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0d0d0f] font-mono text-xs select-text">
+    <div className="flex flex-col h-full bg-white font-mono text-xs select-text text-zinc-900">
       {/* Code Viewer Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#141416] border-b border-zinc-800 text-zinc-400">
+      <div className="flex items-center justify-between px-4 py-2 bg-zinc-50 border-b border-zinc-200 text-zinc-600">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-zinc-400 font-sans tabular-nums">
+          <span className="text-[11px] text-zinc-500 font-sans tabular-nums">
             {lines.length} lines · {content.length.toLocaleString()} bytes
           </span>
           {highlightRange && (
-            <span className="text-[11px] text-emerald-300 font-sans bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60 tabular-nums">
+            <span className="text-[11px] text-emerald-800 font-sans bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-medium tabular-nums">
               Lines {highlightRange.start}
               {highlightRange.end !== highlightRange.start && `–${highlightRange.end}`} selected
             </span>
@@ -96,7 +96,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
               onClick={() =>
                 onAskAboutSelection(highlightRange.start, highlightRange.end)
               }
-              className="flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs transition-colors font-sans cursor-pointer"
+              className="flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs transition-colors font-sans cursor-pointer shadow-xs"
             >
               <MessageSquareCode className="size-3.5" />
               <span>Ask about selection</span>
@@ -107,7 +107,7 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
             onClick={copyPermalink}
             title="Copy deep-link permalink"
             aria-label="Copy deep-link permalink"
-            className="flex items-center gap-1 px-2 py-1 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 rounded text-xs transition-colors font-sans cursor-pointer"
+            className="flex items-center gap-1 px-2 py-1 bg-white border border-zinc-200 hover:bg-zinc-100 text-zinc-700 rounded text-xs transition-colors font-sans cursor-pointer shadow-xs"
           >
             <Link2 className="size-3.5" />
             <span>Permalink</span>
@@ -117,10 +117,10 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
             onClick={copyCode}
             title="Copy content"
             aria-label="Copy code content"
-            className="flex items-center gap-1 px-2 py-1 bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 rounded text-xs transition-colors font-sans cursor-pointer"
+            className="flex items-center gap-1 px-2 py-1 bg-white border border-zinc-200 hover:bg-zinc-100 text-zinc-700 rounded text-xs transition-colors font-sans cursor-pointer shadow-xs"
           >
             {copied ? (
-              <Check className="size-3.5 text-emerald-400" />
+              <Check className="size-3.5 text-emerald-600" />
             ) : (
               <Copy className="size-3.5" />
             )}
@@ -148,17 +148,17 @@ export const CodeViewer: React.FC<CodeViewerProps> = ({
                   }}
                   className={`group transition-colors ${
                     isHighlighted
-                      ? "bg-emerald-950/30 text-emerald-100"
-                      : "hover:bg-zinc-800/30 text-zinc-300"
+                      ? "bg-emerald-50/80 text-emerald-950"
+                      : "hover:bg-zinc-50 text-zinc-800"
                   }`}
                 >
                   {/* Line Number */}
                   <td
                     onClick={(e) => handleLineClick(lineNum, e)}
-                    className={`py-0.5 px-3 select-none text-right cursor-pointer w-12 border-r border-zinc-800/60 text-[11px] font-mono tabular-nums ${
+                    className={`py-0.5 px-3 select-none text-right cursor-pointer w-12 border-r border-zinc-200 text-[11px] font-mono tabular-nums ${
                       isHighlighted
-                        ? "text-emerald-400 font-semibold bg-emerald-950/50"
-                        : "text-zinc-600 group-hover:text-zinc-400"
+                        ? "text-emerald-700 font-semibold bg-emerald-100/60"
+                        : "text-zinc-400 group-hover:text-zinc-700"
                     }`}
                   >
                     {lineNum}

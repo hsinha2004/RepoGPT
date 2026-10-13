@@ -36,10 +36,10 @@ const AdminPage = React.lazy(() =>
 );
 
 const RouteLoadingFallback = () => (
-  <div className="flex h-[calc(100vh-4rem)] w-full items-center justify-center bg-[#09090b]">
+  <div className="flex h-[calc(100vh-4rem)] w-full items-center justify-center bg-zinc-50">
     <div className="flex flex-col items-center gap-3">
-      <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#6366f1] border-t-transparent" />
-      <span className="font-mono text-xs text-[#71717a]">Loading view...</span>
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
+      <span className="font-mono text-xs text-zinc-500">Loading view...</span>
     </div>
   </div>
 );

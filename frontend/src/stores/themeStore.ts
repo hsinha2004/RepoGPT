@@ -7,8 +7,17 @@ interface ThemeState {
   setTheme: (theme: Theme) => void;
 }
 
+const getInitialTheme = (): Theme => {
+  const saved = localStorage.getItem("rg_theme") as Theme | null;
+  if (!saved || saved === "dark") {
+    localStorage.setItem("rg_theme", "light");
+    return "light";
+  }
+  return saved;
+};
+
 export const useThemeStore = create<ThemeState>((set) => ({
-  theme: (localStorage.getItem("rg_theme") as Theme) || "dark",
+  theme: getInitialTheme(),
   setTheme: (theme: Theme) => {
     localStorage.setItem("rg_theme", theme);
     const root = document.documentElement;

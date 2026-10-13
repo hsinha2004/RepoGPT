@@ -66,25 +66,28 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-[#09090b] text-[#fafafa] flex flex-col justify-center items-center px-4 font-sans py-12">
+    <div className="min-h-dvh bg-zinc-50 text-zinc-900 flex flex-col justify-center items-center px-4 font-sans py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex flex-col items-center gap-2 mb-4 group">
             <img
-              src="/logo.png"
+              src="/logo-icon.png"
               alt="RepoGPT Logo"
-              className="h-28 object-contain drop-shadow-xl transition-transform hover:scale-105"
+              className="h-20 object-contain drop-shadow-md transition-transform hover:scale-105"
             />
+            <span className="font-extrabold text-2xl tracking-tight text-zinc-950">
+              Repo<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">GPT</span>
+            </span>
           </Link>
-          <h2 className="text-xl font-bold tracking-tight text-balance">Create your account</h2>
-          <p className="text-sm text-[#a1a1aa] mt-1 text-pretty">
+          <h2 className="text-2xl font-bold tracking-tight text-zinc-950 text-balance">Create your account</h2>
+          <p className="text-sm text-zinc-600 mt-1 text-pretty">
             Get started with AI-driven repository intelligence
           </p>
         </div>
 
-        <div className="bg-[#111113] border border-[#27272a] rounded-xl p-6 shadow-xl">
+        <div className="bg-white border border-zinc-200 rounded-2xl p-7 shadow-xl shadow-zinc-200/50">
           {serverError && (
-            <div className="mb-4 p-3 rounded-lg bg-[#ef4444]/10 border border-[#ef4444]/20 flex items-center gap-2 text-sm text-[#ef4444]">
+            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 flex items-center gap-2 text-sm text-red-700">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{serverError}</span>
             </div>
@@ -92,83 +95,83 @@ export const RegisterPage: React.FC = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-[#a1a1aa] mb-1.5">
+              <label className="block text-xs font-medium text-zinc-700 mb-1.5">
                 Full Name
               </label>
               <input
                 type="text"
                 {...register("name")}
                 placeholder="Ada Lovelace"
-                className="w-full bg-[#09090b] border border-[#27272a] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-white placeholder-[#71717a] outline-none transition-all"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all"
               />
               {errors.name && (
-                <p className="mt-1 text-xs text-[#ef4444]">{errors.name.message}</p>
+                <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#a1a1aa] mb-1.5">
+              <label className="block text-xs font-medium text-zinc-700 mb-1.5">
                 Email address
               </label>
               <input
                 type="email"
                 {...register("email")}
                 placeholder="name@example.com"
-                className="w-full bg-[#09090b] border border-[#27272a] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-white placeholder-[#71717a] outline-none transition-all"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all"
               />
               {errors.email && (
-                <p className="mt-1 text-xs text-[#ef4444]">{errors.email.message}</p>
+                <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#a1a1aa] mb-1.5">
+              <label className="block text-xs font-medium text-zinc-700 mb-1.5">
                 Password
               </label>
               <input
                 type="password"
                 {...register("password")}
                 placeholder="At least 10 characters"
-                className="w-full bg-[#09090b] border border-[#27272a] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-white placeholder-[#71717a] outline-none transition-all"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all"
               />
               {errors.password && (
-                <p className="mt-1 text-xs text-[#ef4444]">{errors.password.message}</p>
+                <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
               )}
 
               {/* Password strength indicator */}
               <div className="mt-2 flex items-center gap-1.5">
                 <div
                   className={`h-1 flex-1 rounded-full transition-all ${
-                    passwordVal.length >= 10 ? "bg-[#22c55e]" : "bg-[#27272a]"
+                    passwordVal.length >= 10 ? "bg-emerald-500" : "bg-zinc-200"
                   }`}
                 />
                 <div
                   className={`h-1 flex-1 rounded-full transition-all ${
-                    passwordVal.length >= 14 ? "bg-[#22c55e]" : "bg-[#27272a]"
+                    passwordVal.length >= 14 ? "bg-emerald-500" : "bg-zinc-200"
                   }`}
                 />
                 <div
                   className={`h-1 flex-1 rounded-full transition-all ${
                     /[A-Z]/.test(passwordVal) && /[0-9]/.test(passwordVal) && passwordVal.length >= 10
-                      ? "bg-[#22c55e]"
-                      : "bg-[#27272a]"
+                      ? "bg-emerald-500"
+                      : "bg-zinc-200"
                   }`}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#a1a1aa] mb-1.5">
+              <label className="block text-xs font-medium text-zinc-700 mb-1.5">
                 Confirm Password
               </label>
               <input
                 type="password"
                 {...register("confirmPassword")}
                 placeholder="Re-enter password"
-                className="w-full bg-[#09090b] border border-[#27272a] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-white placeholder-[#71717a] outline-none transition-all"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-lg px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all"
               />
               {errors.confirmPassword && (
-                <p className="mt-1 text-xs text-[#ef4444]">
+                <p className="mt-1 text-xs text-red-600">
                   {errors.confirmPassword.message}
                 </p>
               )}
@@ -177,7 +180,7 @@ export const RegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-emerald-500/20 cursor-pointer"
+              className="w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-md shadow-emerald-600/20 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
@@ -190,9 +193,9 @@ export const RegisterPage: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-[#27272a] text-center text-xs text-[#a1a1aa]">
+          <div className="mt-6 pt-6 border-t border-zinc-200 text-center text-xs text-zinc-600">
             Already have an account?{" "}
-            <Link to="/login" className="text-emerald-400 hover:text-emerald-300 font-medium">
+            <Link to="/login" className="text-emerald-700 hover:text-emerald-800 font-semibold">
               Sign in
             </Link>
           </div>

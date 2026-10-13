@@ -102,16 +102,16 @@ export const DashboardPage: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Top action row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-gradient-to-r from-[#141417] via-[#111113] to-[#141417] border border-[#27272a] shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs">
         <div className="flex items-center gap-4">
           <img
             src="/logo-icon.png"
             alt="RepoGPT Logo"
-            className="size-14 object-contain drop-shadow-md hidden sm:block shrink-0"
+            className="size-14 object-contain drop-shadow-sm hidden sm:block shrink-0"
           />
           <div>
-            <h1 className="text-2xl font-bold text-white text-balance">Repositories</h1>
-            <p className="text-sm text-[#a1a1aa] mt-1 text-pretty">
+            <h1 className="text-2xl font-bold text-zinc-950 text-balance">Repositories</h1>
+            <p className="text-sm text-zinc-600 mt-1 text-pretty">
               Manage ingested codebases, explore architecture and symbol graphs, and run intelligent code reviews.
             </p>
           </div>
@@ -119,7 +119,7 @@ export const DashboardPage: React.FC = () => {
 
         <button
           onClick={() => setIsAddDialogOpen(true)}
-          className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-xs self-start sm:self-auto cursor-pointer shrink-0"
+          className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm shadow-emerald-600/15 self-start sm:self-auto cursor-pointer shrink-0"
         >
           <Plus className="size-4" />
           <span>Add Repository</span>
@@ -129,28 +129,28 @@ export const DashboardPage: React.FC = () => {
       {/* Search and summary bar */}
       <div className="flex flex-col sm:flex-row items-center gap-4">
         <div className="relative flex-1 w-full">
-          <Search className="size-4 absolute left-3 top-3 text-[#71717a]" />
+          <Search className="size-4 absolute left-3 top-3 text-zinc-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search repositories by name, language, or description..."
-            className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-[#71717a] focus:outline-none focus:border-emerald-500 transition-colors"
+            className="w-full bg-white border border-zinc-200 rounded-lg pl-9 pr-4 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-emerald-500 shadow-xs transition-colors"
           />
         </div>
       </div>
 
       {/* Repositories Grid */}
       {isLoading ? (
-        <div className="p-12 text-center text-[#71717a]">
-          <Loader2 className="size-8 animate-spin mx-auto text-emerald-400 mb-2" />
+        <div className="p-12 text-center text-zinc-400">
+          <Loader2 className="size-8 animate-spin mx-auto text-emerald-600 mb-2" />
           <p className="text-sm">Loading repositories...</p>
         </div>
       ) : filteredRepos.length === 0 ? (
-        <div className="p-12 text-center bg-[#18181b]/50 border border-dashed border-[#27272a] rounded-xl space-y-3">
-          <FolderGit2 className="size-10 text-[#71717a] mx-auto" />
-          <h3 className="text-base font-semibold text-white text-balance">No repositories found</h3>
-          <p className="text-xs text-[#a1a1aa] max-w-sm mx-auto text-pretty">
+        <div className="p-12 text-center bg-white border border-dashed border-zinc-300 rounded-2xl space-y-3">
+          <FolderGit2 className="size-10 text-zinc-400 mx-auto" />
+          <h3 className="text-base font-semibold text-zinc-950 text-balance">No repositories found</h3>
+          <p className="text-xs text-zinc-500 max-w-sm mx-auto text-pretty">
             {searchTerm
               ? "No repositories match your search criteria."
               : "Get started by ingesting a public GitHub repository or uploading a ZIP file."}
@@ -158,7 +158,7 @@ export const DashboardPage: React.FC = () => {
           {!searchTerm && (
             <button
               onClick={() => setIsAddDialogOpen(true)}
-              className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-lg hover:bg-emerald-500 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-600 text-white text-xs font-medium rounded-lg hover:bg-emerald-700 transition-colors cursor-pointer shadow-xs"
             >
               <Plus className="size-3.5" />
               Add Repository
@@ -172,13 +172,13 @@ export const DashboardPage: React.FC = () => {
             return (
               <div
                 key={repo.id}
-                className="bg-[#18181b] border border-[#27272a] hover:border-[#3f3f46] rounded-xl p-5 flex flex-col justify-between transition-colors group shadow-xs"
+                className="bg-white border border-zinc-200 hover:border-emerald-400/80 rounded-2xl p-5 flex flex-col justify-between transition-all group shadow-xs hover:shadow-md"
               >
                 <div>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      <FolderGit2 className="size-5 text-emerald-400" />
-                      <h3 className="text-base font-semibold text-white group-hover:text-emerald-400 transition-colors text-balance">
+                      <FolderGit2 className="size-5 text-emerald-600" />
+                      <h3 className="text-base font-semibold text-zinc-950 group-hover:text-emerald-700 transition-colors text-balance">
                         {repo.display_name}
                       </h3>
                     </div>
@@ -187,18 +187,18 @@ export const DashboardPage: React.FC = () => {
                     <StatusBadge status={repo.status} />
                   </div>
 
-                  <p className="text-xs text-[#a1a1aa] mt-2 line-clamp-2 min-h-[32px] text-pretty">
+                  <p className="text-xs text-zinc-600 mt-2 line-clamp-2 min-h-[32px] text-pretty">
                     {repo.description || repo.status_message || "No description provided."}
                   </p>
 
                   {/* Ref & SHA badge */}
-                  <div className="flex items-center gap-3 mt-3 text-xs text-[#71717a]">
+                  <div className="flex items-center gap-3 mt-3 text-xs text-zinc-500">
                     <div className="flex items-center gap-1 font-mono">
-                      <GitBranch className="size-3.5 text-[#a1a1aa]" />
+                      <GitBranch className="size-3.5 text-zinc-400" />
                       <span>{repo.source?.ref || "main"}</span>
                     </div>
                     {repo.commit_sha && (
-                      <span className="font-mono bg-[#27272a] px-1.5 py-0.5 rounded text-[11px] text-[#a1a1aa] tabular-nums">
+                      <span className="font-mono bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 rounded text-[11px] text-zinc-700 tabular-nums">
                         @{repo.commit_sha.slice(0, 7)}
                       </span>
                     )}
@@ -208,18 +208,18 @@ export const DashboardPage: React.FC = () => {
                   </div>
 
                   {/* Inline Stats Summary */}
-                  <div className="flex items-center gap-3 mt-4 text-xs text-[#a1a1aa] font-mono tabular-nums">
+                  <div className="flex items-center gap-3 mt-4 text-xs text-zinc-500 font-mono tabular-nums">
                     <span>
-                      <strong className="text-white font-semibold">{repo.stats?.files_indexed ?? 0}</strong> files
+                      <strong className="text-zinc-900 font-semibold">{repo.stats?.files_indexed ?? 0}</strong> files
                     </span>
-                    <span className="text-[#3f3f46]">·</span>
+                    <span className="text-zinc-300">·</span>
                     <span>
-                      <strong className="text-white font-semibold">
+                      <strong className="text-zinc-900 font-semibold">
                         {repo.stats?.loc ? repo.stats.loc.toLocaleString() : 0}
                       </strong> LOC
                     </span>
-                    <span className="text-[#3f3f46]">·</span>
-                    <span className="text-emerald-400">
+                    <span className="text-zinc-300">·</span>
+                    <span className="text-emerald-700 font-medium">
                       {repo.stats?.redactions === 0 ? "0 secrets" : `${repo.stats?.redactions} redacted`}
                     </span>
                   </div>
@@ -230,13 +230,13 @@ export const DashboardPage: React.FC = () => {
                       {languages.slice(0, 4).map((lang) => (
                         <span
                           key={lang}
-                          className="px-2 py-0.5 bg-[#18181b] border border-[#27272a] rounded-md text-[10px] font-mono text-[#d4d4d8]"
+                          className="px-2 py-0.5 bg-zinc-50 border border-zinc-200 rounded-md text-[10px] font-mono text-zinc-700"
                         >
                           {lang}
                         </span>
                       ))}
                       {languages.length > 4 && (
-                        <span className="text-[10px] text-[#71717a] font-mono self-center tabular-nums">
+                        <span className="text-[10px] text-zinc-400 font-mono self-center tabular-nums">
                           +{languages.length - 4}
                         </span>
                       )}
@@ -245,11 +245,11 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 {/* Card Footer Actions */}
-                <div className="flex items-center justify-between pt-4 mt-4 border-t border-[#27272a]">
+                <div className="flex items-center justify-between pt-4 mt-4 border-t border-zinc-100">
                   <div className="flex items-center gap-2">
                     <Link
                       to={`/app/repos/${repo.id}/overview`}
-                      className="p-1.5 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                      className="p-1.5 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors"
                       title="Overview"
                       aria-label="Repository overview"
                     >
@@ -257,7 +257,7 @@ export const DashboardPage: React.FC = () => {
                     </Link>
                     <Link
                       to={`/app/repos/${repo.id}/chat`}
-                      className="p-1.5 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                      className="p-1.5 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors"
                       title="Chat"
                       aria-label="Repository chat"
                     >
@@ -265,7 +265,7 @@ export const DashboardPage: React.FC = () => {
                     </Link>
                     <Link
                       to={`/app/repos/${repo.id}/explorer`}
-                      className="p-1.5 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                      className="p-1.5 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors"
                       title="Code Explorer"
                       aria-label="Code explorer"
                     >
@@ -273,7 +273,7 @@ export const DashboardPage: React.FC = () => {
                     </Link>
                     <Link
                       to={`/app/repos/${repo.id}/search`}
-                      className="p-1.5 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                      className="p-1.5 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors"
                       title="Search Playground"
                       aria-label="Code search playground"
                     >
@@ -281,7 +281,7 @@ export const DashboardPage: React.FC = () => {
                     </Link>
                     <Link
                       to={`/app/repos/${repo.id}/graph`}
-                      className="p-1.5 text-[#a1a1aa] hover:text-white hover:bg-[#27272a] rounded-lg transition-colors"
+                      className="p-1.5 text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg transition-colors"
                       title="Dependency Graph"
                       aria-label="Dependency graph"
                     >
@@ -292,7 +292,7 @@ export const DashboardPage: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleDelete(repo.id, repo.display_name)}
-                      className="p-1.5 text-[#71717a] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                       title="Delete Repository"
                       aria-label={`Delete repository ${repo.display_name}`}
                     >
@@ -300,7 +300,7 @@ export const DashboardPage: React.FC = () => {
                     </button>
                     <Link
                       to={`/app/repos/${repo.id}/overview`}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 rounded-lg text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold transition-colors"
                     >
                       Open
                       <ExternalLink className="size-3" />
@@ -340,7 +340,7 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
   switch (status) {
     case "ready":
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
           <CheckCircle2 className="size-3" />
           Ready
         </span>
@@ -348,21 +348,21 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
     case "processing":
     case "syncing":
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-teal-500/10 text-teal-400 border border-teal-500/30">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-teal-50 text-teal-700 border border-teal-200">
           <Loader2 className="size-3 animate-spin" />
           Processing
         </span>
       );
     case "queued":
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
           <Clock className="size-3" />
           Queued
         </span>
       );
     case "failed":
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-500/10 text-red-400 border border-red-500/30">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-50 text-red-700 border border-red-200">
           <AlertCircle className="size-3" />
           Failed
         </span>

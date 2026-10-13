@@ -104,29 +104,29 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-lg bg-[#18181b] border border-[#27272a] rounded-xl shadow-2xl p-6 text-white animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="relative w-full max-w-lg bg-white border border-zinc-200 rounded-2xl shadow-2xl p-6 text-zinc-900 animate-in fade-in zoom-in-95 duration-150">
         <button
           onClick={onClose}
           aria-label="Close dialog"
-          className="absolute right-4 top-4 text-[#71717a] hover:text-white transition-colors cursor-pointer"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 absolute right-4 top-4 transition-colors cursor-pointer"
         >
           <X className="size-5" />
         </button>
 
-        <h2 className="text-xl font-bold mb-1 text-balance">Add Repository to RepoGPT</h2>
-        <p className="text-sm text-[#a1a1aa] mb-6 text-pretty">
+        <h2 className="text-xl font-bold mb-1 text-zinc-950 text-balance">Add Repository to RepoGPT</h2>
+        <p className="text-sm text-zinc-600 mb-6 text-pretty">
           Ingest a GitHub repository or upload a local ZIP archive to enable agentic search, graph visualization, and code review.
         </p>
 
         {/* Tabs */}
-        <div className="flex border-b border-[#27272a] gap-2 mb-6">
+        <div className="flex border-b border-zinc-200 gap-2 mb-6">
           <button
             onClick={() => { setTab("github"); setErrorMessage(null); }}
             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
               tab === "github"
-                ? "border-emerald-500 text-emerald-400"
-                : "border-transparent text-[#a1a1aa] hover:text-white"
+                ? "border-emerald-600 text-emerald-700 font-semibold"
+                : "border-transparent text-zinc-500 hover:text-zinc-900"
             }`}
           >
             <Github className="size-4" />
@@ -136,8 +136,8 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
             onClick={() => { setTab("upload"); setErrorMessage(null); }}
             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
               tab === "upload"
-                ? "border-emerald-500 text-emerald-400"
-                : "border-transparent text-[#a1a1aa] hover:text-white"
+                ? "border-emerald-600 text-emerald-700 font-semibold"
+                : "border-transparent text-zinc-500 hover:text-zinc-900"
             }`}
           >
             <Upload className="size-4" />
@@ -146,7 +146,7 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
         </div>
 
         {errorMessage && (
-          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm flex items-center gap-2 text-pretty">
+          <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm flex items-center gap-2 text-pretty">
             <AlertCircle className="size-4 shrink-0" />
             <span>{errorMessage}</span>
           </div>
@@ -156,7 +156,7 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
         {tab === "github" ? (
           <form onSubmit={handleGitHubSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1 font-mono">
+              <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1 font-mono">
                 GitHub Repository URL or Shorthand
               </label>
               <input
@@ -165,15 +165,15 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
                 value={githubUrl}
                 onChange={(e) => setGithubUrl(e.target.value)}
                 required
-                className="w-full bg-[#09090b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 font-mono"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:bg-white rounded-lg px-3 py-2 text-zinc-950 text-sm focus:outline-none focus:border-emerald-500 font-mono shadow-xs"
               />
-              <span className="text-[11px] text-[#71717a] mt-1 block text-pretty">
+              <span className="text-[11px] text-zinc-500 mt-1 block text-pretty">
                 Public repositories clone automatically. Private repositories require a GitHub PAT configured in Settings.
               </span>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1 font-mono">
+              <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1 font-mono">
                 Branch, Tag, or Commit SHA (Optional)
               </label>
               <input
@@ -181,7 +181,7 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
                 placeholder="main (defaults to repository default branch)"
                 value={githubRef}
                 onChange={(e) => setGithubRef(e.target.value)}
-                className="w-full bg-[#09090b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 font-mono"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:bg-white rounded-lg px-3 py-2 text-zinc-950 text-sm focus:outline-none focus:border-emerald-500 font-mono shadow-xs"
               />
             </div>
 
@@ -189,14 +189,14 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 bg-[#27272a] hover:bg-[#3f3f46] text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-sm font-medium rounded-lg transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || !githubUrl.trim()}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
               >
                 {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Github className="size-4" />}
                 Ingest Repository
@@ -207,10 +207,10 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
           /* Tab 2: Upload ZIP */
           <form onSubmit={handleUploadSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1 font-mono">
+              <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1 font-mono">
                 Select ZIP Archive
               </label>
-              <div className="border-2 border-dashed border-[#27272a] hover:border-emerald-500/50 rounded-lg p-6 text-center transition-colors">
+              <div className="border-2 border-dashed border-zinc-300 hover:border-emerald-500 bg-zinc-50 hover:bg-zinc-100/60 rounded-xl p-6 text-center transition-colors">
                 <input
                   type="file"
                   accept=".zip,application/zip"
@@ -219,11 +219,11 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
                   id="zip-upload-input"
                 />
                 <label htmlFor="zip-upload-input" className="cursor-pointer flex flex-col items-center">
-                  <FileCode2 className="size-8 text-emerald-400 mb-2" />
-                  <span className="text-sm font-medium text-white text-balance">
+                  <FileCode2 className="size-8 text-emerald-600 mb-2" />
+                  <span className="text-sm font-medium text-zinc-950 text-balance">
                     {selectedFile ? selectedFile.name : "Click to select a .zip codebase archive"}
                   </span>
-                  <span className="text-xs text-[#71717a] mt-1 tabular-nums">
+                  <span className="text-xs text-zinc-500 mt-1 tabular-nums">
                     {selectedFile
                       ? `${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`
                       : "Maximum size: 100 MB. Magic bytes verified."}
@@ -233,7 +233,7 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1 font-mono">
+              <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1 font-mono">
                 Display Name (Optional)
               </label>
               <input
@@ -241,7 +241,7 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
                 placeholder="My Project"
                 value={uploadDisplayName}
                 onChange={(e) => setUploadDisplayName(e.target.value)}
-                className="w-full bg-[#09090b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500 font-mono"
+                className="w-full bg-zinc-50 border border-zinc-200 focus:bg-white rounded-lg px-3 py-2 text-zinc-950 text-sm focus:outline-none focus:border-emerald-500 font-mono shadow-xs"
               />
             </div>
 
@@ -249,14 +249,14 @@ export const AddRepoDialog: React.FC<AddRepoDialogProps> = ({ isOpen, onClose, o
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 bg-[#27272a] hover:bg-[#3f3f46] text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-sm font-medium rounded-lg transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || !selectedFile}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
               >
                 {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
                 Upload & Ingest

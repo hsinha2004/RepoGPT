@@ -115,11 +115,11 @@ export const EvaluationPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white text-balance flex items-center gap-2.5">
-            <BarChart3 className="size-6 text-emerald-400" />
+          <h1 className="text-2xl font-bold text-zinc-900 text-balance flex items-center gap-2.5">
+            <BarChart3 className="size-6 text-emerald-600" />
             Evaluation Dashboard
           </h1>
-          <p className="text-sm text-zinc-400 mt-1 text-pretty">
+          <p className="text-sm text-zinc-500 mt-1 text-pretty">
             Empirical benchmark evaluation (§14): multi-strategy comparison, confidence reliability
             diagrams, and live chat telemetry.
           </p>
@@ -127,7 +127,7 @@ export const EvaluationPage: React.FC = () => {
 
         <button
           onClick={fetchData}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18181b] hover:bg-zinc-800 border border-[#27272a] rounded-lg text-xs font-medium text-zinc-300 transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-zinc-50 border border-zinc-200 rounded-lg text-xs font-medium text-zinc-700 transition-colors cursor-pointer shadow-xs"
         >
           <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
           Refresh Data
@@ -135,19 +135,19 @@ export const EvaluationPage: React.FC = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-1 border-b border-[#27272a]">
+      <div className="flex items-center gap-1 border-b border-zinc-200">
         <button
           onClick={() => setActiveTab("runs")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "runs"
-              ? "border-emerald-500 text-white"
-              : "border-transparent text-zinc-400 hover:text-zinc-200"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-zinc-500 hover:text-zinc-900"
           }`}
         >
           <BarChart3 className="size-4" />
           Evaluation Runs
           {runs.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-zinc-800 text-zinc-400 tabular-nums">
+            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-zinc-100 text-zinc-600 tabular-nums">
               {runs.length}
             </span>
           )}
@@ -157,14 +157,14 @@ export const EvaluationPage: React.FC = () => {
           onClick={() => setActiveTab("benchmarks")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "benchmarks"
-              ? "border-emerald-500 text-white"
-              : "border-transparent text-zinc-400 hover:text-zinc-200"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-zinc-500 hover:text-zinc-900"
           }`}
         >
           <BookOpen className="size-4" />
           Benchmark Suites
           {benchmarks.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-zinc-800 text-zinc-400 tabular-nums">
+            <span className="px-1.5 py-0.2 rounded-full text-[11px] bg-zinc-100 text-zinc-600 tabular-nums">
               {benchmarks.length}
             </span>
           )}
@@ -174,8 +174,8 @@ export const EvaluationPage: React.FC = () => {
           onClick={() => setActiveTab("live")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "live"
-              ? "border-emerald-500 text-white"
-              : "border-transparent text-zinc-400 hover:text-zinc-200"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-zinc-500 hover:text-zinc-900"
           }`}
         >
           <Activity className="size-4" />
@@ -186,13 +186,13 @@ export const EvaluationPage: React.FC = () => {
           onClick={() => setActiveTab("review")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "review"
-              ? "border-emerald-500 text-white"
-              : "border-transparent text-zinc-400 hover:text-zinc-200"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-zinc-500 hover:text-zinc-900"
           }`}
         >
           <GitPullRequest className="size-4" />
           Code Review
-          <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
             Phase 2
           </span>
         </button>

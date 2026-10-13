@@ -217,22 +217,22 @@ export const AdminPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#27272a]">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-200">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold">
+            <div className="size-8 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center font-bold">
               <ShieldAlert className="size-5" />
             </div>
-            <h1 className="text-xl font-bold text-white text-balance">Administration Panel</h1>
+            <h1 className="text-xl font-bold text-zinc-900 text-balance">Administration Panel</h1>
           </div>
-          <p className="text-xs text-zinc-400 mt-1 text-pretty">
+          <p className="text-xs text-zinc-500 mt-1 text-pretty">
             System administration, user access control, background jobs, and compliance audit logs (§11.15, §12).
           </p>
         </div>
 
         <button
           onClick={fetchActiveTabData}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#18181b] hover:bg-zinc-800 border border-[#27272a] rounded-lg text-xs font-medium text-zinc-300 transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-zinc-50 border border-zinc-200 rounded-lg text-xs font-medium text-zinc-700 shadow-xs transition-colors cursor-pointer"
         >
           <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
           Refresh
@@ -240,20 +240,20 @@ export const AdminPage: React.FC = () => {
       </div>
 
       {successMessage && (
-        <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-xs text-emerald-400 flex items-center gap-2">
+        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-700 flex items-center gap-2">
           <CheckCircle2 className="size-4 shrink-0" />
           <span>{successMessage}</span>
         </div>
       )}
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 border-b border-[#27272a]">
+      <div className="flex items-center gap-1 border-b border-zinc-200">
         <button
           onClick={() => setActiveTab("users")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "users"
-              ? "border-emerald-500 text-white"
-              : "border-transparent text-zinc-400 hover:text-zinc-200"
+              ? "border-emerald-600 text-zinc-900 font-semibold"
+              : "border-transparent text-zinc-500 hover:text-zinc-700 hover:border-zinc-300"
           }`}
         >
           <Users className="size-4" />
@@ -264,8 +264,8 @@ export const AdminPage: React.FC = () => {
           onClick={() => setActiveTab("jobs")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "jobs"
-              ? "border-emerald-500 text-white"
-              : "border-transparent text-zinc-400 hover:text-zinc-200"
+              ? "border-emerald-600 text-zinc-900 font-semibold"
+              : "border-transparent text-zinc-500 hover:text-zinc-700 hover:border-zinc-300"
           }`}
         >
           <Activity className="size-4" />
@@ -276,8 +276,8 @@ export const AdminPage: React.FC = () => {
           onClick={() => setActiveTab("stats")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "stats"
-              ? "border-emerald-500 text-white"
-              : "border-transparent text-zinc-400 hover:text-zinc-200"
+              ? "border-emerald-600 text-zinc-900 font-semibold"
+              : "border-transparent text-zinc-500 hover:text-zinc-700 hover:border-zinc-300"
           }`}
         >
           <Server className="size-4" />
@@ -288,8 +288,8 @@ export const AdminPage: React.FC = () => {
           onClick={() => setActiveTab("audit")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "audit"
-              ? "border-emerald-500 text-white"
-              : "border-transparent text-zinc-400 hover:text-zinc-200"
+              ? "border-emerald-600 text-zinc-900 font-semibold"
+              : "border-transparent text-zinc-500 hover:text-zinc-700 hover:border-zinc-300"
           }`}
         >
           <FileText className="size-4" />
@@ -308,29 +308,29 @@ export const AdminPage: React.FC = () => {
                 placeholder="Search by name or email..."
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
-                className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-white border border-zinc-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-xs"
               />
             </div>
-            <span className="text-xs text-zinc-400 tabular-nums">{filteredUsers.length} registered accounts</span>
+            <span className="text-xs text-zinc-500 tabular-nums">{filteredUsers.length} registered accounts</span>
           </div>
 
-          <div className="border border-[#27272a] rounded-xl bg-[#111113] overflow-hidden">
+          <div className="border border-zinc-200 rounded-xl bg-white shadow-xs overflow-hidden">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#18181b] border-b border-[#27272a] text-zinc-400 uppercase font-mono text-[11px]">
+              <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 uppercase font-mono text-[11px]">
                 <tr>
-                  <th className="py-2.5 px-4">User</th>
-                  <th className="py-2.5 px-4">Role</th>
-                  <th className="py-2.5 px-4">Status</th>
-                  <th className="py-2.5 px-4">Created</th>
-                  <th className="py-2.5 px-4 text-right">Actions</th>
+                  <th className="py-2.5 px-4 font-semibold">User</th>
+                  <th className="py-2.5 px-4 font-semibold">Role</th>
+                  <th className="py-2.5 px-4 font-semibold">Status</th>
+                  <th className="py-2.5 px-4 font-semibold">Created</th>
+                  <th className="py-2.5 px-4 text-right font-semibold">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#27272a]">
+              <tbody className="divide-y divide-zinc-200">
                 {filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-zinc-800/30">
+                  <tr key={u.id} className="hover:bg-zinc-50/80 transition-colors">
                     <td className="py-2.5 px-4">
-                      <div className="font-medium text-white">{u.name}</div>
-                      <div className="text-[11px] font-mono text-zinc-400">{u.email}</div>
+                      <div className="font-medium text-zinc-900">{u.name}</div>
+                      <div className="text-[11px] font-mono text-zinc-500">{u.email}</div>
                     </td>
                     <td className="py-2.5 px-4">
                       <button
@@ -338,8 +338,8 @@ export const AdminPage: React.FC = () => {
                         title="Click to toggle role"
                         className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold border cursor-pointer ${
                           u.role === "admin"
-                            ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                            : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            ? "bg-rose-50 text-rose-700 border-rose-200"
+                            : "bg-emerald-50 text-emerald-700 border-emerald-200"
                         }`}
                       >
                         {u.role}
@@ -351,14 +351,14 @@ export const AdminPage: React.FC = () => {
                         title="Click to toggle status"
                         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border cursor-pointer ${
                           u.is_active
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                            : "bg-zinc-800 text-zinc-500 border-zinc-700"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            : "bg-zinc-100 text-zinc-500 border-zinc-200"
                         }`}
                       >
                         {u.is_active ? "Active" : "Disabled"}
                       </button>
                     </td>
-                    <td className="py-2.5 px-4 font-mono text-zinc-400 tabular-nums">
+                    <td className="py-2.5 px-4 font-mono text-zinc-500 tabular-nums">
                       {new Date(u.created_at).toLocaleDateString()}
                     </td>
                     <td className="py-2.5 px-4 text-right space-x-2">
@@ -367,9 +367,9 @@ export const AdminPage: React.FC = () => {
                           setResetPasswordUserId(u.id);
                           setNewPassword("");
                         }}
-                        className="p-1 rounded bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-[#27272a] text-xs inline-flex items-center gap-1 px-2 py-1 cursor-pointer"
+                        className="p-1 rounded bg-white hover:bg-zinc-50 text-zinc-700 hover:text-zinc-900 border border-zinc-200 text-xs inline-flex items-center gap-1 px-2 py-1 shadow-xs cursor-pointer transition-colors"
                       >
-                        <KeyRound className="size-3.5 text-amber-400" />
+                        <KeyRound className="size-3.5 text-amber-500" />
                         Reset Pass
                       </button>
                     </td>
@@ -388,7 +388,7 @@ export const AdminPage: React.FC = () => {
             <select
               value={jobStatusFilter}
               onChange={(e) => setJobStatusFilter(e.target.value)}
-              className="bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
+              className="bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-800 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-xs"
             >
               <option value="all">All Job Statuses</option>
               <option value="queued">Queued</option>
@@ -396,50 +396,50 @@ export const AdminPage: React.FC = () => {
               <option value="completed">Completed</option>
               <option value="failed">Failed</option>
             </select>
-            <span className="text-xs text-zinc-400 tabular-nums">{filteredJobs.length} jobs</span>
+            <span className="text-xs text-zinc-500 tabular-nums">{filteredJobs.length} jobs</span>
           </div>
 
-          <div className="border border-[#27272a] rounded-xl bg-[#111113] overflow-hidden">
+          <div className="border border-zinc-200 rounded-xl bg-white shadow-xs overflow-hidden">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#18181b] border-b border-[#27272a] text-zinc-400 uppercase font-mono text-[11px]">
+              <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 uppercase font-mono text-[11px]">
                 <tr>
-                  <th className="py-2.5 px-4">Job Type</th>
-                  <th className="py-2.5 px-4">Status</th>
-                  <th className="py-2.5 px-4">Progress / Stage</th>
-                  <th className="py-2.5 px-4">Message</th>
-                  <th className="py-2.5 px-4 text-right">Actions</th>
+                  <th className="py-2.5 px-4 font-semibold">Job Type</th>
+                  <th className="py-2.5 px-4 font-semibold">Status</th>
+                  <th className="py-2.5 px-4 font-semibold">Progress / Stage</th>
+                  <th className="py-2.5 px-4 font-semibold">Message</th>
+                  <th className="py-2.5 px-4 text-right font-semibold">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#27272a]">
+              <tbody className="divide-y divide-zinc-200">
                 {filteredJobs.map((j) => (
-                  <tr key={j.id} className="hover:bg-zinc-800/30">
-                    <td className="py-2.5 px-4 font-mono text-white">{j.type}</td>
+                  <tr key={j.id} className="hover:bg-zinc-50/80 transition-colors">
+                    <td className="py-2.5 px-4 font-mono font-medium text-zinc-900">{j.type}</td>
                     <td className="py-2.5 px-4">
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase ${
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase border ${
                           j.status === "completed"
-                            ? "bg-emerald-500/10 text-emerald-400"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                             : j.status === "running"
-                            ? "bg-emerald-500/10 text-emerald-400 animate-pulse"
+                            ? "bg-blue-50 text-blue-700 border-blue-200 animate-pulse"
                             : j.status === "failed"
-                            ? "bg-red-500/10 text-red-400"
-                            : "bg-zinc-800 text-zinc-400"
+                            ? "bg-rose-50 text-rose-700 border-rose-200"
+                            : "bg-zinc-100 text-zinc-600 border-zinc-200"
                         }`}
                       >
                         {j.status}
                       </span>
                     </td>
-                    <td className="py-2.5 px-4 font-mono text-zinc-300 tabular-nums">
+                    <td className="py-2.5 px-4 font-mono text-zinc-700 tabular-nums">
                       {j.progress}% • {j.stage}
                     </td>
-                    <td className="py-2.5 px-4 text-zinc-400 max-w-xs truncate">{j.message}</td>
+                    <td className="py-2.5 px-4 text-zinc-600 max-w-xs truncate">{j.message}</td>
                     <td className="py-2.5 px-4 text-right">
                       {j.status === "failed" && (
                         <button
                           onClick={() => handleRetryJob(j.id)}
-                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#18181b] hover:bg-zinc-800 text-zinc-300 hover:text-white border border-[#27272a] text-xs cursor-pointer"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded bg-white hover:bg-zinc-50 text-zinc-700 hover:text-zinc-900 border border-zinc-200 text-xs shadow-xs cursor-pointer transition-colors"
                         >
-                          <RotateCcw className="size-3.5 text-emerald-400" />
+                          <RotateCcw className="size-3.5 text-emerald-600" />
                           Retry
                         </button>
                       )}
@@ -455,31 +455,31 @@ export const AdminPage: React.FC = () => {
       {/* TAB 3: STATS */}
       {activeTab === "stats" && stats && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-2">
-            <div className="text-xs text-zinc-400 flex items-center justify-between">
+          <div className="bg-white border border-zinc-200 rounded-xl p-5 space-y-2 shadow-xs">
+            <div className="text-xs text-zinc-500 flex items-center justify-between">
               <span>Total Accounts</span>
-              <Users className="size-4 text-emerald-400" />
+              <Users className="size-4 text-emerald-600" />
             </div>
-            <div className="text-3xl font-bold text-white tabular-nums">{stats.total_users}</div>
-            <p className="text-[11px] text-zinc-500">Registered users in database</p>
+            <div className="text-3xl font-bold text-zinc-900 tabular-nums">{stats.total_users}</div>
+            <p className="text-[11px] text-zinc-400">Registered users in database</p>
           </div>
 
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-2">
-            <div className="text-xs text-zinc-400 flex items-center justify-between">
+          <div className="bg-white border border-zinc-200 rounded-xl p-5 space-y-2 shadow-xs">
+            <div className="text-xs text-zinc-500 flex items-center justify-between">
               <span>Repositories</span>
-              <FolderGit2 className="size-4 text-emerald-400" />
+              <FolderGit2 className="size-4 text-emerald-600" />
             </div>
-            <div className="text-3xl font-bold text-white tabular-nums">{stats.total_repositories}</div>
-            <p className="text-[11px] text-zinc-500">Indexed codebases</p>
+            <div className="text-3xl font-bold text-zinc-900 tabular-nums">{stats.total_repositories}</div>
+            <p className="text-[11px] text-zinc-400">Indexed codebases</p>
           </div>
 
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl p-5 space-y-2">
-            <div className="text-xs text-zinc-400 flex items-center justify-between">
+          <div className="bg-white border border-zinc-200 rounded-xl p-5 space-y-2 shadow-xs">
+            <div className="text-xs text-zinc-500 flex items-center justify-between">
               <span>Background Tasks</span>
-              <Cpu className="size-4 text-amber-400" />
+              <Cpu className="size-4 text-amber-600" />
             </div>
-            <div className="text-3xl font-bold text-white tabular-nums">{stats.total_jobs}</div>
-            <p className="text-[11px] text-zinc-500">Ingestion and sync jobs</p>
+            <div className="text-3xl font-bold text-zinc-900 tabular-nums">{stats.total_jobs}</div>
+            <p className="text-[11px] text-zinc-400">Ingestion and sync jobs</p>
           </div>
         </div>
       )}
@@ -491,34 +491,34 @@ export const AdminPage: React.FC = () => {
             <select
               value={auditActionFilter}
               onChange={(e) => setAuditActionFilter(e.target.value)}
-              className="bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500"
+              className="bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-800 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-xs"
             >
               <option value="all">All Audit Actions</option>
               <option value="login">Login</option>
               <option value="admin">Admin Operations</option>
               <option value="repo">Repo Lifecycle</option>
             </select>
-            <span className="text-xs text-zinc-400 tabular-nums">{filteredAuditLogs.length} audit entries</span>
+            <span className="text-xs text-zinc-500 tabular-nums">{filteredAuditLogs.length} audit entries</span>
           </div>
 
-          <div className="border border-[#27272a] rounded-xl bg-[#111113] overflow-hidden">
+          <div className="border border-zinc-200 rounded-xl bg-white shadow-xs overflow-hidden">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#18181b] border-b border-[#27272a] text-zinc-400 uppercase font-mono text-[11px]">
+              <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 uppercase font-mono text-[11px]">
                 <tr>
-                  <th className="py-2.5 px-4">Action</th>
-                  <th className="py-2.5 px-4">Actor ID</th>
-                  <th className="py-2.5 px-4">Target Type / ID</th>
-                  <th className="py-2.5 px-4">Timestamp</th>
+                  <th className="py-2.5 px-4 font-semibold">Action</th>
+                  <th className="py-2.5 px-4 font-semibold">Actor ID</th>
+                  <th className="py-2.5 px-4 font-semibold">Target Type / ID</th>
+                  <th className="py-2.5 px-4 font-semibold">Timestamp</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#27272a]">
+              <tbody className="divide-y divide-zinc-200">
                 {filteredAuditLogs.map((log) => (
-                  <tr key={log._id} className="hover:bg-zinc-800/30">
-                    <td className="py-2.5 px-4 font-mono font-semibold text-emerald-400">
+                  <tr key={log._id} className="hover:bg-zinc-50/80 transition-colors">
+                    <td className="py-2.5 px-4 font-mono font-semibold text-emerald-700">
                       {log.action}
                     </td>
-                    <td className="py-2.5 px-4 font-mono text-zinc-300">{log.actor_id}</td>
-                    <td className="py-2.5 px-4 font-mono text-zinc-400">
+                    <td className="py-2.5 px-4 font-mono text-zinc-700">{log.actor_id}</td>
+                    <td className="py-2.5 px-4 font-mono text-zinc-600">
                       {log.target_type}:{log.target_id}
                     </td>
                     <td className="py-2.5 px-4 font-mono text-zinc-500 tabular-nums">
@@ -534,22 +534,22 @@ export const AdminPage: React.FC = () => {
 
       {/* Reset Password Modal */}
       {resetPasswordUserId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl max-w-sm w-full p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-[#27272a]">
-              <h3 className="text-sm font-semibold text-white">Reset Account Password</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+          <div className="bg-white border border-zinc-200 rounded-xl max-w-sm w-full p-6 shadow-xl space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-zinc-200">
+              <h3 className="text-sm font-semibold text-zinc-900">Reset Account Password</h3>
               <button
                 type="button"
                 onClick={() => setResetPasswordUserId(null)}
                 aria-label="Close dialog"
-                className="text-zinc-400 hover:text-white cursor-pointer"
+                className="text-zinc-400 hover:text-zinc-600 cursor-pointer"
               >
                 <X className="size-4" />
               </button>
             </div>
             <form onSubmit={handleResetPassword} className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-zinc-300 mb-1">
+                <label className="block text-xs font-medium text-zinc-700 mb-1">
                   New Password (min 8 chars)
                 </label>
                 <input
@@ -559,21 +559,21 @@ export const AdminPage: React.FC = () => {
                   minLength={8}
                   required
                   placeholder="Enter temporary password..."
-                  className="w-full bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-xs"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setResetPasswordUserId(null)}
-                  className="px-3 py-1.5 text-xs text-zinc-400 hover:text-white cursor-pointer"
+                  className="px-3 py-1.5 text-xs text-zinc-600 hover:text-zinc-800 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isResetting || newPassword.length < 8}
-                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-xs font-medium transition-colors cursor-pointer"
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg text-xs font-medium transition-colors cursor-pointer shadow-xs"
                 >
                   {isResetting ? "Resetting..." : "Save Password"}
                 </button>

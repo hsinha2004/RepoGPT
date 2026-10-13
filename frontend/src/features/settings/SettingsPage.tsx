@@ -323,20 +323,20 @@ export const SettingsPage: React.FC = () => {
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white text-balance">Account & System Settings</h1>
-        <p className="text-sm text-[#a1a1aa] mt-1 text-pretty">
+        <h1 className="text-2xl font-bold text-zinc-900 text-balance">Account & System Settings</h1>
+        <p className="text-sm text-zinc-500 mt-1 text-pretty">
           Manage your personal details, GitHub PAT integration, security credentials, and view daily usage quotas.
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#27272a] gap-2">
+      <div className="flex border-b border-zinc-200 gap-2">
         <button
           onClick={() => setActiveTab("profile")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "profile"
-              ? "border-emerald-500 text-emerald-400"
-              : "border-transparent text-[#a1a1aa] hover:text-white"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-zinc-500 hover:text-zinc-900"
           }`}
         >
           <User className="size-4" />
@@ -346,8 +346,8 @@ export const SettingsPage: React.FC = () => {
           onClick={() => setActiveTab("github")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "github"
-              ? "border-emerald-500 text-emerald-400"
-              : "border-transparent text-[#a1a1aa] hover:text-white"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-zinc-500 hover:text-zinc-900"
           }`}
         >
           <Github className="size-4" />
@@ -357,8 +357,8 @@ export const SettingsPage: React.FC = () => {
           onClick={() => setActiveTab("security")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "security"
-              ? "border-emerald-500 text-emerald-400"
-              : "border-transparent text-[#a1a1aa] hover:text-white"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-zinc-500 hover:text-zinc-900"
           }`}
         >
           <Shield className="size-4" />
@@ -368,8 +368,8 @@ export const SettingsPage: React.FC = () => {
           onClick={() => setActiveTab("usage")}
           className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px cursor-pointer ${
             activeTab === "usage"
-              ? "border-emerald-500 text-emerald-400"
-              : "border-transparent text-[#a1a1aa] hover:text-white"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-zinc-500 hover:text-zinc-900"
           }`}
         >
           <Activity className="size-4" />
@@ -379,18 +379,18 @@ export const SettingsPage: React.FC = () => {
 
       {/* Tab 1: Profile */}
       {activeTab === "profile" && (
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6 shadow-sm space-y-6">
+        <div className="bg-white border border-zinc-200 rounded-xl p-6 shadow-xs space-y-6">
           <div>
-            <h2 className="text-lg font-semibold text-white text-balance">Public Profile</h2>
-            <p className="text-sm text-[#71717a] text-pretty">Manage how your name and identity appear across RepoGPT.</p>
+            <h2 className="text-lg font-semibold text-zinc-900 text-balance">Public Profile</h2>
+            <p className="text-sm text-zinc-500 text-pretty">Manage how your name and identity appear across RepoGPT.</p>
           </div>
 
           {profileMessage && (
             <div
               className={`p-3 rounded-lg flex items-center gap-2 text-sm ${
                 profileMessage.type === "success"
-                  ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
-                  : "bg-red-500/10 border border-red-500/30 text-red-400"
+                  ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+                  : "bg-rose-50 border border-rose-200 text-rose-700"
               }`}
             >
               {profileMessage.type === "success" ? <CheckCircle2 className="size-4" /> : <AlertCircle className="size-4" />}
@@ -400,7 +400,7 @@ export const SettingsPage: React.FC = () => {
 
           <form onSubmit={handleSaveProfile} className="space-y-4 max-w-xl">
             <div>
-              <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1">
+              <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1">
                 Full Name
               </label>
               <input
@@ -408,25 +408,25 @@ export const SettingsPage: React.FC = () => {
                 value={profileName}
                 onChange={(e) => setProfileName(e.target.value)}
                 placeholder="Ada Lovelace"
-                className="w-full bg-[#09090b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500"
+                className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-zinc-900 text-sm focus:outline-none focus:border-emerald-500 shadow-xs"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1">
+              <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1">
                 Email Address
               </label>
               <input
                 type="text"
                 disabled
                 value={profile?.email || authUser?.email || ""}
-                className="w-full bg-[#09090b]/50 border border-[#27272a]/50 rounded-lg px-3 py-2 text-[#71717a] text-sm cursor-not-allowed"
+                className="w-full bg-zinc-100 border border-zinc-200 rounded-lg px-3 py-2 text-zinc-500 text-sm cursor-not-allowed"
               />
-              <span className="text-[11px] text-[#71717a]">Email cannot be changed directly.</span>
+              <span className="text-[11px] text-zinc-500">Email cannot be changed directly.</span>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1">
+              <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1">
                 Avatar URL
               </label>
               <input
@@ -434,7 +434,7 @@ export const SettingsPage: React.FC = () => {
                 value={avatarUrl}
                 onChange={(e) => setAvatarUrl(e.target.value)}
                 placeholder="https://example.com/avatar.png"
-                className="w-full bg-[#09090b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500"
+                className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-zinc-900 text-sm focus:outline-none focus:border-emerald-500 shadow-xs"
               />
             </div>
 
@@ -442,13 +442,13 @@ export const SettingsPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSavingProfile}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
               >
                 {isSavingProfile ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
                 Save Profile
               </button>
               {profile?.created_at && (
-                <span className="text-xs text-[#71717a] tabular-nums">
+                <span className="text-xs text-zinc-500 tabular-nums">
                   Member since {new Date(profile.created_at).toLocaleDateString()}
                 </span>
               )}
@@ -459,22 +459,22 @@ export const SettingsPage: React.FC = () => {
 
       {/* Tab 2: GitHub Integration */}
       {activeTab === "github" && (
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6 shadow-sm space-y-6">
+        <div className="bg-white border border-zinc-200 rounded-xl p-6 shadow-xs space-y-6">
           <div>
-            <h2 className="text-lg font-semibold text-white text-balance">GitHub Integration & Personal Access Token</h2>
-            <p className="text-sm text-[#71717a] text-pretty">
+            <h2 className="text-lg font-semibold text-zinc-900 text-balance">GitHub Integration & Personal Access Token</h2>
+            <p className="text-sm text-zinc-500 text-pretty">
               RepoGPT connects to GitHub using a Personal Access Token (classic or fine-grained) to clone private
               repositories and publish intelligent pull request reviews.
             </p>
           </div>
 
           {/* Scopes Reminder Banner */}
-          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4 flex items-start gap-3 text-sm text-emerald-200">
-            <Github className="size-5 text-emerald-400 shrink-0 mt-0.5" />
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 flex items-start gap-3 text-sm text-emerald-800">
+            <Github className="size-5 text-emerald-600 shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-white">Required Permissions</p>
-              <p className="text-xs text-emerald-300/80 mt-0.5 text-pretty">
-                Ensure your Personal Access Token includes <code className="bg-emerald-500/20 px-1.5 py-0.5 rounded text-white font-mono text-[11px]">repo</code> (Full repository read/write access) and <code className="bg-emerald-500/20 px-1.5 py-0.5 rounded text-white font-mono text-[11px]">read:user</code> (Account profile identity) scopes.
+              <p className="font-semibold text-zinc-900">Required Permissions</p>
+              <p className="text-xs text-emerald-700 mt-0.5 text-pretty">
+                Ensure your Personal Access Token includes <code className="bg-emerald-100 px-1.5 py-0.5 rounded text-emerald-900 font-mono text-[11px] border border-emerald-200">repo</code> (Full repository read/write access) and <code className="bg-emerald-100 px-1.5 py-0.5 rounded text-emerald-900 font-mono text-[11px] border border-emerald-200">read:user</code> (Account profile identity) scopes.
               </p>
             </div>
           </div>
@@ -483,8 +483,8 @@ export const SettingsPage: React.FC = () => {
             <div
               className={`p-3 rounded-lg flex items-center gap-2 text-sm ${
                 githubMessage.type === "success"
-                  ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
-                  : "bg-red-500/10 border border-red-500/30 text-red-400"
+                  ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+                  : "bg-rose-50 border border-rose-200 text-rose-700"
               }`}
             >
               {githubMessage.type === "success" ? <CheckCircle2 className="size-4" /> : <AlertCircle className="size-4" />}
@@ -493,20 +493,20 @@ export const SettingsPage: React.FC = () => {
           )}
 
           {/* Current Status */}
-          <div className="flex items-center justify-between p-4 bg-[#09090b] rounded-lg border border-[#27272a]">
+          <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-lg border border-zinc-200">
             <div className="flex items-center gap-3">
-              <div className="size-10 rounded-full bg-[#27272a] flex items-center justify-center text-white">
+              <div className="size-10 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-700">
                 <Github className="size-5" />
               </div>
               <div>
-                <p className="text-sm font-medium text-white">
+                <p className="text-sm font-medium text-zinc-900">
                   {profile?.github?.login ? (
-                    <>Connected as <span className="text-emerald-400">@{profile.github.login}</span></>
+                    <>Connected as <span className="text-emerald-700 font-semibold">@{profile.github.login}</span></>
                   ) : (
                     "No GitHub Account Connected"
                   )}
                 </p>
-                <p className="text-xs text-[#71717a]">
+                <p className="text-xs text-zinc-500">
                   {profile?.github?.login ? "Tokens are encrypted using AES-128 Fernet at rest." : "Add a PAT below to enable repository syncing."}
                 </p>
               </div>
@@ -515,7 +515,7 @@ export const SettingsPage: React.FC = () => {
               <button
                 onClick={handleRevokePat}
                 disabled={isRevokingPat}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-medium transition-colors cursor-pointer"
               >
                 {isRevokingPat ? <Loader2 className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" />}
                 Revoke Token
@@ -526,7 +526,7 @@ export const SettingsPage: React.FC = () => {
           {/* PAT Input */}
           <div className="space-y-4 max-w-xl">
             <div>
-              <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1">
+              <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1">
                 Personal Access Token (PAT)
               </label>
               <div className="relative">
@@ -535,13 +535,13 @@ export const SettingsPage: React.FC = () => {
                   value={githubPat}
                   onChange={(e) => setGithubPat(e.target.value)}
                   placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                  className="w-full bg-[#09090b] border border-[#27272a] rounded-lg pl-3 pr-10 py-2 text-white text-sm font-mono focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-zinc-200 rounded-lg pl-3 pr-10 py-2 text-zinc-900 text-sm font-mono focus:outline-none focus:border-emerald-500 shadow-xs"
                 />
                 <button
                   type="button"
                   aria-label={showPat ? "Hide personal access token" : "Show personal access token"}
                   onClick={() => setShowPat(!showPat)}
-                  className="absolute right-3 top-2.5 text-[#71717a] hover:text-white transition-colors cursor-pointer"
+                  className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
                 >
                   {showPat ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                 </button>
@@ -553,7 +553,7 @@ export const SettingsPage: React.FC = () => {
                 type="button"
                 onClick={handleSavePat}
                 disabled={isSavingPat || !githubPat}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
               >
                 {isSavingPat ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
                 Save & Encrypt
@@ -562,7 +562,7 @@ export const SettingsPage: React.FC = () => {
                 type="button"
                 onClick={handleTestPat}
                 disabled={isTestingPat}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#27272a] hover:bg-[#3f3f46] text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-700 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
               >
                 {isTestingPat ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
                 Test Connection
@@ -574,12 +574,12 @@ export const SettingsPage: React.FC = () => {
 
       {/* Tab 3: Security */}
       {activeTab === "security" && (
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6 shadow-sm space-y-8">
+        <div className="bg-white border border-zinc-200 rounded-xl p-6 shadow-xs space-y-8">
           {/* Change Password Form */}
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-semibold text-white text-balance">Password & Authentication</h2>
-              <p className="text-sm text-[#71717a] text-pretty">
+              <h2 className="text-lg font-semibold text-zinc-900 text-balance">Password & Authentication</h2>
+              <p className="text-sm text-zinc-500 text-pretty">
                 Update your password. Changing your password will automatically invalidate all other active sessions.
               </p>
             </div>
@@ -588,8 +588,8 @@ export const SettingsPage: React.FC = () => {
               <div
                 className={`p-3 rounded-lg flex items-center gap-2 text-sm ${
                   securityMessage.type === "success"
-                    ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
-                    : "bg-red-500/10 border border-red-500/30 text-red-400"
+                    ? "bg-emerald-50 border border-emerald-200 text-emerald-800"
+                    : "bg-rose-50 border border-rose-200 text-rose-700"
                 }`}
               >
                 {securityMessage.type === "success" ? <CheckCircle2 className="size-4" /> : <AlertCircle className="size-4" />}
@@ -599,40 +599,40 @@ export const SettingsPage: React.FC = () => {
 
             <form onSubmit={handleChangePassword} className="space-y-4 max-w-xl">
               <div>
-                <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1">
+                <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1">
                   Current Password
                 </label>
                 <input
                   type="password"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full bg-[#09090b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-zinc-900 text-sm focus:outline-none focus:border-emerald-500 shadow-xs"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1">
+                <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1">
                   New Password (min 12 chars)
                 </label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full bg-[#09090b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-zinc-900 text-sm focus:outline-none focus:border-emerald-500 shadow-xs"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-[#a1a1aa] mb-1">
+                <label className="block text-xs font-semibold uppercase text-zinc-700 mb-1">
                   Confirm New Password
                 </label>
                 <input
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-[#09090b] border border-[#27272a] rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-2 text-zinc-900 text-sm focus:outline-none focus:border-emerald-500 shadow-xs"
                   required
                 />
               </div>
@@ -640,7 +640,7 @@ export const SettingsPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isChangingPassword}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
               >
                 {isChangingPassword ? <Loader2 className="size-4 animate-spin" /> : <KeyRound className="size-4" />}
                 Update Password
@@ -648,27 +648,27 @@ export const SettingsPage: React.FC = () => {
             </form>
           </div>
 
-          <hr className="border-[#27272a]" />
+          <hr className="border-zinc-200" />
 
           {/* Active Sessions */}
           <div className="space-y-4">
             <div>
-              <h2 className="text-lg font-semibold text-white text-balance">Active Sessions</h2>
-              <p className="text-sm text-[#71717a] text-pretty">
+              <h2 className="text-lg font-semibold text-zinc-900 text-balance">Active Sessions</h2>
+              <p className="text-sm text-zinc-500 text-pretty">
                 You are currently signed in from this browser. If you notice any suspicious activity, immediately revoke
                 all device sessions.
               </p>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-[#09090b] rounded-lg border border-[#27272a]">
+            <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-lg border border-zinc-200">
               <div>
-                <p className="text-sm font-medium text-white">Current Browser Session</p>
-                <p className="text-xs text-emerald-400">Active now • Automatic rotating refresh family</p>
+                <p className="text-sm font-medium text-zinc-900">Current Browser Session</p>
+                <p className="text-xs text-emerald-700 font-medium">Active now • Automatic rotating refresh family</p>
               </div>
               <button
                 onClick={handleLogoutAll}
                 disabled={isLoggingOutAll}
-                className="inline-flex items-center gap-1.5 px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {isLoggingOutAll ? <Loader2 className="size-3.5 animate-spin" /> : <LogOut className="size-3.5" />}
                 Log Out of All Devices
@@ -680,11 +680,11 @@ export const SettingsPage: React.FC = () => {
 
       {/* Tab 4: Usage & Quotas */}
       {activeTab === "usage" && (
-        <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-6 shadow-sm space-y-6">
+        <div className="bg-white border border-zinc-200 rounded-xl p-6 shadow-xs space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-white text-balance">Daily Quotas & Usage</h2>
-              <p className="text-sm text-[#71717a] text-pretty">
+              <h2 className="text-lg font-semibold text-zinc-900 text-balance">Daily Quotas & Usage</h2>
+              <p className="text-sm text-zinc-500 text-pretty">
                 All quotas reset daily at midnight UTC (00:00 UTC).
               </p>
             </div>
@@ -692,7 +692,7 @@ export const SettingsPage: React.FC = () => {
               onClick={fetchUsage}
               disabled={isLoadingUsage}
               aria-label="Refresh daily usage"
-              className="p-2 text-[#a1a1aa] hover:text-white rounded-lg hover:bg-[#27272a] transition-colors cursor-pointer"
+              className="p-2 text-zinc-500 hover:text-zinc-900 rounded-lg hover:bg-zinc-100 transition-colors cursor-pointer"
             >
               <RefreshCw className={`size-4 ${isLoadingUsage ? "animate-spin" : ""}`} />
             </button>
@@ -748,25 +748,25 @@ const QuotaCard: React.FC<QuotaCardProps> = ({ title, current, limit, unit }) =>
   const percentage = Math.min(100, Math.round((current / (limit || 1)) * 100));
 
   return (
-    <div className="bg-[#09090b] border border-[#27272a] rounded-xl p-4 space-y-3">
+    <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-white">{title}</span>
-        <span className="text-xs text-[#a1a1aa] font-mono tabular-nums">
+        <span className="text-sm font-medium text-zinc-900">{title}</span>
+        <span className="text-xs text-zinc-500 font-mono tabular-nums">
           {current.toLocaleString()} / {limit.toLocaleString()} {unit}
         </span>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-[#27272a] rounded-full h-2 overflow-hidden">
+      <div className="w-full bg-zinc-200 rounded-full h-2 overflow-hidden">
         <div
           className={`h-full transition-all duration-300 ${
-            percentage >= 90 ? "bg-red-500" : percentage >= 75 ? "bg-amber-500" : "bg-emerald-500"
+            percentage >= 90 ? "bg-rose-500" : percentage >= 75 ? "bg-amber-500" : "bg-emerald-500"
           }`}
           style={{ width: `${percentage}%` }}
         />
       </div>
 
-      <div className="flex justify-between items-center text-[11px] text-[#71717a]">
+      <div className="flex justify-between items-center text-[11px] text-zinc-500">
         <span className="tabular-nums">{percentage}% utilized</span>
         <span>Resets at 00:00 UTC</span>
       </div>

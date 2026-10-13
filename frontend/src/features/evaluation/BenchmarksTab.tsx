@@ -130,7 +130,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
             placeholder="Search benchmarks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-9 pr-4 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-emerald-500 transition-colors"
+            className="w-full bg-white border border-zinc-200 rounded-lg pl-9 pr-4 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 shadow-xs transition-colors"
           />
         </div>
 
@@ -139,7 +139,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
             setIsUploadOpen(true);
             setUploadError(null);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-emerald-600/30 cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors shadow-xs cursor-pointer"
         >
           <Upload className="size-4" />
           Upload Custom Benchmark
@@ -148,11 +148,11 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
 
       {/* Benchmarks Grid */}
       {isLoading ? (
-        <div className="py-16 text-center text-zinc-400">Loading benchmark suites...</div>
+        <div className="py-16 text-center text-zinc-500">Loading benchmark suites...</div>
       ) : filtered.length === 0 ? (
-        <div className="py-16 text-center border border-dashed border-[#27272a] rounded-xl bg-[#111113]">
-          <FileCode2 className="size-10 text-zinc-500 mx-auto mb-3" />
-          <p className="text-zinc-300 font-medium">No benchmarks found</p>
+        <div className="py-16 text-center border border-dashed border-zinc-200 rounded-xl bg-white shadow-xs">
+          <FileCode2 className="size-10 text-zinc-400 mx-auto mb-3" />
+          <p className="text-zinc-900 font-medium">No benchmarks found</p>
           <p className="text-xs text-zinc-500 mt-1 text-pretty">
             Try adjusting your search query or upload a custom YAML suite.
           </p>
@@ -162,37 +162,37 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
           {filtered.map((b) => (
             <div
               key={b.id}
-              className="bg-[#111113] border border-[#27272a] hover:border-zinc-700 rounded-xl p-5 flex flex-col justify-between transition-colors shadow-sm"
+              className="bg-white border border-zinc-200 hover:border-zinc-300 rounded-xl p-5 flex flex-col justify-between transition-colors shadow-xs"
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div>
-                    <h3 className="text-base font-semibold text-white text-balance">{b.name}</h3>
-                    <p className="text-xs text-zinc-400 mt-0.5 line-clamp-2 text-pretty">
+                    <h3 className="text-base font-semibold text-zinc-900 text-balance">{b.name}</h3>
+                    <p className="text-xs text-zinc-500 mt-0.5 line-clamp-2 text-pretty">
                       {b.description || "Comprehensive evaluation benchmark suite."}
                     </p>
                   </div>
                   {b.is_builtin ? (
-                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                       Built-in
                     </span>
                   ) : (
-                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-medium bg-zinc-800 text-zinc-300 border border-zinc-700">
+                    <span className="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-medium bg-zinc-100 text-zinc-700 border border-zinc-200">
                       Custom
                     </span>
                   )}
                 </div>
 
-                <div className="space-y-1.5 py-3 border-y border-[#27272a]/60 text-xs text-zinc-400">
+                <div className="space-y-1.5 py-3 border-y border-zinc-200 text-xs text-zinc-500">
                   <div className="flex items-center justify-between">
                     <span>Target Repository:</span>
-                    <span className="font-mono text-zinc-300">
+                    <span className="font-mono text-zinc-800">
                       {b.repo?.path || b.repo?.url || "Sample Repo"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Questions:</span>
-                    <span className="font-medium text-white tabular-nums">{b.question_count} verified Qs</span>
+                    <span className="font-medium text-zinc-900 tabular-nums">{b.question_count} verified Qs</span>
                   </div>
                 </div>
               </div>
@@ -200,7 +200,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
               <div className="flex items-center justify-between gap-2 mt-4 pt-2">
                 <button
                   onClick={() => setViewBenchmark(b)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#18181b] hover:bg-zinc-800 text-xs font-medium text-zinc-300 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 text-xs font-medium text-zinc-700 transition-colors cursor-pointer shadow-xs"
                 >
                   <Eye className="size-3.5" />
                   View Questions
@@ -211,14 +211,14 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
                     <button
                       onClick={() => setDeleteConfirmId(b.id)}
                       aria-label="Delete benchmark suite"
-                      className="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-md transition-colors cursor-pointer"
+                      className="p-1.5 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors cursor-pointer"
                     >
                       <Trash2 className="size-4" />
                     </button>
                   )}
                   <button
                     onClick={() => onSelectRunBenchmark(b)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md text-xs font-medium transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-medium transition-colors cursor-pointer shadow-xs"
                   >
                     <Play className="size-3.5 fill-current" />
                     Run Eval
@@ -232,12 +232,12 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
 
       {/* Benchmark Question Viewer Drawer/Modal */}
       {viewBenchmark && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl">
-            <div className="px-6 py-4 border-b border-[#27272a] flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+          <div className="bg-white border border-zinc-200 rounded-xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+            <div className="px-6 py-4 border-b border-zinc-200 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-white">{viewBenchmark.name}</h3>
-                <p className="text-xs text-zinc-400">
+                <h3 className="text-lg font-semibold text-zinc-900">{viewBenchmark.name}</h3>
+                <p className="text-xs text-zinc-500">
                   {viewBenchmark.question_count} questions • Target:{" "}
                   {viewBenchmark.repo?.path || "Sample Repo"}
                 </p>
@@ -246,18 +246,18 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
                 type="button"
                 onClick={() => setViewBenchmark(null)}
                 aria-label="Close dialog"
-                className="text-zinc-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer"
+                className="text-zinc-400 hover:text-zinc-600 p-1 rounded-md transition-colors cursor-pointer"
               >
                 <X className="size-5" />
               </button>
             </div>
 
-            <div className="p-6 overflow-y-auto space-y-3 divide-y divide-[#27272a]">
+            <div className="p-6 overflow-y-auto space-y-3 divide-y divide-zinc-200">
               {viewBenchmark.questions?.map((q, idx) => (
                 <div key={q.id || idx} className="pt-3 first:pt-0">
                   <div className="flex items-start justify-between gap-3 mb-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-[#18181b] border border-[#27272a] text-zinc-400 tabular-nums">
+                      <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600 tabular-nums">
                         {q.id || `q${idx + 1}`}
                       </span>
                       <span
@@ -272,12 +272,12 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
                       Expected Intent: {q.expected_intent}
                     </span>
                   </div>
-                  <p className="text-sm font-medium text-zinc-100">{q.question}</p>
+                  <p className="text-sm font-medium text-zinc-900">{q.question}</p>
                   <div className="mt-2 flex flex-wrap gap-1.5 text-xs">
                     {q.expected_files?.map((f) => (
                       <span
                         key={f}
-                        className="font-mono text-[11px] px-2 py-0.5 bg-[#18181b] rounded text-zinc-300 border border-[#27272a]"
+                        className="font-mono text-[11px] px-2 py-0.5 bg-zinc-100 rounded text-zinc-700 border border-zinc-200"
                       >
                         {f}
                       </span>
@@ -285,7 +285,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
                     {q.expected_symbols?.map((sym) => (
                       <span
                         key={sym}
-                        className="font-mono text-[11px] px-2 py-0.5 bg-emerald-500/10 text-emerald-300 rounded border border-emerald-500/20"
+                        className="font-mono text-[11px] px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded border border-emerald-200"
                       >
                         sym: {sym}
                       </span>
@@ -295,7 +295,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
               ))}
             </div>
 
-            <div className="px-6 py-3 border-t border-[#27272a] flex justify-end">
+            <div className="px-6 py-3 border-t border-zinc-200 flex justify-end">
               <button
                 type="button"
                 onClick={() => {
@@ -303,7 +303,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
                   setViewBenchmark(null);
                   onSelectRunBenchmark(b);
                 }}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer"
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer shadow-xs"
               >
                 Run Evaluation With This Benchmark
               </button>
@@ -314,22 +314,22 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
 
       {/* Upload Benchmark Modal */}
       {isUploadOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl max-w-lg w-full p-6 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-[#27272a] mb-4">
-              <h3 className="text-base font-semibold text-white">Upload Benchmark YAML</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+          <div className="bg-white border border-zinc-200 rounded-xl max-w-lg w-full p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-200 mb-4">
+              <h3 className="text-base font-semibold text-zinc-900">Upload Benchmark YAML</h3>
               <button
                 type="button"
                 onClick={() => setIsUploadOpen(false)}
                 aria-label="Close dialog"
-                className="text-zinc-400 hover:text-white cursor-pointer"
+                className="text-zinc-400 hover:text-zinc-600 cursor-pointer"
               >
                 <X className="size-5" />
               </button>
             </div>
 
             <form onSubmit={handleUploadSubmit} className="space-y-4">
-              <div className="border-2 border-dashed border-[#27272a] hover:border-emerald-500 rounded-xl p-6 text-center cursor-pointer transition-colors bg-[#18181b]/50">
+              <div className="border-2 border-dashed border-zinc-200 hover:border-emerald-500 rounded-xl p-6 text-center cursor-pointer transition-colors bg-zinc-50/50">
                 <input
                   type="file"
                   id="benchmark-file"
@@ -345,16 +345,16 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
                 <label htmlFor="benchmark-file" className="cursor-pointer">
                   {uploadFile ? (
                     <div className="flex flex-col items-center">
-                      <FileCheck className="size-8 text-emerald-400 mb-2" />
-                      <p className="text-sm font-medium text-white">{uploadFile.name}</p>
-                      <p className="text-xs text-zinc-400 mt-1 tabular-nums">
+                      <FileCheck className="size-8 text-emerald-600 mb-2" />
+                      <p className="text-sm font-medium text-zinc-900">{uploadFile.name}</p>
+                      <p className="text-xs text-zinc-500 mt-1 tabular-nums">
                         {(uploadFile.size / 1024).toFixed(1)} KB • Ready to upload
                       </p>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center">
-                      <Upload className="size-8 text-zinc-500 mb-2" />
-                      <p className="text-sm font-medium text-zinc-300">Click to choose benchmark YAML</p>
+                      <Upload className="size-8 text-zinc-400 mb-2" />
+                      <p className="text-sm font-medium text-zinc-800">Click to choose benchmark YAML</p>
                       <p className="text-xs text-zinc-500 mt-1">
                         Must contain name, repo, and questions array.
                       </p>
@@ -364,7 +364,7 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
               </div>
 
               {uploadError && (
-                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-2 text-xs text-red-400">
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg flex items-center gap-2 text-xs text-rose-700">
                   <AlertCircle className="size-4 shrink-0" />
                   <span>{uploadError}</span>
                 </div>
@@ -374,14 +374,14 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsUploadOpen(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-white cursor-pointer"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-zinc-600 hover:text-zinc-900 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={!uploadFile || isUploading}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer shadow-xs"
                 >
                   {isUploading ? "Uploading..." : "Upload & Validate"}
                 </button>
@@ -393,24 +393,24 @@ export const BenchmarksTab: React.FC<BenchmarksTabProps> = ({
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-[#111113] border border-[#27272a] rounded-xl max-w-sm w-full p-6 shadow-2xl">
-            <h3 className="text-base font-semibold text-white text-balance">Delete Benchmark</h3>
-            <p className="text-xs text-zinc-400 mt-2 text-pretty">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+          <div className="bg-white border border-zinc-200 rounded-xl max-w-sm w-full p-6 shadow-2xl">
+            <h3 className="text-base font-semibold text-zinc-900 text-balance">Delete Benchmark</h3>
+            <p className="text-xs text-zinc-500 mt-2 text-pretty">
               Are you sure you want to delete this custom benchmark suite? This action cannot be undone.
             </p>
             <div className="flex justify-end gap-3 mt-6">
               <button
                 type="button"
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white cursor-pointer"
+                className="px-3 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-md text-xs font-medium transition-colors cursor-pointer"
+                className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-md text-xs font-medium transition-colors cursor-pointer shadow-xs"
               >
                 Delete
               </button>

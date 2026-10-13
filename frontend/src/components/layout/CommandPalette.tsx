@@ -325,7 +325,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
-      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center pt-[10vh] px-4 animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-start justify-center pt-[10vh] px-4 animate-in fade-in duration-150"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose();
@@ -333,13 +333,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       }}
     >
       <div
-        className="w-full max-w-2xl rounded-2xl border border-[#27272a] bg-[#101012] shadow-2xl shadow-black/80 flex flex-col overflow-hidden text-[#fafafa] animate-in zoom-in-95 duration-150"
+        className="w-full max-w-2xl rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-zinc-400/25 flex flex-col overflow-hidden text-zinc-900 animate-in zoom-in-95 duration-150"
         onKeyDown={handleKeyDown}
       >
         <span id={titleId} className="sr-only">Command Palette</span>
         {/* Search Input Bar */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#27272a] bg-[#141417]">
-          <Search className="size-5 text-emerald-400 shrink-0" />
+        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-zinc-200 bg-zinc-50">
+          <Search className="size-5 text-emerald-600 shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -349,10 +349,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
               setSelectedIndex(0);
             }}
             placeholder="Type a command, search repository, symbol, file..."
-            className="flex-1 bg-transparent text-sm text-white placeholder-[#71717a] outline-none"
+            className="flex-1 bg-transparent text-sm text-zinc-950 placeholder-zinc-400 outline-none"
             aria-label="Search repository, symbol, file or command"
           />
-          <kbd className="font-mono text-[10px] bg-[#1c1c20] text-[#a1a1aa] border border-[#2e2e34] px-1.5 py-0.5 rounded shrink-0">
+          <kbd className="font-mono text-[10px] bg-white text-zinc-600 border border-zinc-200 px-1.5 py-0.5 rounded shadow-xs shrink-0">
             ESC
           </kbd>
         </div>
@@ -360,11 +360,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         {/* Results List */}
         <div
           ref={listRef}
-          className="max-h-[60vh] overflow-y-auto p-2 space-y-1 divide-y divide-[#1e1e22]/50 scrollbar-thin scrollbar-thumb-[#27272a]"
+          className="max-h-[60vh] overflow-y-auto p-2 space-y-1 divide-y divide-zinc-100 scrollbar-thin"
         >
           {actions.length === 0 ? (
-            <div className="py-12 text-center text-xs text-[#71717a]">
-              No results found for &ldquo;<span className="text-white">{query}</span>&rdquo;
+            <div className="py-12 text-center text-xs text-zinc-500">
+              No results found for &ldquo;<span className="text-zinc-900 font-medium">{query}</span>&rdquo;
             </div>
           ) : (
             actions.map((action, idx) => {
@@ -378,31 +378,31 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`w-full flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl text-left transition-colors cursor-pointer ${
                     isSelected
-                      ? "bg-emerald-500/10 text-white border border-emerald-500/20"
-                      : "text-[#a1a1aa] hover:bg-[#18181c] hover:text-white border border-transparent"
+                      ? "bg-emerald-50 text-emerald-950 border border-emerald-200"
+                      : "text-zinc-600 hover:bg-zinc-100/80 hover:text-zinc-900 border border-transparent"
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
                       className={`p-2 rounded-lg shrink-0 ${
                         isSelected
-                          ? "bg-emerald-500/20 text-emerald-400"
-                          : "bg-[#18181b] text-[#71717a]"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-zinc-100 text-zinc-500"
                       }`}
                     >
                       <Icon className="size-4" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-xs font-medium text-white flex items-center gap-2 truncate">
+                      <div className="text-xs font-medium text-zinc-950 flex items-center gap-2 truncate">
                         <span>{action.title}</span>
                         {action.badge && (
-                          <span className="font-mono text-[9px] uppercase px-1.5 py-0.2 rounded bg-[#27272a] text-[#a1a1aa] shrink-0">
+                          <span className="font-mono text-[9px] uppercase px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-600 border border-zinc-200 shrink-0">
                             {action.badge}
                           </span>
                         )}
                       </div>
                       {action.subtitle && (
-                        <div className="text-[11px] text-[#71717a] truncate mt-0.5">
+                        <div className="text-[11px] text-zinc-500 truncate mt-0.5">
                           {action.subtitle}
                         </div>
                       )}
@@ -411,7 +411,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
                   <ArrowRight
                     className={`size-3.5 shrink-0 transition-transform ${
-                      isSelected ? "text-emerald-400 translate-x-0.5" : "text-transparent"
+                      isSelected ? "text-emerald-600 translate-x-0.5" : "text-transparent"
                     }`}
                   />
                 </button>
@@ -421,25 +421,25 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         </div>
 
         {/* Footer shortcuts */}
-        <div className="px-4 py-2 border-t border-[#27272a] bg-[#0c0c0e] flex items-center justify-between text-[11px] text-[#71717a]">
+        <div className="px-4 py-2 border-t border-zinc-200 bg-zinc-50 flex items-center justify-between text-[11px] text-zinc-500">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
-              <kbd className="font-mono bg-[#18181b] px-1 py-0.5 rounded border border-[#27272a] text-[10px] text-[#a1a1aa]">
+              <kbd className="font-mono bg-white px-1 py-0.5 rounded border border-zinc-200 text-[10px] text-zinc-600 shadow-xs">
                 ↑
               </kbd>
-              <kbd className="font-mono bg-[#18181b] px-1 py-0.5 rounded border border-[#27272a] text-[10px] text-[#a1a1aa]">
+              <kbd className="font-mono bg-white px-1 py-0.5 rounded border border-zinc-200 text-[10px] text-zinc-600 shadow-xs">
                 ↓
               </kbd>{" "}
               navigate
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="font-mono bg-[#18181b] px-1 py-0.5 rounded border border-[#27272a] text-[10px] text-[#a1a1aa]">
+              <kbd className="font-mono bg-white px-1 py-0.5 rounded border border-zinc-200 text-[10px] text-zinc-600 shadow-xs">
                 ↵
               </kbd>{" "}
               select
             </span>
           </div>
-          <div className="font-mono text-[10px] text-emerald-400/80">RepoGPT Command Palette</div>
+          <div className="font-mono text-[10px] text-emerald-700 font-medium">RepoGPT Command Palette</div>
         </div>
       </div>
     </div>
