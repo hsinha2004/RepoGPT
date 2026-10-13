@@ -22,7 +22,7 @@
 | **Project Title** | RepoGPT: An Agentic AI System for Codebase Understanding, Developer Onboarding, and Intelligent Code Review |
 | **Team Members** | **Harsh Sinha** (SAP ID: 500120229) <br> **Anshuman Patel** (SAP ID: 500122770 |
 | **Project Supervisor** | **Dr. Archana Kumari**, Associate Professor, School of Computer Science, UPES |
-| **Academic Year** | 2025 – 2026 |
+| **Academic Year** | 2026 – 2027 |
 
 ---
 
